@@ -1323,6 +1323,11 @@ object SongPlayer {
             .setRenderersFactory(renderers)
             .setAudioAttributes(buildAudioAttributes(), handleAudioFocus)
             .setHandleAudioBecomingNoisy(handleAudioFocus)
+            // Keep the CPU and Wi-Fi awake while playing with the screen off:
+            // without this the device can doze mid-stream (buffering stalls,
+            // the next track never loads) and playback only resumes once the
+            // screen is turned back on.
+            .setWakeMode(androidx.media3.common.C.WAKE_MODE_NETWORK)
             .build()
         return p to filter
     }
