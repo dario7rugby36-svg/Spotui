@@ -82,7 +82,7 @@ object Downloads {
                         try {
                             val code = conn.responseCode
                             if (code !in 200..299) {
-                                lastDownloadError = "Stream returned HTTP $code"
+                                lastDownloadError = "Lo stream ha restituito HTTP $code"
                                 return false
                             }
                             if (total < 0) {
@@ -111,7 +111,7 @@ object Downloads {
                         } catch (e: Exception) {
                             Log.w(TAG, "chunk @${position} failed (attempt $attempt): ${e.message}")
                             if (attempt >= 4) {
-                                lastDownloadError = e.message ?: "Connection reset"
+                                lastDownloadError = e.message ?: "Connessione interrotta"
                                 return false
                             }
                             // retry the remainder of this chunk from the current position
@@ -127,7 +127,7 @@ object Downloads {
             downloadProgress[query] = 100
             return total <= 0 || position >= total
         } catch (e: Exception) {
-            lastDownloadError = e.message ?: "Download error"
+            lastDownloadError = e.message ?: "Errore di download"
             return false
         }
     }
@@ -186,7 +186,7 @@ object Downloads {
         lastDownloadError = null
         jobs[query] = scope.launch {
             val ok = runCatching { downloadSlots.withPermit { downloadToFile(song, appContext) } }
-                .onFailure { if (it !is kotlinx.coroutines.CancellationException) lastDownloadError = it.message ?: "Unexpected error" }
+                .onFailure { if (it !is kotlinx.coroutines.CancellationException) lastDownloadError = it.message ?: "Errore imprevisto" }
                 .getOrDefault(false)
             jobs.remove(query)
             downloading.remove(query)
@@ -196,7 +196,7 @@ object Downloads {
                 if (!ok) {
                     android.widget.Toast.makeText(
                         appContext,
-                        "Download failed: ${lastDownloadError ?: "unknown reason"}",
+                        "Download non riuscito: ${lastDownloadError ?: "motivo sconosciuto"}",
                         android.widget.Toast.LENGTH_LONG,
                     ).show()
                 }
@@ -254,7 +254,7 @@ object Downloads {
             dlQuality.audioQuality == com.metrolist.music.constants.AudioQuality.HIGH
         if (!ytFirst) heldDeezer?.let { if (downloadDeezerRaw(song, appContext, it)) return true }
         if (!SongPlayer.youtubeEnabled) {
-            lastDownloadError = "Track not available for download"
+            lastDownloadError = "Brano non disponibile per il download"
             return false
         }
 
@@ -263,7 +263,7 @@ object Downloads {
         // walking the ranked video candidates like playback does.
         val playback = SongPlayer.resolveYtPlayback(query, dlQuality.audioQuality, appContext) ?: run {
             if (ytFirst && downloadDeezerRaw(song, appContext, heldDeezer!!)) return true
-            lastDownloadError = "Couldn't resolve a stream"
+            lastDownloadError = "Impossibile trovare uno stream"
             return false
         }
 
@@ -276,7 +276,7 @@ object Downloads {
             return false
         }
         if (!tmpFile.renameTo(outFile)) {
-            lastDownloadError = "Couldn't save file"
+            lastDownloadError = "Impossibile salvare il file"
             runCatching { tmpFile.delete() }
             return false
         }
@@ -316,7 +316,7 @@ object Downloads {
             return false
         }
         if (!tmpFile.renameTo(outFile)) {
-            lastDownloadError = "Couldn't save file"
+            lastDownloadError = "Impossibile salvare il file"
             runCatching { tmpFile.delete() }
             return false
         }
@@ -388,7 +388,7 @@ object Downloads {
             downloadProgress[query] = 100
             true
         } catch (e: Exception) {
-            lastDownloadError = e.message ?: "Deezer download error"
+            lastDownloadError = e.message ?: "Errore di download Deezer"
             false
         } finally {
             runCatching { conn.disconnect() }

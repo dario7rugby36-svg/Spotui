@@ -121,7 +121,7 @@ fun LibraryScreen(navController: NavController) {
                 .padding(16.dp, 12.dp, 16.dp, 8.dp)
         ) {
             Text(
-                text = "Your Library",
+                text = "La tua libreria",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 22.sp,
@@ -129,7 +129,7 @@ fun LibraryScreen(navController: NavController) {
             )
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search library",
+                contentDescription = "Cerca nella libreria",
                 tint = if (searchActive) Color(AppPalette.toArgb()) else Color.White,
                 modifier = Modifier
                     .padding(end = 14.dp)
@@ -169,7 +169,7 @@ fun LibraryScreen(navController: NavController) {
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(if (gridView) R.drawable.ic_view_list else R.drawable.ic_view_grid),
-                contentDescription = if (gridView) "Show as list" else "Show as grid",
+                contentDescription = if (gridView) "Mostra come elenco" else "Mostra come griglia",
                 tint = Color.White,
                 modifier = Modifier
                     .size(18.dp)
@@ -204,7 +204,7 @@ fun LibraryScreen(navController: NavController) {
                         .padding(8.dp, 10.dp),
                     decorationBox = { inner ->
                         Box {
-                            if (searchQuery.isEmpty()) Text("Filter your library…", color = Color(0xFF888888), fontSize = 15.sp)
+                            if (searchQuery.isEmpty()) Text("Filtra la tua libreria…", color = Color(0xFF888888), fontSize = 15.sp)
                             inner()
                         }
                     },
@@ -212,7 +212,7 @@ fun LibraryScreen(navController: NavController) {
                 if (searchQuery.isNotEmpty()) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Clear",
+                        contentDescription = "Cancella",
                         tint = Color(0xFF888888),
                         modifier = Modifier
                             .size(18.dp)
@@ -240,7 +240,7 @@ fun LibraryScreen(navController: NavController) {
                 if (gridView) LibraryGridScreen(PaddingValues(0.dp), filteredEntries, filteredArtists, navController)
                 else SumUpLibraryScreen(PaddingValues(0.dp), filteredEntries, filteredArtists, navController)
             }
-            else -> Box(modifier = Modifier.padding(20.dp, 100.dp)) { Snackbar(showMessage = "Couldn't load your library") }
+            else -> Box(modifier = Modifier.padding(20.dp, 100.dp)) { Snackbar(showMessage = "Impossibile caricare la tua libreria") }
         }
     }
 }
@@ -265,7 +265,7 @@ fun SumUpLibraryScreen(
     navController: NavController
 ) {
     if (entries.isEmpty() && followedArtists.isEmpty()) {
-        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "Library is Empty") }
+        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "La libreria è vuota") }
         return
     }
     LazyColumn(
@@ -297,8 +297,8 @@ fun SumUpLibraryScreen(
                     Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
                 }
                 Column(modifier = Modifier.padding(start = 12.dp)) {
-                    Text(text = "Listening history", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "Your plays and stats", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "Cronologia ascolti", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "I tuoi ascolti e statistiche", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -329,8 +329,8 @@ fun SumUpLibraryScreen(
                     )
                 }
                 Column(modifier = Modifier.padding(start = 12.dp)) {
-                    Text(text = "Local files", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "Music imported from this device", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "File locali", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "Musica importata da questo dispositivo", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -364,7 +364,7 @@ fun SumUpLibraryScreen(
         if (followedArtists.isNotEmpty()) {
             item {
                 Text(
-                    text = "Artists you follow",
+                    text = "Artisti che segui",
                     color = Color.White,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
@@ -392,7 +392,7 @@ fun SumUpLibraryScreen(
                     )
                     Column(modifier = Modifier.padding(start = 12.dp)) {
                         Text(text = artist.name, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(text = "Artist", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                        Text(text = "Artista", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -421,7 +421,7 @@ fun LibraryGridScreen(
     navController: NavController
 ) {
     if (entries.isEmpty() && followedArtists.isEmpty()) {
-        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "Library is Empty") }
+        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "La libreria è vuota") }
         return
     }
     LazyVerticalGrid(
@@ -453,8 +453,8 @@ fun LibraryGridScreen(
                     Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                 }
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(text = "Listening history", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(text = "Your plays and stats", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = "Cronologia ascolti", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = "I tuoi ascolti e statistiche", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
         // Local files (imported device audio) entry, as a tile.
@@ -481,8 +481,8 @@ fun LibraryGridScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(text = "Local files", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(text = "Music on device", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = "File locali", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = "Musica sul dispositivo", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
         items(entries) { entry ->
@@ -509,7 +509,7 @@ fun LibraryGridScreen(
         if (followedArtists.isNotEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    text = "Artists you follow",
+                    text = "Artisti che segui",
                     color = Color.White,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
@@ -535,7 +535,7 @@ fun LibraryGridScreen(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(text = artist.name, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-                    Text(text = "Artist", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+                    Text(text = "Artista", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
                 }
             }
         }
@@ -597,7 +597,7 @@ private fun AccountSheet(
                 }
                 Spacer(modifier = Modifier.width(14.dp))
                 Column {
-                    Text(account.name.ifBlank { "Spotify user" }, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(account.name.ifBlank { "Utente Spotify" }, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (account.email.isNotBlank()) Text(account.email, color = Color.Gray, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (account.plan.isNotBlank()) Text("Spotify ${account.plan}", color = Color(0xFF1DB954), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
@@ -605,12 +605,12 @@ private fun AccountSheet(
             HorizontalDivider(color = Color(0xFF2A2A2A))
 
             AccountRow("Account") { onDismiss() }
-            AccountRow("Listening history") {
+            AccountRow("Cronologia ascolti") {
                 onDismiss()
                 navController.navigate(Routes.History.route)
             }
             HorizontalDivider(color = Color(0xFF2A2A2A))
-            AccountRow("Log out", tint = Color(0xFFE57373)) {
+            AccountRow("Esci", tint = Color(0xFFE57373)) {
                 SpotifySession.setSpDc(context, "")
                 Api.HomeCache.clear()
                 onDismiss()

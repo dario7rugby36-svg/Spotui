@@ -68,12 +68,12 @@ object LocalImport {
         val mmr = MediaMetadataRetriever()
         return try {
             mmr.setDataSource(context, uri)
-            val fallbackTitle = displayName.substringBeforeLast('.', displayName).ifBlank { "Unknown title" }
+            val fallbackTitle = displayName.substringBeforeLast('.', displayName).ifBlank { "Titolo sconosciuto" }
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
                 ?.takeIf { it.isNotBlank() } ?: fallbackTitle
             val artist = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
                 ?: mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST))
-                ?.takeIf { it.isNotBlank() } ?: "Unknown artist"
+                ?.takeIf { it.isNotBlank() } ?: "Artista sconosciuto"
             val album = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM).orEmpty()
             val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                 ?.toIntOrNull() ?: 0
@@ -93,8 +93,8 @@ object LocalImport {
             LocalTrack(
                 id = id,
                 uri = uri.toString(),
-                title = displayName.substringBeforeLast('.', displayName).ifBlank { "Unknown title" },
-                artist = "Unknown artist",
+                title = displayName.substringBeforeLast('.', displayName).ifBlank { "Titolo sconosciuto" },
+                artist = "Artista sconosciuto",
                 album = "",
                 durationMs = 0,
                 coverUri = "",

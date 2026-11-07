@@ -135,6 +135,6 @@ object DeezerSource {
     private fun tierLabel(q: Int): String = when (q) {
         DeezerSession.QUALITY_FLAC -> "Premium (FLAC)"
         DeezerSession.QUALITY_MP3_320 -> "Premium (MP3 320)"
-        else -> "Free (MP3 128)"
+        else -> "Gratuito (MP3 128)"
     }
 }

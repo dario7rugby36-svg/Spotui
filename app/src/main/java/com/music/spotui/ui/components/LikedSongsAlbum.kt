@@ -75,7 +75,7 @@ fun LikedSongsScreen(
     val albumViewModel : AlbumViewModel =  hiltViewModel()
 
 
-    val album = albums.filter { it.name == "Liked Songs" }
+    val album = albums.filter { it.name == "Brani che ti piacciono" }
     val likesSongIds = getLikedSongIds(context)
     var likedSongs  by remember { mutableStateOf(emptyList<SongsModel>()) }
 
@@ -175,12 +175,12 @@ fun LikedSongsScreen(
                             .width(200.dp)
                     ) {
                         Text(modifier = Modifier,
-                            text = "Liked Songs",
+                            text = "Brani che ti piacciono",
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold)
                         Text(modifier = Modifier,
-                            text = " ${likedSongs.size} songs",
+                            text = " ${likedSongs.size} brani",
                             color = Color.Gray,
                             letterSpacing = 0.sp,
                             fontSize = 12.sp,
@@ -208,7 +208,7 @@ fun LikedSongsScreen(
                                         true,
                                         likedSongs[0].id,
                                         0,
-                                        "Liked Songs"
+                                        "Brani che ti piacciono"
                                     )
                                 }
                         ) {
@@ -257,7 +257,7 @@ fun LikedSongsScreen(
                                     true,
                                     likedSongs[song].id,
                                     song,
-                                    "Liked Songs"
+                                    "Brani che ti piacciono"
                                 )
                             }
                     ) {

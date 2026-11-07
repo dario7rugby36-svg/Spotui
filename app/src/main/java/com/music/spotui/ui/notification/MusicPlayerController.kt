@@ -70,12 +70,12 @@ fun MusicPlayerController(
 
             )
             Text(
-                text = "Song Name",
+                text = "Nome del brano",
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Singer name",
+                text = "Nome dell'artista",
                 fontSize = 14.sp,
             )
 
@@ -134,7 +134,7 @@ fun MusicPlayerController(
                 .zIndex(-2f),
             painter = painterResource(id = R.drawable.logo), // Replace with a placeholder image
             contentScale = ContentScale.Crop,
-            contentDescription = "Background Image"
+            contentDescription = "Immagine di sfondo"
         )
 
 //        GlideImage(

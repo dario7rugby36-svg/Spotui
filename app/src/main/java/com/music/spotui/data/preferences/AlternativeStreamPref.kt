@@ -51,7 +51,7 @@ fun setYouTubeAlternativeStream(context: Context, key: String, videoId: String) 
     val stream = AlternativeStream(
         type = AlternativeStream.TYPE_YOUTUBE,
         value = videoId,
-        label = "YouTube video",
+        label = "Video YouTube",
     )
     context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
         .edit()

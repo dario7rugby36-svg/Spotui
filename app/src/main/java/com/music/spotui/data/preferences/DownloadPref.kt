@@ -107,7 +107,7 @@ private fun sanitizeFileName(name: String): String =
  */
 fun exportDownloads(context: Context): Pair<Int, String> {
     val entries = getDownloadedEntries(context).filter { it.second.isNotBlank() && File(it.second).exists() }
-    if (entries.isEmpty()) return 0 to "No downloaded files to export"
+    if (entries.isEmpty()) return 0 to "Nessun file scaricato da esportare"
     val count = entries.count { (song, path) -> exportFile(context, song, path) }
     return count to "Music/spotui"
 }

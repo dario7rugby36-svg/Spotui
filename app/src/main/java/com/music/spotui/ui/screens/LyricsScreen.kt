@@ -173,7 +173,7 @@ fun LyricsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Close",
+                    contentDescription = "Chiudi",
                     tint = Color.White,
                     modifier = Modifier.size(30.dp),
                 )
@@ -209,7 +209,7 @@ fun LyricsScreen(
                 }
             is LyricsViewModel.State.NotFound ->
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("Couldn't find lyrics for this track", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
+                    Text("Impossibile trovare il testo di questo brano", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
                 }
             is LyricsViewModel.State.Loaded -> {
                 val lyrics = s.lyrics
@@ -280,13 +280,13 @@ fun LyricsScreen(
     }
 }
 
-/** How many lines the inline lyrics card previews before "Show lyrics". */
+/** How many lines the inline lyrics card previews before "Mostra testo". */
 private const val PREVIEW_LINE_COUNT = 5
 
 /**
  * Inline lyrics card shown in the Now Playing scroll (no full-screen chrome).
  * Spotify-style *preview*: only a handful of lines (following the active synced
- * line) plus a "Show lyrics" button that opens the full-screen lyrics view.
+ * line) plus a "Mostra testo" button that opens the full-screen lyrics view.
  */
 @Composable
 fun InlineLyrics(
@@ -319,14 +319,14 @@ fun InlineLyrics(
             ) { onExpand() }
             .padding(20.dp)
     ) {
-        Text("Lyrics preview", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text("Anteprima testo", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(12.dp))
 
         when (val s = state) {
             is LyricsViewModel.State.Loading ->
-                Text("Loading lyrics…", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
+                Text("Caricamento testo…", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
             is LyricsViewModel.State.NotFound ->
-                Text("No lyrics found for this track", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
+                Text("Nessun testo trovato per questo brano", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
             is LyricsViewModel.State.Loaded -> {
                 val lyrics = s.lyrics
                 val activeIndex = activeIndexFor(lyrics, positionMs)
@@ -357,7 +357,7 @@ fun InlineLyrics(
                         ) { onExpand() }
                         .padding(16.dp, 8.dp)
                 ) {
-                    Text("Show lyrics", color = Color.Black, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Mostra testo", color = Color.Black, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
@@ -399,7 +399,7 @@ private fun TranslateButton(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_translate_lyrics),
-                    contentDescription = if (active) "Stop translating lyrics" else "Translate lyrics",
+                    contentDescription = if (active) "Interrompi traduzione del testo" else "Traduci testo",
                     tint = if (active) Color.Black else Color.White,
                     modifier = Modifier.size(24.dp),
                 )
@@ -464,7 +464,7 @@ private fun LyricsControlPanel(
                 painter = painterResource(
                     if (isPlaying) R.drawable.ic_playing else R.drawable.play_svgrepo_com
                 ),
-                contentDescription = if (isPlaying) "Pause" else "Play",
+                contentDescription = if (isPlaying) "Pausa" else "Riproduci",
                 tint = Color.Black,
                 modifier = Modifier.size(36.dp),
             )

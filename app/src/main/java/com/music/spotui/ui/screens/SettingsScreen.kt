@@ -100,11 +100,11 @@ fun SettingsScreen(navController: NavController) {
         containerColor = AppBackground,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Settings", color = Color.White, fontWeight = FontWeight.Bold) },
+                title = { Text("Impostazioni", color = Color.White, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = "Indietro",
                         tint = Color.White,
                         modifier = Modifier
                             .padding(start = 8.dp)
@@ -124,28 +124,28 @@ fun SettingsScreen(navController: NavController) {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            SectionTitle("Audio quality")
+            SectionTitle("Qualità audio")
             QualityPicker(
-                title = "Streaming over Wi-Fi",
+                title = "Streaming su Wi-Fi",
                 selected = wifiQ,
             ) { wifiQ = it; setWifiQuality(context, it) }
 
             QualityPicker(
-                title = "Streaming over cellular",
+                title = "Streaming su rete mobile",
                 selected = cellQ,
             ) { cellQ = it; setCellularQuality(context, it) }
 
             QualityPicker(
-                title = "Download quality",
+                title = "Qualità download",
                 selected = dlQ,
             ) { dlQ = it; setDownloadQuality(context, it) }
 
             // Lossless FLAC comes from the Tidal community backend (no login) and, if
             // connected, Deezer HiFi. Falls back to best-quality YouTube on a miss.
             val losslessNote = if (deezerConnected) {
-                "Lossless: Tidal (free) + Deezer${if (deezerTier.isNotBlank()) " $deezerTier" else ""} — real FLAC"
+                "Lossless: Tidal (gratuito) + Deezer${if (deezerTier.isNotBlank()) " $deezerTier" else ""} — FLAC reale"
             } else {
-                "Lossless: Tidal community FLAC (no login needed) — or add Deezer HiFi below"
+                "Lossless: FLAC Tidal della community (nessun accesso richiesto) — o aggiungi Deezer HiFi qui sotto"
             }
             Text(
                 losslessNote,
@@ -155,10 +155,10 @@ fun SettingsScreen(navController: NavController) {
             )
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Matching")
+            SectionTitle("Abbinamento")
             SettingsSwitchRow(
-                title = "Allow video fallback",
-                subtitle = "Use regular YouTube videos only after Music song results fail",
+                title = "Consenti ripiego sui video",
+                subtitle = "Usa i normali video YouTube solo se i risultati di YouTube Music non funzionano",
                 checked = videoFallback,
             ) {
                 videoFallback = it
@@ -166,7 +166,7 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Lyrics")
+            SectionTitle("Testi")
             val languageMatches = remember(languageQuery) {
                 val query = languageQuery.trim()
                 if (query.isBlank()) {
@@ -192,8 +192,8 @@ fun SettingsScreen(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                 singleLine = true,
-                label = { Text("Translate lyrics to", color = Color(0xFFB3B3B3)) },
-                placeholder = { Text("Search languages", color = Color(0xFF72728A)) },
+                label = { Text("Traduci i testi in", color = Color(0xFFB3B3B3)) },
+                placeholder = { Text("Cerca lingue", color = Color(0xFF72728A)) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -226,9 +226,9 @@ fun SettingsScreen(navController: NavController) {
             }
             Text(
                 text = if (selectedLanguage.isBlank()) {
-                    "Using phone language"
+                    "Lingua del telefono"
                 } else {
-                    "Selected: ${translateLanguages.firstOrNull { it.first == selectedLanguage }?.second ?: selectedLanguage} ($selectedLanguage)"
+                    "Selezionata: ${translateLanguages.firstOrNull { it.first == selectedLanguage }?.second ?: selectedLanguage} ($selectedLanguage)"
                 },
                 color = Color(0xFFB3B3B3),
                 fontSize = 12.sp,
@@ -236,21 +236,21 @@ fun SettingsScreen(navController: NavController) {
             )
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Crossfade")
+            SectionTitle("Dissolvenza incrociata")
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Crossfade", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                Text("Dissolvenza incrociata", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                 Text(
-                    if (crossfadeMs <= 0f) "Off" else "${(crossfadeMs / 1000f).let { String.format("%.0f", it) }}s",
+                    if (crossfadeMs <= 0f) "Disattivata" else "${(crossfadeMs / 1000f).let { String.format("%.0f", it) }}s",
                     color = if (crossfadeMs <= 0f) Color(0xFFB3B3B3) else AppPalette,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
             Text(
-                "Blend the end of a song into the start of the next",
+                "Fondi la fine di un brano con l'inizio del successivo",
                 color = Color(0xFFB3B3B3),
                 fontSize = 13.sp,
             )
@@ -267,10 +267,10 @@ fun SettingsScreen(navController: NavController) {
                 ),
             )
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Music source")
+            SectionTitle("Sorgente musicale")
             SourceSettingRow(
                 title = "YouTube Music",
-                subtitle = if (youtubeConnected) "Connected — explicit and age-restricted playback enabled" else "Login required for explicit and age-restricted songs",
+                subtitle = if (youtubeConnected) "Collegato — riproduzione di brani espliciti e con limiti di età attiva" else "Accesso richiesto per i brani espliciti e con limiti di età",
                 selected = primarySource == MusicSource.YOUTUBE_MUSIC,
             ) {
                 if (youtubeConnected) {
@@ -282,7 +282,7 @@ fun SettingsScreen(navController: NavController) {
             }
             SourceSettingRow(
                 title = "Deezer",
-                subtitle = if (deezerConnected) "Connected${if (deezerTier.isNotBlank()) " — $deezerTier" else ""}" else "Not connected",
+                subtitle = if (deezerConnected) "Collegato${if (deezerTier.isNotBlank()) " — $deezerTier" else ""}" else "Non collegato",
                 selected = primarySource == MusicSource.DEEZER,
             ) {
                 if (deezerConnected) {
@@ -294,7 +294,7 @@ fun SettingsScreen(navController: NavController) {
                 }
             }
             Text(
-                text = if (youtubeConnected) "Reconnect YouTube Music" else "Log in to YouTube Music",
+                text = if (youtubeConnected) "Ricollega YouTube Music" else "Accedi a YouTube Music",
                 color = AppPalette,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -305,7 +305,7 @@ fun SettingsScreen(navController: NavController) {
                     .padding(vertical = 12.dp),
             )
             Text(
-                text = if (deezerConnected) "Reconnect / switch account" else "Log in to Deezer",
+                text = if (deezerConnected) "Ricollega / cambia account" else "Accedi a Deezer",
                 color = AppPalette,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -319,7 +319,7 @@ fun SettingsScreen(navController: NavController) {
             )
             if (deezerConnected) {
                 Text(
-                    text = "Disconnect Deezer",
+                    text = "Scollega Deezer",
                     color = Color(0xFFE57373),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -337,16 +337,16 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("SpotiFLAC (experimental)")
+            SectionTitle("SpotiFLAC (sperimentale)")
             val sfConnected = com.music.spotui.data.preferences.hasSpotiflacSession(context)
             Text(
-                text = "Gives access to SpotiFLAC's own FLAC servers. You solve one quick check yourself — no auto-bypass. Experimental: may fail if their servers change.",
+                text = "Dà accesso ai server FLAC di SpotiFLAC. Risolvi tu stesso un rapido controllo — nessun aggiramento automatico. Sperimentale: potrebbe non funzionare se i loro server cambiano.",
                 color = Color(0xFFB3B3B3),
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 4.dp, top = 2.dp, bottom = 6.dp),
             )
             Text(
-                text = if (sfConnected) "Re-verify SpotiFLAC" else "Set up SpotiFLAC verification",
+                text = if (sfConnected) "Verifica di nuovo SpotiFLAC" else "Configura la verifica SpotiFLAC",
                 color = AppPalette,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -360,7 +360,7 @@ fun SettingsScreen(navController: NavController) {
             )
             if (sfConnected) {
                 Text(
-                    text = "Session active ✓",
+                    text = "Sessione attiva ✓",
                     color = Color(0xFF00C7B7),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(start = 4.dp),
@@ -368,11 +368,11 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Soulseek (experimental)")
+            SectionTitle("Soulseek (sperimentale)")
             var soulseekOn by remember { mutableStateOf(com.music.spotui.data.preferences.isSoulseekEnabled(context)) }
             SettingsSwitchRow(
-                title = "Soulseek lossless fallback",
-                subtitle = "When the FLAC servers miss, fetch FLACs from Soulseek (peer-to-peer). Uses data and shows your IP to peers.",
+                title = "Ripiego lossless su Soulseek",
+                subtitle = "Se i server FLAC non trovano il brano, scarica i FLAC da Soulseek (peer-to-peer). Consuma dati e mostra il tuo IP agli altri utenti.",
                 checked = soulseekOn,
             ) {
                 soulseekOn = it
@@ -384,7 +384,7 @@ fun SettingsScreen(navController: NavController) {
             Spacer(Modifier.height(12.dp))
             SectionTitle("Account")
             Text(
-                text = "Log out",
+                text = "Esci",
                 color = Color(0xFFE57373),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -425,7 +425,7 @@ private fun SourceSettingRow(
             Text(subtitle, color = Color(0xFFB3B3B3), fontSize = 12.sp)
         }
         if (selected) {
-            Icon(Icons.Filled.Check, contentDescription = "Selected", tint = AppPalette, modifier = Modifier.size(20.dp))
+            Icon(Icons.Filled.Check, contentDescription = "Selezionato", tint = AppPalette, modifier = Modifier.size(20.dp))
         }
     }
 }
@@ -498,7 +498,7 @@ private fun QualityPicker(
                 if (isSel) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Selected",
+                        contentDescription = "Selezionato",
                         tint = AppPalette,
                         modifier = Modifier.size(20.dp)
                     )

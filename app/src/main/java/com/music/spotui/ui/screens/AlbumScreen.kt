@@ -117,7 +117,7 @@ fun AlbumScreen(navController: NavController, albumName: String, artist: String 
 
             else -> {
                 Log.d("homeMain", "albums ready")
-                if (albumName == "Liked Songs"){
+                if (albumName == "Brani che ti piacciono"){
                     LikedSongsScreen(albumsResponse, songsResponse, navController, context)
                 }
                 else{
@@ -315,10 +315,10 @@ fun SumUpAlbumScreen(
                                     ) {
                                         if (isAlbumLiked) {
                                             removeLikedAlbumId(context, album[0].id.toString())
-                                            snackbarMessage = "Removed from Library"
+                                            snackbarMessage = "Rimosso dalla libreria"
                                         } else {
                                             addLikedAlbumId(context, album[0].id.toString())
-                                            snackbarMessage = "Added to Library"
+                                            snackbarMessage = "Aggiunto alla libreria"
                                         }
                                         isAlbumLiked = isAlbumLiked(context, album[0].id.toString())
                                         snackbarVisible = true
@@ -356,14 +356,14 @@ fun SumUpAlbumScreen(
                                     ) {
                                         if (!albumDownloaded && albumSongs.isNotEmpty()) askDownloadAll = true
                                     },
-                                contentDescription = "Download album",
+                                contentDescription = "Scarica album",
                             )
                             if (askDownloadAll) {
                                 com.music.spotui.ui.components.ConfirmDownloadAllDialog(
                                     albumSongs.size, onDismiss = { askDownloadAll = false },
                                 ) {
                                     com.music.spotui.di.Downloads.downloadAll(albumSongs, context)
-                                    snackbarMessage = "Downloading ${albumSongs.size} tracks…"
+                                    snackbarMessage = "Download di ${albumSongs.size} brani…"
                                     snackbarVisible = true
                                 }
                             }
@@ -391,7 +391,7 @@ fun SumUpAlbumScreen(
                                             )
                                         }
                                     },
-                                contentDescription = "Shuffle play",
+                                contentDescription = "Riproduzione casuale",
                             )
                         }
 
@@ -437,7 +437,7 @@ fun SumUpAlbumScreen(
                                     painter = painterResource(
                                         id = if (playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                     ),
-                                    contentDescription = if (playing) "Pause" else "Play")
+                                    contentDescription = if (playing) "Pausa" else "Riproduci")
                             }
                         }
                     }

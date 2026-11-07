@@ -94,7 +94,7 @@ fun QueueScreen(navController: NavController) {
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Close",
+                contentDescription = "Chiudi",
                 tint = Color.White,
                 modifier = Modifier
                     .size(28.dp)
@@ -104,7 +104,7 @@ fun QueueScreen(navController: NavController) {
                     ) { navController.navigateUp() }
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Queue", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("Coda", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
 
         LazyColumn(
@@ -116,7 +116,7 @@ fun QueueScreen(navController: NavController) {
             current?.let {
                 item {
                     Text(
-                        "Now playing",
+                        "In riproduzione",
                         color = Color.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -128,7 +128,7 @@ fun QueueScreen(navController: NavController) {
             if (upcoming.isNotEmpty()) {
                 item {
                     Text(
-                        "Next up",
+                        "Prossimi brani",
                         color = Color.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -155,7 +155,7 @@ fun QueueScreen(navController: NavController) {
                                     .background(Color(0xFF7A1F1F))
                                     .padding(horizontal = 24.dp),
                             ) {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+                                Icon(Icons.Default.Delete, contentDescription = "Elimina", tint = Color.White)
                             }
                         },
                         content = {
@@ -248,7 +248,7 @@ private fun QueueRow(
         if (!highlight) {
             Icon(
                 imageVector = Icons.Default.Menu,
-                contentDescription = "Reorder",
+                contentDescription = "Riordina",
                 tint = Color(0xFFB3B3B3),
                 modifier = Modifier
                     .size(28.dp)

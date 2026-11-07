@@ -216,7 +216,7 @@ fun MiniPlayer(navController: NavHostController) {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) { showSavedIn = true },
-                        contentDescription = "Saved",
+                        contentDescription = "Salvato",
                     )
                 } else {
                     Icon(
@@ -235,7 +235,7 @@ fun MiniPlayer(navController: NavHostController) {
                             },
                         painter = painterResource(id = R.drawable.ic_add),
                         tint = Color.White,
-                        contentDescription = "Add",
+                        contentDescription = "Aggiungi",
                     )
                 }
 
@@ -373,15 +373,15 @@ fun Snackbar(showMessage : String) {
 fun ConfirmDownloadAllDialog(count: Int, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
-        title = { androidx.compose.material3.Text("Download $count tracks?") },
-        text = { androidx.compose.material3.Text("They are saved for offline playback. You can cancel from Downloads.") },
+        title = { androidx.compose.material3.Text("Scaricare $count brani?") },
+        text = { androidx.compose.material3.Text("Verranno salvati per l'ascolto offline. Puoi annullare da Download.") },
         confirmButton = {
             androidx.compose.material3.TextButton(onClick = { onDismiss(); onConfirm() }) {
-                androidx.compose.material3.Text("Download")
+                androidx.compose.material3.Text("Scarica")
             }
         },
         dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) { androidx.compose.material3.Text("Cancel") }
+            androidx.compose.material3.TextButton(onClick = onDismiss) { androidx.compose.material3.Text("Annulla") }
         },
     )
 }

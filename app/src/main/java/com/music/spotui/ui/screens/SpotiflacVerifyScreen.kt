@@ -61,7 +61,7 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var webView by remember { mutableStateOf<WebView?>(null) }
-    var message by remember { mutableStateOf("Loading verification…") }
+    var message by remember { mutableStateOf("Caricamento verifica…") }
     var attempt by remember { mutableIntStateOf(0) }
     var done by remember { mutableStateOf(false) }
     val leave: () -> Unit = {
@@ -87,7 +87,7 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
     }
 
     fun finish(grant: String) = scope.launch {
-        message = "Creating secure session…"
+        message = "Creazione sessione sicura…"
         val ok = withContext(Dispatchers.IO) {
             runCatching {
                 val body = JSONObject()
@@ -102,15 +102,15 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
         }
         if (ok) {
             done = true
-            android.widget.Toast.makeText(context, "SpotiFLAC session captured", android.widget.Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(context, "Sessione SpotiFLAC acquisita", android.widget.Toast.LENGTH_LONG).show()
             leave()
         } else {
-            message = "Could not finish verification. Tap Retry or Skip for now."
+            message = "Impossibile completare la verifica. Tocca Riprova o Salta per ora."
         }
     }
 
     LaunchedEffect(attempt) {
-        message = "Loading verification…"
+        message = "Caricamento verifica…"
         val challenge = withContext(Dispatchers.IO) {
             runCatching {
                 val base = LosslessRegistry.communityVerifyUrl()
@@ -119,14 +119,14 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
             }.getOrNull()
         }
         if (challenge == null) {
-            message = "Could not start verification. Tap Retry or Skip for now."
+            message = "Impossibile avviare la verifica. Tocca Riprova o Salta per ora."
             return@LaunchedEffect
         }
         message = ""
         webView?.loadUrl("$challenge&cb=" + URLEncoder.encode("$CALLBACK?state=$state", "UTF-8"))
         // Never leave the user on a page that silently stalled.
         delay(180_000)
-        if (!done) message = "Verification timed out. Tap Retry or Skip for now."
+        if (!done) message = "Verifica scaduta. Tocca Riprova o Salta per ora."
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
@@ -150,7 +150,7 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
                             if (!uri.toString().startsWith(CALLBACK)) return false
                             val grant = uri.getQueryParameter("grant").orEmpty()
                             if (uri.getQueryParameter("state") != state || grant.isBlank()) {
-                                message = "Verification was rejected. Tap Retry or Skip for now."
+                                message = "La verifica è stata rifiutata. Tocca Riprova o Salta per ora."
                             } else {
                                 finish(grant)
                             }
@@ -175,8 +175,8 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
                 .navigationBarsPadding().height(56.dp).background(Color.Black),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            TextButton(onClick = { attempt++ }) { Text("Retry", color = Color.White) }
-            TextButton(onClick = leave) { Text("Skip for now", color = Color.White) }
+            TextButton(onClick = { attempt++ }) { Text("Riprova", color = Color.White) }
+            TextButton(onClick = leave) { Text("Salta per ora", color = Color.White) }
         }
 
         Box(
@@ -184,7 +184,7 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                "SpotiFLAC verification",
+                "Verifica SpotiFLAC",
                 color = Color(0xFF00C7B7),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,

@@ -42,17 +42,17 @@ fun MusicSourceScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text("Choose your music source", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+            Text("Scegli la tua sorgente musicale", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(10.dp))
             Text(
-                "Spotify keeps your library and recommendations. Choose where Spotui streams the audio.",
+                "Spotify conserva la tua libreria e i consigli. Scegli da dove Spotui riproduce l'audio.",
                 color = Color(0xFFB3B3B3), fontSize = 14.sp, textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(32.dp))
 
             SourceCard(
                 title = "YouTube Music",
-                subtitle = "Best coverage. Sign in for explicit and age-restricted songs.",
+                subtitle = "Catalogo più ampio. Accedi per i brani espliciti e con limiti di età.",
                 color = Color(0xFFFF0033),
             ) {
                 if (isYoutubeLoggedIn(context)) {
@@ -65,7 +65,7 @@ fun MusicSourceScreen(navController: NavController) {
             Spacer(Modifier.height(14.dp))
             SourceCard(
                 title = "Deezer",
-                subtitle = "Fast exact-track matching. Quality depends on your Deezer plan.",
+                subtitle = "Abbinamento rapido e preciso dei brani. La qualità dipende dal tuo piano Deezer.",
                 color = Color(0xFFA238FF),
             ) {
                 navController.navigate("${Routes.DeezerLogin.route}?next=spotiflac")

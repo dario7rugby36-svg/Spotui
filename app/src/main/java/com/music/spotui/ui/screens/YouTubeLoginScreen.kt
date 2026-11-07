@@ -46,7 +46,7 @@ private const val YOUTUBE_LOGIN_URL =
 fun YouTubeLoginScreen(navController: NavController, next: String = "") {
     val context = LocalContext.current
     var webView by remember { mutableStateOf<WebView?>(null) }
-    var status by remember { mutableStateOf("Log in to YouTube Music") }
+    var status by remember { mutableStateOf("Accedi a YouTube Music") }
     var hasError by remember { mutableStateOf(false) }
     val validating = remember { AtomicBoolean(false) }
 
@@ -60,7 +60,7 @@ fun YouTubeLoginScreen(navController: NavController, next: String = "") {
             if (!hasSapisid) continue
             if (!validating.compareAndSet(false, true)) continue
 
-            status = "Connecting YouTube Music…"
+            status = "Collegamento a YouTube Music…"
             hasError = false
             YouTube.cookie = cookie
             YouTube.dataSyncId = null
@@ -69,7 +69,7 @@ fun YouTubeLoginScreen(navController: NavController, next: String = "") {
             setYoutubeLogin(context, cookie, visitorData.orEmpty())
             YouTube.useLoginForBrowse = true
             setPrimaryMusicSource(context, MusicSource.YOUTUBE_MUSIC)
-            status = "YouTube Music connected"
+            status = "YouTube Music collegato"
             delay(350)
             when (next) {
                 "spotiflac" -> {

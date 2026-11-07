@@ -169,14 +169,14 @@ fun DownloadsScreen(navController: NavController) {
                     Spacer(modifier = Modifier.padding(5.dp))
                     Text(
                         modifier = Modifier.padding(20.dp, 5.dp, 0.dp, 0.dp),
-                        text = "Downloaded",
+                        text = "Scaricati",
                         color = Color.White,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp),
-                        text = "${songs.size} songs • available offline",
+                        text = "${songs.size} brani • disponibili offline",
                         color = Color.Gray,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
@@ -190,7 +190,7 @@ fun DownloadsScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
                     ) {
                         Text(
-                            text = "Export all",
+                            text = "Esporta tutto",
                             color = Color(AppPalette.toArgb()),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -203,7 +203,7 @@ fun DownloadsScreen(navController: NavController) {
                                         withContext(Dispatchers.Main) {
                                             android.widget.Toast.makeText(
                                                 context,
-                                                if (n > 0) "Exported $n track${if (n == 1) "" else "s"} to $dest"
+                                                if (n > 0) "Esportat${if (n == 1) "o 1 brano" else "i $n brani"} in $dest"
                                                 else dest,
                                                 android.widget.Toast.LENGTH_LONG,
                                             ).show()
@@ -213,7 +213,7 @@ fun DownloadsScreen(navController: NavController) {
                                 .padding(horizontal = 18.dp, vertical = 10.dp),
                         )
                         Text(
-                            text = "Clear all",
+                            text = "Cancella tutto",
                             color = Color(0xFFE57373),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -224,7 +224,7 @@ fun DownloadsScreen(navController: NavController) {
                                     val n = com.music.spotui.data.preferences.clearAllDownloads(context)
                                     songs = getDownloadedSongs(context)
                                     android.widget.Toast.makeText(
-                                        context, "Removed $n download${if (n == 1) "" else "s"}",
+                                        context, "Rimoss${if (n == 1) "o 1 download" else "i $n download"}",
                                         android.widget.Toast.LENGTH_SHORT,
                                     ).show()
                                 }
@@ -238,7 +238,7 @@ fun DownloadsScreen(navController: NavController) {
                     androidx.compose.material3.TextButton(
                         onClick = { com.music.spotui.di.Downloads.cancelAll() },
                         modifier = Modifier.padding(horizontal = 8.dp),
-                    ) { Text("Cancel all downloads (${inProgress.size})", color = Color.White) }
+                    ) { Text("Annulla tutti i download (${inProgress.size})", color = Color.White) }
                 }
                 inProgress.forEach { (song, pct) ->
                     Row(
@@ -281,7 +281,7 @@ fun DownloadsScreen(navController: NavController) {
 
                 if (songs.isEmpty() && inProgress.isEmpty()) {
                     Text(
-                        text = "No downloads yet. Tap ⋯ on a track and choose Download.",
+                        text = "Nessun download. Tocca ⋯ su un brano e scegli Scarica.",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(20.dp),
@@ -308,7 +308,7 @@ fun DownloadsScreen(navController: NavController) {
                                         SongPlayer.playSong(song.url, context)
                                         playerViewModel.updateSongState(
                                             song.coverUri, song.title, song.singer,
-                                            true, song.id, index, "Downloaded"
+                                            true, song.id, index, "Scaricati"
                                         )
                                     },
                                 )
@@ -330,7 +330,7 @@ fun DownloadsScreen(navController: NavController) {
                             androidx.compose.material3.IconButton(onClick = { menuSong = song }) {
                                 androidx.compose.material3.Icon(
                                     painter = androidx.compose.ui.res.painterResource(R.drawable.ic_dots),
-                                    contentDescription = "More options for ${song.title}",
+                                    contentDescription = "Altre opzioni per ${song.title}",
                                     tint = Color.Gray,
                                 )
                             }

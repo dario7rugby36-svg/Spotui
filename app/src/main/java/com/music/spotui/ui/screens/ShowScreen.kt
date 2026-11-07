@@ -85,7 +85,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 tint = Color.White,
-                contentDescription = "Back",
+                contentDescription = "Indietro",
                 modifier = Modifier
                     .padding(16.dp)
                     .size(26.dp)

@@ -285,7 +285,7 @@ object SongPlayer {
                     // Tell the user instead of silently leaving the request on.
                     if (currentRequest == song) withContext(Dispatchers.Main) {
                         android.widget.Toast.makeText(
-                            appContext, "Couldn't find a playable stream for this track",
+                            appContext, "Impossibile trovare uno stream riproducibile per questo brano",
                             android.widget.Toast.LENGTH_SHORT,
                         ).show()
                         // Signal failure so the queue can advance past this track
@@ -325,7 +325,7 @@ object SongPlayer {
         if (currentRequest != song) return
         android.os.Handler(android.os.Looper.getMainLooper()).post {
             android.widget.Toast.makeText(
-                appContext, "Couldn't find a playable stream for this track", android.widget.Toast.LENGTH_SHORT,
+                appContext, "Impossibile trovare uno stream riproducibile per questo brano", android.widget.Toast.LENGTH_SHORT,
             ).show()
             onStreamFailed?.invoke(song)
         }
@@ -639,7 +639,7 @@ object SongPlayer {
         // ExoPlayer plays it directly (FLAC/MP3/WAV/… via its built-in extractors).
         if (song.startsWith("content://") || song.startsWith("file://")) {
             if (forPlayback) {
-                currentSource = "Local file"
+                currentSource = "File locale"
                 currentQuality = song.substringBefore('?').substringAfterLast('.', "")
                     .uppercase().takeIf { it.length in 2..5 }.orEmpty()
             }
@@ -650,14 +650,14 @@ object SongPlayer {
             return when {
                 alt.isLocal -> {
                     if (forPlayback) {
-                        currentSource = "Alternative file"
+                        currentSource = "File alternativo"
                         currentQuality = alt.label.substringAfterLast('.', "").uppercase().takeIf { it.length in 2..5 }.orEmpty()
                     }
                     alt.value
                 }
                 alt.isYouTube -> {
                     if (forPlayback) {
-                        currentSource = "Alternative YouTube"
+                        currentSource = "YouTube alternativo"
                         currentQuality = ""
                     }
                     val quality = com.music.spotui.data.preferences.currentStreamingQuality(appContext)
@@ -671,7 +671,7 @@ object SongPlayer {
         // Offline: if this track was downloaded, play the local file instead of the network.
         com.music.spotui.data.preferences.downloadedPathForQuery(appContext, song)?.let { path ->
             if (forPlayback) {
-                currentSource = "Downloaded"
+                currentSource = "Scaricato"
                 currentQuality = path.substringAfterLast('.', "").uppercase()
             }
             return android.net.Uri.fromFile(java.io.File(path)).toString()

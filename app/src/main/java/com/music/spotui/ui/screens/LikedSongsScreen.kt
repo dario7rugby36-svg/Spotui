@@ -179,14 +179,14 @@ fun LikedSongsScreen(navController: NavController) {
                         Spacer(modifier = Modifier.padding(5.dp))
                         Text(
                             modifier = Modifier.padding(20.dp, 5.dp, 0.dp, 0.dp),
-                            text = "Liked Songs",
+                            text = "Brani che ti piacciono",
                             color = Color.White,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp),
-                            text = "${songs.size} songs",
+                            text = "${songs.size} brani",
                             color = Color.Gray,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -218,7 +218,7 @@ fun LikedSongsScreen(navController: NavController) {
                                         ) {
                                             if (!likedDownloaded) askDownloadAll = true
                                         },
-                                    contentDescription = "Download liked songs",
+                                    contentDescription = "Scarica i brani che ti piacciono",
                                 )
                                 if (askDownloadAll) {
                                     com.music.spotui.ui.components.ConfirmDownloadAllDialog(
@@ -226,7 +226,7 @@ fun LikedSongsScreen(navController: NavController) {
                                     ) {
                                         com.music.spotui.di.Downloads.downloadAll(songs, context)
                                         android.widget.Toast.makeText(
-                                            context, "Downloading ${songs.size} tracks…", android.widget.Toast.LENGTH_SHORT,
+                                            context, "Download di ${songs.size} brani…", android.widget.Toast.LENGTH_SHORT,
                                         ).show()
                                     }
                                 }
@@ -250,11 +250,11 @@ fun LikedSongsScreen(navController: NavController) {
                                                     true,
                                                     first.id,
                                                     0,
-                                                    "Liked Songs",
+                                                    "Brani che ti piacciono",
                                                 )
                                             }
                                         },
-                                    contentDescription = "Shuffle play",
+                                    contentDescription = "Riproduzione casuale",
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                             }
@@ -286,7 +286,7 @@ fun LikedSongsScreen(navController: NavController) {
                                                         true,
                                                         songs[0].id,
                                                         0,
-                                                        "Liked Songs"
+                                                        "Brani che ti piacciono"
                                                     )
                                                 }
                                             }
@@ -298,7 +298,7 @@ fun LikedSongsScreen(navController: NavController) {
                                         painter = painterResource(
                                             id = if (playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                         ),
-                                        contentDescription = if (playing) "Pause" else "Play"
+                                        contentDescription = if (playing) "Pausa" else "Riproduci"
                                     )
                                 }
                             }
@@ -331,7 +331,7 @@ fun LikedSongsScreen(navController: NavController) {
                                         true,
                                         song.id,
                                         index,
-                                        "Liked Songs"
+                                        "Brani che ti piacciono"
                                     )
                                 },
                             )

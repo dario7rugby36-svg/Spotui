@@ -37,7 +37,7 @@ fun SwipeToQueue(song: SongsModel, content: @Composable () -> Unit) {
             if (value == SwipeToDismissBoxValue.StartToEnd) {
                 val added = playerViewModel.addToQueue(song)
                 android.widget.Toast.makeText(
-                    context, if (added) "Added to queue" else "Already in queue", android.widget.Toast.LENGTH_SHORT,
+                    context, if (added) "Aggiunto alla coda" else "Già in coda", android.widget.Toast.LENGTH_SHORT,
                 ).show()
             }
             false // snap back: the row stays in its list
@@ -59,7 +59,7 @@ fun SwipeToQueue(song: SongsModel, content: @Composable () -> Unit) {
                 modifier = Modifier.fillMaxHeight().width(revealed).background(Color(0xFF1ED760))
                     .padding(start = 20.dp).clipToBounds(),
             ) {
-                Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Add to queue", tint = Color.Black, modifier = Modifier.size(24.dp))
+                Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Aggiungi alla coda", tint = Color.Black, modifier = Modifier.size(24.dp))
             }
         },
     ) { content() }

@@ -212,7 +212,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                         }
 
                         if (songs.isNotEmpty()) {
-                            val sortLabels = listOf("Custom order", "Title A-Z", "Title Z-A", "Artist")
+                            val sortLabels = listOf("Ordine personalizzato", "Titolo A-Z", "Titolo Z-A", "Artista")
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End,
@@ -270,7 +270,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                         ) {
                                             if (!playlistDownloaded) askDownloadAll = true
                                         },
-                                    contentDescription = "Download playlist",
+                                    contentDescription = "Scarica playlist",
                                 )
                                 if (askDownloadAll) {
                                     com.music.spotui.ui.components.ConfirmDownloadAllDialog(
@@ -278,7 +278,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                     ) {
                                         com.music.spotui.di.Downloads.downloadAll(songs, context)
                                         android.widget.Toast.makeText(
-                                            context, "Downloading ${songs.size} tracks…", android.widget.Toast.LENGTH_SHORT,
+                                            context, "Download di ${songs.size} brani…", android.widget.Toast.LENGTH_SHORT,
                                         ).show()
                                     }
                                 }
@@ -306,7 +306,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                                 )
                                             }
                                         },
-                                    contentDescription = "Shuffle play",
+                                    contentDescription = "Riproduzione casuale",
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                             }
@@ -350,7 +350,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                         painter = painterResource(
                                             id = if (playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                         ),
-                                        contentDescription = if (playing) "Pause" else "Play"
+                                        contentDescription = if (playing) "Pausa" else "Riproduci"
                                     )
                                 }
                             }

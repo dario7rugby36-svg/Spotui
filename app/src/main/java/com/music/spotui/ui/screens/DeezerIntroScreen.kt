@@ -76,7 +76,7 @@ fun DeezerIntroScreen(navController: NavController) {
 
             Spacer(Modifier.height(28.dp))
             Text(
-                "Log in to Deezer",
+                "Accedi a Deezer",
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
@@ -84,7 +84,7 @@ fun DeezerIntroScreen(navController: NavController) {
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Spotui streams your music from Deezer. Skip this and playback falls back to YouTube instead — slower to load, and some tracks come back censored or as a different edit.",
+                "Spotui riproduce la tua musica da Deezer. Se salti questo passaggio, la riproduzione userà YouTube — più lento da caricare, e alcuni brani potrebbero essere censurati o in una versione diversa.",
                 color = Color(0xFFB3B3B3),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
@@ -92,9 +92,9 @@ fun DeezerIntroScreen(navController: NavController) {
             )
 
             Spacer(Modifier.height(28.dp))
-            Benefit("Accurate matches", "The exact track — right version, right length — not a YouTube best-guess.")
-            Benefit("Uncensored", "No censored or altered edits swapped in for the real thing.")
-            Benefit("Loads faster", "Playback starts quicker — much less waiting than YouTube.")
+            Benefit("Abbinamenti precisi", "Il brano esatto — versione giusta, durata giusta — non un'ipotesi di YouTube.")
+            Benefit("Senza censure", "Nessuna versione censurata o modificata al posto dell'originale.")
+            Benefit("Caricamento più rapido", "La riproduzione parte prima — molta meno attesa rispetto a YouTube.")
 
             Spacer(Modifier.height(36.dp))
             Button(
@@ -108,14 +108,14 @@ fun DeezerIntroScreen(navController: NavController) {
                 shape = RoundedCornerShape(50),
                 modifier = Modifier.fillMaxWidth().height(52.dp),
             ) {
-                Text("Log in to Deezer", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontSize = 16.sp)
+                Text("Accedi a Deezer", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontSize = 16.sp)
             }
             Spacer(Modifier.height(10.dp))
             TextButton(onClick = goHome, modifier = Modifier.fillMaxWidth()) {
-                Text("Skip for now", color = Color(0xFFB3B3B3), fontSize = 14.sp)
+                Text("Salta per ora", color = Color(0xFFB3B3B3), fontSize = 14.sp)
             }
             Text(
-                "You can connect Deezer any time from Settings.",
+                "Puoi collegare Deezer in qualsiasi momento dalle Impostazioni.",
                 color = Color(0xFF6A6A6A),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,

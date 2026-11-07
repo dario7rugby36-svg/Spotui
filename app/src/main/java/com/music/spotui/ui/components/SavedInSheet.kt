@@ -66,9 +66,9 @@ import kotlinx.coroutines.withContext
 private val SpotifyGreen = Color(0xFF1ED760)
 
 /**
- * Spotify's "Saved in" sheet: Liked Songs plus every user playlist, each row
+ * Spotify's "Salvato in" sheet: Liked Songs plus every user playlist, each row
  * toggling the track in/out of it (mirrored to the real Spotify account), and a
- * "New playlist" action that creates one on Spotify with the track in it.
+ * "Nuova playlist" action that creates one on Spotify with the track in it.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
@@ -93,7 +93,7 @@ fun SavedInSheet(
     }
 
     fun createNow() {
-        val name = newName.trim().ifBlank { "My Playlist" }
+        val name = newName.trim().ifBlank { "La mia playlist" }
         creating = false
         newName = ""
         SpotifySync.createPlaylistWithTrack(context, name, song.spotifyTrackId)
@@ -113,9 +113,9 @@ fun SavedInSheet(
                     .fillMaxWidth()
                     .padding(20.dp, 4.dp, 20.dp, 12.dp),
             ) {
-                Text("Saved in", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Salvato in", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "New playlist",
+                    "Nuova playlist",
                     color = SpotifyGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -131,7 +131,7 @@ fun SavedInSheet(
                     value = newName,
                     onValueChange = { newName = it },
                     singleLine = true,
-                    placeholder = { Text("Playlist name", color = Color.Gray) },
+                    placeholder = { Text("Nome della playlist", color = Color.Gray) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { createNow() }),
                     colors = TextFieldDefaults.colors(
@@ -150,7 +150,7 @@ fun SavedInSheet(
                 )
                 Row(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 8.dp)) {
                     Text(
-                        "Create",
+                        "Crea",
                         color = SpotifyGreen,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -161,7 +161,7 @@ fun SavedInSheet(
                     )
                     Spacer(Modifier.width(24.dp))
                     Text(
-                        "Cancel",
+                        "Annulla",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.clickable(
@@ -174,7 +174,7 @@ fun SavedInSheet(
 
             // ── Liked Songs ──
             SavedInRow(
-                name = "Liked Songs",
+                name = "Brani che ti piacciono",
                 subtitle = "",
                 saved = liked,
                 cover = {
@@ -199,7 +199,7 @@ fun SavedInSheet(
             }
 
             when (val list = playlists) {
-                null -> Text("Loading playlists…", color = Color.Gray, fontSize = 14.sp, modifier = Modifier.padding(20.dp, 12.dp))
+                null -> Text("Caricamento playlist…", color = Color.Gray, fontSize = 14.sp, modifier = Modifier.padding(20.dp, 12.dp))
                 else -> LazyColumn(modifier = Modifier.heightIn(max = 420.dp)) {
                     items(list.size) { i ->
                         val pl = list[i]
@@ -214,7 +214,7 @@ fun SavedInSheet(
                         val saved = membership[pl.id] == true
                         SavedInRow(
                             name = pl.name,
-                            subtitle = pl.tracks?.total?.let { n -> "$n song" + (if (n == 1) "" else "s") } ?: "",
+                            subtitle = pl.tracks?.total?.let { n -> "$n " + (if (n == 1) "brano" else "brani") } ?: "",
                             saved = saved,
                             cover = {
                                 GlideImage(
@@ -272,9 +272,9 @@ private fun SavedInRow(
             }
         }
         if (saved) {
-            Icon(Icons.Default.CheckCircle, contentDescription = "Saved", tint = SpotifyGreen, modifier = Modifier.size(26.dp))
+            Icon(Icons.Default.CheckCircle, contentDescription = "Salvato", tint = SpotifyGreen, modifier = Modifier.size(26.dp))
         } else {
-            Icon(Icons.Default.Add, contentDescription = "Add", tint = Color(0xFFB3B3B3), modifier = Modifier.size(26.dp))
+            Icon(Icons.Default.Add, contentDescription = "Aggiungi", tint = Color(0xFFB3B3B3), modifier = Modifier.size(26.dp))
         }
     }
 }

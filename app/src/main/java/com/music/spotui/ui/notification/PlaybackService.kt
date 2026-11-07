@@ -319,10 +319,10 @@ class PlaybackService : MediaLibraryService() {
 
     private suspend fun childrenOf(parentId: String): List<MediaItem> = when {
         parentId == ROOT -> listOf(
-            folder(NODE_LIKED, "Liked Songs"),
-            folder(NODE_DOWNLOADS, "Downloads"),
-            folder(NODE_PLAYLISTS, "Playlists"),
-            folder(NODE_ALBUMS, "Albums"),
+            folder(NODE_LIKED, "Brani che ti piacciono"),
+            folder(NODE_DOWNLOADS, "Download"),
+            folder(NODE_PLAYLISTS, "Playlist"),
+            folder(NODE_ALBUMS, "Album"),
         )
         parentId == NODE_LIKED ->
             registerTracks(NODE_LIKED, lastSuccess(repository.provideLikedSongs()).orEmpty())

@@ -132,23 +132,23 @@ fun SongOptionsSheet(
             }
             HorizontalDivider(color = Color(0xFF2A2A2A))
 
-            SongMenuRow(Icons.Default.PlayArrow, "Play next") {
+            SongMenuRow(Icons.Default.PlayArrow, "Riproduci dopo") {
                 playerViewModel.playNext(song)
                 onDismiss()
             }
-            SongMenuRow(Icons.AutoMirrored.Filled.List, "Add to queue") {
+            SongMenuRow(Icons.AutoMirrored.Filled.List, "Aggiungi alla coda") {
                 playerViewModel.addToQueue(song)
                 onDismiss()
             }
             SongMenuRow(
-                Icons.Default.Add, "Add to playlist",
+                Icons.Default.Add, "Aggiungi alla playlist",
                 enabled = song.spotifyTrackId.isNotBlank(), trailingArrow = true,
             ) {
                 showSavedIn = true
             }
             SongMenuRow(
                 icon = if (liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                label = if (liked) "Remove from Liked Songs" else "Add to Liked Songs",
+                label = if (liked) "Rimuovi da Brani che ti piacciono" else "Aggiungi a Brani che ti piacciono",
                 iconTint = if (liked) Color(AppPalette.toArgb()) else Color.White,
             ) {
                 if (liked) removeLikedSongId(context, song.id.toString())
@@ -160,9 +160,9 @@ fun SongOptionsSheet(
             SongMenuRow(
                 icon = if (downloaded) Icons.Default.CheckCircle else ImageVector.vectorResource(R.drawable.ic_download),
                 label = when {
-                    downloaded -> "Downloaded — remove"
-                    downloadingNow -> if (downloadPct in 1..99) "Downloading… $downloadPct%" else "Downloading…"
-                    else -> "Download"
+                    downloaded -> "Scaricato — rimuovi"
+                    downloadingNow -> if (downloadPct in 1..99) "Download in corso… $downloadPct%" else "Download in corso…"
+                    else -> "Scarica"
                 },
                 iconTint = if (downloaded) Color(AppPalette.toArgb()) else Color.White,
                 enabled = !downloadingNow,
@@ -181,7 +181,7 @@ fun SongOptionsSheet(
             if (downloaded) {
                 SongMenuRow(
                     icon = ImageVector.vectorResource(R.drawable.ic_download),
-                    label = "Export to Music",
+                    label = "Esporta in Musica",
                 ) {
                     onDismiss()
                     // Detached scope + app context so the copy + toast survive the
@@ -192,7 +192,7 @@ fun SongOptionsSheet(
                         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                             android.widget.Toast.makeText(
                                 app,
-                                if (ok) "Saved to Music/spotui" else "Export failed",
+                                if (ok) "Salvato in Music/spotui" else "Esportazione non riuscita",
                                 android.widget.Toast.LENGTH_SHORT,
                             ).show()
                         }
@@ -200,7 +200,7 @@ fun SongOptionsSheet(
                 }
             }
             val artist = song.singer.substringBefore(",").trim()
-            SongMenuRow(Icons.Default.Person, "Go to artist", enabled = artist.isNotBlank(), trailingArrow = true) {
+            SongMenuRow(Icons.Default.Person, "Vai all'artista", enabled = artist.isNotBlank(), trailingArrow = true) {
                 // Resolve the exact artist (id) from the track so the name can't
                 // fuzzy-match to a different artist.
                 playerViewModel.goToArtist(song.spotifyTrackId, song.singer) { route ->
@@ -208,20 +208,20 @@ fun SongOptionsSheet(
                 }
                 onDismiss()
             }
-            SongMenuRow(Icons.Default.Add, "Go to album", enabled = song.album.isNotBlank(), trailingArrow = true) {
+            SongMenuRow(Icons.Default.Add, "Vai all'album", enabled = song.album.isNotBlank(), trailingArrow = true) {
                 navController.navigate(albumRoute(song.album, song.singer))
                 onDismiss()
             }
-            SongMenuRow(Icons.Default.Share, "Share") {
+            SongMenuRow(Icons.Default.Share, "Condividi") {
                 // Share the real Spotify track link when we know the id.
                 val shareText = song.spotifyTrackId.takeIf { it.isNotBlank() }
                     ?.let { "https://open.spotify.com/track/$it" }
-                    ?: "Listening to ${song.title} by ${song.singer}"
+                    ?: "Sto ascoltando ${song.title} di ${song.singer}"
                 val send = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, shareText)
                 }
-                context.startActivity(Intent.createChooser(send, "Share"))
+                context.startActivity(Intent.createChooser(send, "Condividi"))
                 onDismiss()
             }
             Spacer(modifier = Modifier.padding(8.dp))

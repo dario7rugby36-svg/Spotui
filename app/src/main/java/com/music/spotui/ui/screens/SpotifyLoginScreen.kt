@@ -184,13 +184,13 @@ fun SpotifyLoginScreen(navController: NavController) {
             },
         )
 
-        // Slim top bar: title, or the "Signing in…" status once the cookie lands.
+        // Slim top bar: title, or the "Accesso in corso…" status once the cookie lands.
         Box(
             modifier = Modifier.fillMaxWidth().statusBarsPadding().height(40.dp).background(Color.Black),
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = if (isProcessing) statusMessage.ifBlank { "Signing in…" } else "Log in to Spotify",
+                text = if (isProcessing) statusMessage.ifBlank { "Accesso in corso…" } else "Accedi a Spotify",
                 color = if (hasError) Color(0xFFE22134) else Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
@@ -253,7 +253,7 @@ private fun LoginForm(
         )
         Spacer(Modifier.height(28.dp))
         Text(
-            "Log in to Spotify",
+            "Accedi a Spotify",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp,
@@ -261,7 +261,7 @@ private fun LoginForm(
         Spacer(Modifier.height(32.dp))
 
         Text(
-            "Email or username",
+            "Email o nome utente",
             color = Color.White,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,
@@ -272,7 +272,7 @@ private fun LoginForm(
             value = email,
             onValueChange = onEmail,
             singleLine = true,
-            placeholder = { Text("Email or username", color = Color(0xFF8A8A8A)) },
+            placeholder = { Text("Email o nome utente", color = Color(0xFF8A8A8A)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -307,7 +307,7 @@ private fun LoginForm(
                         painter = painterResource(
                             id = if (showPassword) R.drawable.visibility else R.drawable.visibility_off
                         ),
-                        contentDescription = "Toggle password",
+                        contentDescription = "Mostra/nascondi password",
                         tint = Color(0xFFB3B3B3),
                     )
                 }
@@ -346,14 +346,14 @@ private fun LoginForm(
                     modifier = Modifier.size(22.dp),
                 )
             } else {
-                Text("Log In", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("Accedi", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
 
         Spacer(Modifier.height(16.dp))
         TextButton(onClick = onUseWeb, enabled = !isProcessing) {
             Text(
-                "Trouble logging in? Use the Spotify web page",
+                "Problemi di accesso? Usa la pagina web di Spotify",
                 color = Color(0xFFB3B3B3),
                 fontSize = 13.sp,
                 textAlign = TextAlign.Center,
@@ -363,7 +363,7 @@ private fun LoginForm(
         // there since the WebView navigation is unrestricted).
         TextButton(onClick = onUseWeb, enabled = !isProcessing) {
             Text(
-                "Don't have an account? Sign up",
+                "Non hai un account? Registrati",
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -451,14 +451,14 @@ private fun finishLogin(
     if (spDc.isNullOrBlank()) {
         setProcessing(true)
         setError(true)
-        setStatus("Couldn't read login cookie. Make sure you completed the Spotify login, then try again.")
+        setStatus("Impossibile leggere il cookie di accesso. Assicurati di aver completato l'accesso a Spotify, poi riprova.")
         tokenFetchStarted.set(false)
         return
     }
 
     setProcessing(true)
     setError(false)
-    setStatus("Connecting…")
+    setStatus("Connessione…")
     view?.stopLoading()
     view?.loadUrl("about:blank")
 
@@ -468,7 +468,7 @@ private fun finishLogin(
         repeat(3) { attempt ->
             // Through the provider so the token's expiry is recorded and reused.
             if (SpotifyTokenProvider.ensureToken(activity, force = true)) {
-                withContext(Dispatchers.Main) { setStatus("Success!") }
+                withContext(Dispatchers.Main) { setStatus("Fatto!") }
                 delay(300)
                 withContext(Dispatchers.Main) { onSuccess() }
                 return@launch
@@ -477,7 +477,7 @@ private fun finishLogin(
             if (attempt < 2) delay(800)
         }
         withContext(Dispatchers.Main) {
-            setStatus("Login failed. Check your connection and try again.")
+            setStatus("Accesso non riuscito. Controlla la connessione e riprova.")
             setError(true)
         }
         tokenFetchStarted.set(false)

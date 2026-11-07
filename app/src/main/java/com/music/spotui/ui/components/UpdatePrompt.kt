@@ -31,22 +31,22 @@ fun UpdatePrompt() {
     val info = update ?: return
     AlertDialog(
         onDismissRequest = { update = null },
-        title = { Text("Update available") },
-        text = { Text("spotui ${info.version} is available. You're on an older version — upgrade to get the latest fixes and features.") },
+        title = { Text("Aggiornamento disponibile") },
+        text = { Text("spotui ${info.version} è disponibile. Stai usando una versione precedente: aggiorna per avere le ultime correzioni e funzionalità.") },
         confirmButton = {
             TextButton(onClick = {
                 runCatching {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(info.downloadUrl)))
                 }
                 update = null
-            }) { Text("Upgrade") }
+            }) { Text("Aggiorna") }
         },
         dismissButton = {
             TextButton(onClick = {
                 UpdateChecker.skipRelease(context, info)
                 update = null
-            }) { Text("Don't show again") }
-            TextButton(onClick = { update = null }) { Text("Dismiss") }
+            }) { Text("Non mostrare più") }
+            TextButton(onClick = { update = null }) { Text("Chiudi") }
         },
     )
 }

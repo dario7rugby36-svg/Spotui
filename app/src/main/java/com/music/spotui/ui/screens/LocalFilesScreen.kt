@@ -89,7 +89,7 @@ fun LocalFilesScreen(navController: NavController) {
             withContext(Dispatchers.Main) {
                 songs = getLocalSongs(context)
                 importing = false
-                toast("Imported ${tracks.size} song${if (tracks.size == 1) "" else "s"}")
+                toast("Importat${if (tracks.size == 1) "o 1 brano" else "i ${tracks.size} brani"}")
             }
         }
     }
@@ -105,7 +105,7 @@ fun LocalFilesScreen(navController: NavController) {
             withContext(Dispatchers.Main) {
                 songs = getLocalSongs(context)
                 importing = false
-                toast("Imported ${tracks.size} song${if (tracks.size == 1) "" else "s"} from folder")
+                toast("Importat${if (tracks.size == 1) "o 1 brano" else "i ${tracks.size} brani"} dalla cartella")
             }
         }
     }
@@ -123,7 +123,7 @@ fun LocalFilesScreen(navController: NavController) {
     }
     // Library views: grouped once per change of the (filtered) song list.
     val albums = remember(shown) {
-        shown.groupBy { it.album.ifBlank { "Unknown album" } to albumArtist(it.singer) }
+        shown.groupBy { it.album.ifBlank { "Album sconosciuto" } to albumArtist(it.singer) }
             .map { (k, list) -> LocalAlbum(k.first, k.second, list.firstOrNull { it.coverUri.isNotBlank() }?.coverUri.orEmpty(), list) }
             .sortedBy { it.name.lowercase() }
     }
@@ -132,7 +132,7 @@ fun LocalFilesScreen(navController: NavController) {
             .map { (name, list) -> LocalArtist(name, list.firstOrNull { it.coverUri.isNotBlank() }?.coverUri.orEmpty(), list) }
             .sortedBy { it.name.lowercase() }
     }
-    var tab by remember { mutableStateOf("Songs") }
+    var tab by remember { mutableStateOf("Brani") }
     var openAlbum by remember { mutableStateOf<LocalAlbum?>(null) }
     var openArtist by remember { mutableStateOf<LocalArtist?>(null) }
     // Back from an album/artist page returns to the grid/list, not out of the screen.
@@ -149,7 +149,7 @@ fun LocalFilesScreen(navController: NavController) {
     fun remove(song: com.music.spotui.data.entity.SongsModel) {
         removeLocalTrack(context, song.url)
         songs = getLocalSongs(context)
-        toast("Removed from library")
+        toast("Rimosso dalla libreria")
     }
 
     Surface(
@@ -177,7 +177,7 @@ fun LocalFilesScreen(navController: NavController) {
                                 else navController.navigateUp()
                             },
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = "Indietro",
                             tint = Color.White,
                         )
                     },
@@ -203,18 +203,18 @@ fun LocalFilesScreen(navController: NavController) {
                         EmptyLibrary(importing, accent, onSongs = { addSongs.launch(arrayOf("audio/*")) }, onFolder = { addFolder.launch(null) })
                     }
                     album != null -> {
-                        item { CollectionHeader(album.cover, album.name, "${album.artist} · ${album.songs.size} songs", accent, round = false, onPlay = { play(album.songs, 0) }, onShuffle = { play(album.songs.shuffled(), 0) }) }
+                        item { CollectionHeader(album.cover, album.name, "${album.artist} · ${album.songs.size} brani", accent, round = false, onPlay = { play(album.songs, 0) }, onShuffle = { play(album.songs.shuffled(), 0) }) }
                         album.songs.forEachIndexed { i, song -> item(key = "a" + song.url) { LocalSongRow(song, playerViewModel.currentSongId.value, formats[song.url].orEmpty(), onClick = { play(album.songs, i) }, onRemove = { remove(song) }) } }
                     }
                     artist != null -> {
-                        item { CollectionHeader(artist.cover, artist.name, "${artist.songs.size} songs", accent, round = true, onPlay = { play(artist.songs, 0) }, onShuffle = { play(artist.songs.shuffled(), 0) }) }
+                        item { CollectionHeader(artist.cover, artist.name, "${artist.songs.size} brani", accent, round = true, onPlay = { play(artist.songs, 0) }, onShuffle = { play(artist.songs.shuffled(), 0) }) }
                         artist.songs.forEachIndexed { i, song -> item(key = "r" + song.url) { LocalSongRow(song, playerViewModel.currentSongId.value, formats[song.url].orEmpty(), onClick = { play(artist.songs, i) }, onRemove = { remove(song) }) } }
                     }
                     else -> {
                         item {
                             val minutes = songs.sumOf { it.durationMs.toLong() } / 60_000
                             LocalHero(
-                                summary = "${songs.size} songs" + (if (minutes > 0) " · ${formatTotal(minutes)}" else "") + " · on this phone",
+                                summary = "${songs.size} brani" + (if (minutes > 0) " · ${formatTotal(minutes)}" else "") + " · su questo telefono",
                                 importing = importing,
                                 onPlay = { play(songs, 0) }, onShuffle = { play(songs.shuffled(), 0) },
                                 onSongs = { addSongs.launch(arrayOf("audio/*")) }, onFolder = { addFolder.launch(null) },
@@ -223,14 +223,14 @@ fun LocalFilesScreen(navController: NavController) {
                         item { SearchField(query) { query = it } }
                         item {
                             Row(Modifier.padding(16.dp, 4.dp, 16.dp, 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                listOf("Songs", "Albums", "Artists").forEach { t -> TabPill(t, t == tab) { tab = t } }
+                                listOf("Brani", "Album", "Artisti").forEach { t -> TabPill(t, t == tab) { tab = t } }
                             }
                         }
                         if (shown.isEmpty()) item {
-                            Text("Nothing matches \"$query\"", color = Color.Gray, fontSize = 14.sp, modifier = Modifier.padding(20.dp, 12.dp))
+                            Text("Nessun risultato per \"$query\"", color = Color.Gray, fontSize = 14.sp, modifier = Modifier.padding(20.dp, 12.dp))
                         }
                         when (tab) {
-                            "Albums" -> albums.chunked(2).forEach { pair ->
+                            "Album" -> albums.chunked(2).forEach { pair ->
                                 item(key = "g" + pair.first().name + pair.first().artist) {
                                     Row(Modifier.fillMaxWidth().padding(16.dp, 6.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                                         pair.forEach { a -> AlbumCard(a, Modifier.weight(1f)) { openAlbum = a } }
@@ -238,7 +238,7 @@ fun LocalFilesScreen(navController: NavController) {
                                     }
                                 }
                             }
-                            "Artists" -> artists.forEach { a ->
+                            "Artisti" -> artists.forEach { a ->
                                 item(key = "ar" + a.name) { ArtistRow(a) { openArtist = a } }
                             }
                             else -> shown.forEachIndexed { i, song ->
@@ -259,7 +259,7 @@ private data class LocalAlbum(val name: String, val artist: String, val cover: S
 private data class LocalArtist(val name: String, val cover: String, val songs: List<com.music.spotui.data.entity.SongsModel>)
 
 /** "A, B feat. C" groups under its first artist, like Spotify's album artist. */
-private fun albumArtist(singer: String) = singer.substringBefore(",").substringBefore(" feat").trim().ifBlank { "Unknown artist" }
+private fun albumArtist(singer: String) = singer.substringBefore(",").substringBefore(" feat").trim().ifBlank { "Artista sconosciuto" }
 
 private val Green = Color(0xFF1ED760)
 private val LosslessFormats = setOf("FLAC", "WAV", "ALAC", "AIFF", "APE", "WV")
@@ -299,7 +299,7 @@ private fun LocalHero(
                 contentDescription = null, tint = Color.White, modifier = Modifier.size(64.dp),
             )
         }
-        Text("Local files", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
+        Text("File locali", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
         Text(summary, color = Color(0xFFB3B3B3), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
             Box {
@@ -315,14 +315,14 @@ private fun LocalHero(
                         contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp),
                     )
                     Text(
-                        if (importing) "Importing…" else "Add music",
+                        if (importing) "Importazione…" else "Aggiungi musica",
                         color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 }
                 androidx.compose.material3.DropdownMenu(expanded = addMenu, onDismissRequest = { addMenu = false }) {
-                    androidx.compose.material3.DropdownMenuItem(text = { Text("Add songs") }, onClick = { addMenu = false; onSongs() })
-                    androidx.compose.material3.DropdownMenuItem(text = { Text("Add a folder") }, onClick = { addMenu = false; onFolder() })
+                    androidx.compose.material3.DropdownMenuItem(text = { Text("Aggiungi brani") }, onClick = { addMenu = false; onSongs() })
+                    androidx.compose.material3.DropdownMenuItem(text = { Text("Aggiungi una cartella") }, onClick = { addMenu = false; onFolder() })
                 }
             }
             Spacer(Modifier.weight(1f))
@@ -352,7 +352,7 @@ private fun SearchField(query: String, onChange: (String) -> Unit) {
                     contentDescription = null, tint = Color.Gray, modifier = Modifier.size(18.dp),
                 )
                 Box(Modifier.padding(start = 10.dp).weight(1f)) {
-                    if (query.isEmpty()) Text("Search in local files", color = Color.Gray, fontSize = 14.sp)
+                    if (query.isEmpty()) Text("Cerca nei file locali", color = Color.Gray, fontSize = 14.sp)
                     field()
                 }
             }
@@ -393,7 +393,7 @@ private fun PlayButton(accent: Color, onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(52.dp).clip(androidx.compose.foundation.shape.CircleShape).background(accent).clickable(onClick = onClick),
     ) {
-        Icon(Icons.Default.PlayArrow, contentDescription = "Play", tint = Color.Black, modifier = Modifier.size(30.dp))
+        Icon(Icons.Default.PlayArrow, contentDescription = "Riproduci", tint = Color.Black, modifier = Modifier.size(30.dp))
     }
 }
 
@@ -401,7 +401,7 @@ private fun PlayButton(accent: Color, onClick: () -> Unit) {
 private fun ShuffleButton(onClick: () -> Unit) {
     Icon(
         painter = androidx.compose.ui.res.painterResource(R.drawable.ic_player_shuffle),
-        contentDescription = "Shuffle",
+        contentDescription = "Riproduzione casuale",
         tint = Color.White,
         modifier = Modifier.size(44.dp).clip(androidx.compose.foundation.shape.CircleShape).clickable(onClick = onClick).padding(10.dp),
     )
@@ -450,7 +450,7 @@ private fun ArtistRow(artist: LocalArtist, onClick: () -> Unit) {
         )
         Column(Modifier.padding(start = 14.dp).weight(1f)) {
             Text(artist.name, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
-            Text("${artist.songs.size} songs", color = Color.Gray, fontSize = 12.sp)
+            Text("${artist.songs.size} brani", color = Color.Gray, fontSize = 12.sp)
         }
     }
 }
@@ -505,13 +505,13 @@ private fun LocalSongRow(
             Box {
                 Icon(
                     painter = androidx.compose.ui.res.painterResource(R.drawable.ic_dots),
-                    contentDescription = "More options for ${song.title}",
+                    contentDescription = "Altre opzioni per ${song.title}",
                     tint = Color.Gray,
                     modifier = Modifier.size(40.dp).clip(androidx.compose.foundation.shape.CircleShape).clickable { menu = true }.padding(10.dp),
                 )
                 androidx.compose.material3.DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     androidx.compose.material3.DropdownMenuItem(
-                        text = { Text("Remove from library") },
+                        text = { Text("Rimuovi dalla libreria") },
                         onClick = { menu = false; onRemove() },
                     )
                 }
@@ -523,18 +523,18 @@ private fun LocalSongRow(
 @Composable
 private fun EmptyLibrary(importing: Boolean, accent: Color, onSongs: () -> Unit, onFolder: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(28.dp, 40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Your music, in lossless", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("La tua musica, in lossless", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Text(
-            "Import FLAC, MP3, WAV and more from your phone. They play offline, with your albums and artists, next to Spotify.",
+            "Importa FLAC, MP3, WAV e altro dal telefono. Si ascoltano offline, con i tuoi album e artisti, accanto a Spotify.",
             color = Color.Gray, fontSize = 14.sp,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            ImportButton("Add songs", accent, Modifier.weight(1f), enabled = !importing, onClick = onSongs)
-            ImportButton("Add folder", Color(0xFF2A2A33), Modifier.weight(1f), enabled = !importing, onClick = onFolder)
+            ImportButton("Aggiungi brani", accent, Modifier.weight(1f), enabled = !importing, onClick = onSongs)
+            ImportButton("Aggiungi cartella", Color(0xFF2A2A33), Modifier.weight(1f), enabled = !importing, onClick = onFolder)
         }
-        if (importing) Text("Importing…", color = accent, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
+        if (importing) Text("Importazione…", color = accent, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
     }
 }
 

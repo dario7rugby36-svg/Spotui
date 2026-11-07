@@ -120,7 +120,7 @@ fun HomeScreen(navController: NavController){
             else -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "Couldn't load music.\nCheck your connection and try again.",
+                        text = "Impossibile caricare la musica.\nControlla la connessione e riprova.",
                         color = Color.White,
                         textAlign = TextAlign.Center,
                     )
@@ -207,7 +207,7 @@ private fun HomeHeaderRow(navController: NavController) {
                 GlideImage(
                     model = avatarUrl,
                     contentScale = ContentScale.Crop,
-                    contentDescription = "Profile",
+                    contentDescription = "Profilo",
                     modifier = Modifier.size(34.dp),
                 )
             } else {
@@ -229,9 +229,9 @@ private fun HomeHeaderRow(navController: NavController) {
                 .padding(start = 12.dp, end = 8.dp),
         ) {
             // Home is the music view, so "Music" is the selected (green) pill.
-            HomePill("Music", selected = true) {}
-            HomePill("Local files") { navController.navigate(Routes.LocalFiles.route) }
-            HomePill("History") { navController.navigate(Routes.History.route) }
+            HomePill("Musica", selected = true) {}
+            HomePill("File locali") { navController.navigate(Routes.LocalFiles.route) }
+            HomePill("Cronologia") { navController.navigate(Routes.History.route) }
         }
         Box(Modifier.padding(end = 16.dp)) { UpdateButton() }
     }
@@ -280,7 +280,7 @@ private fun UpdateButton() {
                     update = fresh
                     android.widget.Toast.makeText(
                         context,
-                        if (fresh != null) "Update ${fresh.version} is available" else "You're up to date ($current)",
+                        if (fresh != null) "L'aggiornamento ${fresh.version} è disponibile" else "App aggiornata ($current)",
                         android.widget.Toast.LENGTH_SHORT,
                     ).show()
                 }
@@ -288,7 +288,7 @@ private fun UpdateButton() {
             .padding(horizontal = 14.dp, vertical = 8.dp),
     ) {
         Text(
-            text = if (found != null) "Update ${found.version}" else "Spotui $current",
+            text = if (found != null) "Aggiornamento ${found.version}" else "Spotui $current",
             color = if (found != null) Color.Black else Color.White,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold,
@@ -367,7 +367,7 @@ private fun HomeFeedCard(item: HomeItem, onClick: () -> Unit) {
     val subtitle = when (item) {
         is HomeItem.Album -> item.subtitle
         is HomeItem.Playlist -> item.subtitle
-        is HomeItem.Artist -> "Artist"
+        is HomeItem.Artist -> "Artista"
     }
     Column(
         horizontalAlignment = if (isArtist) Alignment.CenterHorizontally else Alignment.Start,
@@ -439,12 +439,12 @@ fun SumUpHomeScreen(navController : NavController, albums: List<AlbumsModel>, ar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GreetingSection(name : String = "User") {
+fun GreetingSection(name : String = "Utente") {
     val currentHour = LocalTime.now().hour
     val greeting = when {
-        currentHour < 12 -> "Good Morning"
-        currentHour < 17 -> "Good Afternoon"
-        else -> "Good Evening"
+        currentHour < 12 -> "Buongiorno"
+        currentHour < 17 -> "Buon pomeriggio"
+        else -> "Buonasera"
     }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -462,13 +462,13 @@ fun GreetingSection(name : String = "User") {
                 fontWeight = FontWeight.Bold
                 )
             Text(
-                text = "Have a Nice Day",
+                text = "Buona giornata",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 fontSize = 13.sp
                 )
         }
-//        Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profile", tint = Color.White)
+//        Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profilo", tint = Color.White)
     }
 }
 
@@ -546,7 +546,7 @@ fun HomePlaylistGrid(navController: NavController, albums: List<AlbumsModel>) {
                             model = chunkedAlbums[it][album].coverUri,
                             loading = placeholder(R.drawable.placeholder),
                             failure = placeholder(R.drawable.placeholder),
-                            contentDescription = "Profile")
+                            contentDescription = "Profilo")
                         Text(modifier = Modifier.padding(5.dp),
                             text = chunkedAlbums[it][album].name,
                             style = MaterialTheme.typography.bodyMedium,
@@ -573,7 +573,7 @@ fun HomeAlbums(
     val reversedAlbum = album.reversed().dropLast(1)
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Albums",
+        text = "Album",
         color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold)
@@ -600,7 +600,7 @@ fun HomeAlbums(
                         model = reversedAlbum[album].coverUri,
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(
                         fontSize = 13.sp,
                         text = reversedAlbum[album].name,
@@ -626,7 +626,7 @@ fun HomeRecentlyPlayed(
 ) {
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Recently Played",
+        text = "Ascoltati di recente",
         color = Color.White,
         fontSize = 23.sp,
         fontWeight = FontWeight.Bold)
@@ -649,9 +649,9 @@ fun HomeRecentlyPlayed(
                         .background(Color.Green),
                         contentScale = ContentScale.Crop,
                         painter = painterResource(id = R.drawable.album),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(modifier = Modifier.padding(2.dp),
-                        text = "Album name",
+                        text = "Nome dell'album",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp)
@@ -670,7 +670,7 @@ fun HomeArtists(
 ) {
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Best of Artists",
+        text = "Il meglio degli artisti",
         color = Color.White,
         fontSize = 23.sp,
         fontWeight = FontWeight.Bold)
@@ -698,9 +698,9 @@ fun HomeArtists(
                         model = artists[artist].coverUri,
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(modifier = Modifier.padding(2.dp),
-                        text = "This is ${artists[artist].name}",
+                        text = "Questo è ${artists[artist].name}",
                         color = Color.LightGray,
                         fontSize = 11.sp)
                 }
@@ -722,7 +722,7 @@ fun ImageCard(
     val albums = allAlbums.takeLast(3)
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Discover",
+        text = "Scopri",
         color = Color.White,
         fontSize = 22.sp,
         fontWeight = FontWeight.Bold)
@@ -753,7 +753,7 @@ fun ImageCard(
                     GlideImage(
                         modifier = Modifier.fillMaxSize(),
                         model = albums[album].coverUri,
-                        contentDescription = "artists",
+                        contentDescription = "artisti",
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
                         contentScale = ContentScale.Crop

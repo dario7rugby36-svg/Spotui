@@ -69,7 +69,7 @@ fun CategoryScreen(navController: NavController, genre: String, title: String) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = "Indietro",
                 tint = Color.White,
                 modifier = Modifier
                     .size(40.dp)
@@ -91,7 +91,7 @@ fun CategoryScreen(navController: NavController, genre: String, title: String) {
         when (playlists) {
             is Response.Loading -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Loader() }
             is Response.Success -> CategoryGrid((playlists as Response.Success).data, navController)
-            else -> Box(modifier = Modifier.padding(20.dp, 60.dp)) { Snackbar(showMessage = "Couldn't load $title") }
+            else -> Box(modifier = Modifier.padding(20.dp, 60.dp)) { Snackbar(showMessage = "Impossibile caricare $title") }
         }
     }
 }
@@ -100,7 +100,7 @@ fun CategoryScreen(navController: NavController, genre: String, title: String) {
 @Composable
 private fun CategoryGrid(entries: List<LibraryEntry>, navController: NavController) {
     if (entries.isEmpty()) {
-        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "Nothing here yet") }
+        Box(modifier = Modifier.padding(20.dp, 40.dp)) { Snackbar(showMessage = "Ancora niente qui") }
         return
     }
     LazyVerticalGrid(

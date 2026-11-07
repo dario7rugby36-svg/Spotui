@@ -568,13 +568,13 @@ fun PlayerTopBar(
         // Spotify shows the source context here (album/playlist), not a generic label.
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "PLAYING FROM",
+                text = "IN RIPRODUZIONE DA",
                 color = Color(0xFFB3B3B3),
                 fontSize = 9.sp,
                 fontWeight = FontWeight.Medium,
             )
             Text(
-                text = contextName.ifBlank { "Now Playing" },
+                text = contextName.ifBlank { "In riproduzione" },
                 color = Color.White,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -691,10 +691,10 @@ fun PlayerInfo(
                                 .background(badgeColor)
                         )
                         Text(
-                            // Don't advertise the fallback engine — just "Streamed".
+                            // Don't advertise the fallback engine — just "In streaming".
                             // Append the stream quality (codec/bitrate or FLAC depth)
                             // so the user can see what they're actually hearing.
-                            text = (if (source == "YouTube") "Streamed" else source) +
+                            text = (if (source == "YouTube") "In streaming" else source) +
                                 (if (quality.isNotBlank()) " • $quality" else ""),
                             color = badgeColor,
                             fontSize = 11.sp,
@@ -723,10 +723,10 @@ fun PlayerInfo(
                     }
                     if (isLiked.value) {
                         removeLikedSongId(context, songId.toString())
-                        snackbarMessage = "Removed from Liked Songs"
+                        snackbarMessage = "Rimosso da Brani che ti piacciono"
                     } else {
                         addLikedSongId(context, songId.toString())
-                        snackbarMessage = "Added to Liked Songs"
+                        snackbarMessage = "Aggiunto a Brani che ti piacciono"
                     }
                     snackbarVisible = true
                     isLiked.value = isSongLiked(context, songId.toString())
@@ -977,9 +977,9 @@ private fun currentAudioRoute(context: Context): String {
                 it.type == android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET ||
                 it.type == android.media.AudioDeviceInfo.TYPE_USB_HEADSET
         }
-        if (wired != null) "Headphones" else "This device"
+        if (wired != null) "Cuffie" else "Questo dispositivo"
     } catch (e: Exception) {
-        "This device"
+        "Questo dispositivo"
     }
 }
 
@@ -1003,7 +1003,7 @@ fun PlayerConnectRow(
                 painter = painterResource(id = R.drawable.ic_devices),
                 tint = Color(0xFF1ED760),
                 modifier = Modifier.size(18.dp),
-                contentDescription = "Device",
+                contentDescription = "Dispositivo",
             )
             Text(
                 text = routeName,
@@ -1035,9 +1035,9 @@ fun PlayerConnectRow(
                             type = "text/plain"
                             putExtra(Intent.EXTRA_TEXT, link)
                         }
-                        context.startActivity(Intent.createChooser(send, "Share"))
+                        context.startActivity(Intent.createChooser(send, "Condividi"))
                     },
-                contentDescription = "Share",
+                contentDescription = "Condividi",
             )
             Spacer(modifier = Modifier.width(22.dp))
             Icon(
@@ -1049,7 +1049,7 @@ fun PlayerConnectRow(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                     ) { navController.navigate(Routes.Queue.route) },
-                contentDescription = "Queue",
+                contentDescription = "Coda",
             )
         }
     }
@@ -1095,7 +1095,7 @@ fun PlayerOptionsSheet(
         setLocalAlternativeStream(context, alternativeKey, picked, picked.lastPathSegment.orEmpty())
         SongPlayer.invalidateResolvedStream(song.url)
         currentAlternative = getAlternativeStream(context, alternativeKey)
-        Toast.makeText(context, "Alternative stream set to local file", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Stream alternativo impostato su file locale", Toast.LENGTH_SHORT).show()
     }
 
     if (showSavedIn && currentSong != null) {
@@ -1130,12 +1130,12 @@ fun PlayerOptionsSheet(
                         val song = currentSong ?: return@AlternativeStreamEditor
                         val videoId = SongPlayer.videoIdFromYouTubeLink(text)
                         if (videoId == null) {
-                            Toast.makeText(context, "Paste a YouTube video link or video ID", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Incolla un link o un ID di un video YouTube", Toast.LENGTH_SHORT).show()
                         } else {
                             setYouTubeAlternativeStream(context, alternativeKey, videoId)
                             SongPlayer.invalidateResolvedStream(song.url)
                             currentAlternative = getAlternativeStream(context, alternativeKey)
-                            Toast.makeText(context, "Alternative stream set to YouTube", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Stream alternativo impostato su YouTube", Toast.LENGTH_SHORT).show()
                         }
                     },
                     onPickLocal = {
@@ -1146,7 +1146,7 @@ fun PlayerOptionsSheet(
                         clearAlternativeStream(context, alternativeKey)
                         SongPlayer.invalidateResolvedStream(song.url)
                         currentAlternative = null
-                        Toast.makeText(context, "Alternative stream cleared", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Stream alternativo rimosso", Toast.LENGTH_SHORT).show()
                     },
                 )
             } else if (!showSleep) {
@@ -1175,26 +1175,26 @@ fun PlayerOptionsSheet(
 
                 PlayerMenuRow(
                     icon = Icons.Default.Share,
-                    label = "Share"
+                    label = "Condividi"
                 ) {
                     // Share the real Spotify track link when we know the id.
                     val shareText = currentSong?.spotifyTrackId?.takeIf { it.isNotBlank() }
                         ?.let { "https://open.spotify.com/track/$it" }
-                        ?: "Listening to $title by $singer"
+                        ?: "Sto ascoltando $title di $singer"
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, shareText)
                     }
-                    context.startActivity(Intent.createChooser(send, "Share"))
+                    context.startActivity(Intent.createChooser(send, "Condividi"))
                     onDismiss()
                 }
                 PlayerMenuRow(
                     icon = if (downloaded) Icons.Default.CheckCircle else ImageVector.vectorResource(R.drawable.ic_download),
                     iconTint = if (downloaded) Color(AppPalette.toArgb()) else Color.White,
                     label = when {
-                        downloaded -> "Downloaded — remove"
-                        downloadingNow -> "Downloading…"
-                        else -> "Download"
+                        downloaded -> "Scaricato — rimuovi"
+                        downloadingNow -> "Download in corso…"
+                        else -> "Scarica"
                     },
                     enabled = currentSong != null && !downloadingNow,
                 ) {
@@ -1213,7 +1213,7 @@ fun PlayerOptionsSheet(
                 PlayerMenuRow(
                     icon = Icons.Default.PlayArrow,
                     iconTint = if (currentAlternative != null) Color(AppPalette.toArgb()) else Color.White,
-                    label = if (currentAlternative == null) "Alternative stream" else "Alternative stream set",
+                    label = if (currentAlternative == null) "Stream alternativo" else "Stream alternativo impostato",
                     enabled = currentSong != null,
                     trailingArrow = true,
                 ) {
@@ -1222,7 +1222,7 @@ fun PlayerOptionsSheet(
                 PlayerMenuRow(
                     icon = if (isLiked.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     iconTint = if (isLiked.value) Color(AppPalette.toArgb()) else Color.White,
-                    label = if (isLiked.value) "Remove from Liked Songs" else "Add to Liked Songs"
+                    label = if (isLiked.value) "Rimuovi da Brani che ti piacciono" else "Aggiungi a Brani che ti piacciono"
                 ) {
                     if (isLiked.value) {
                         removeLikedSongId(context, songId.toString())
@@ -1237,7 +1237,7 @@ fun PlayerOptionsSheet(
                 }
                 PlayerMenuRow(
                     icon = Icons.Default.Add,
-                    label = "Add to playlist",
+                    label = "Aggiungi alla playlist",
                     enabled = currentSong != null,
                     trailingArrow = true,
                 ) {
@@ -1245,7 +1245,7 @@ fun PlayerOptionsSheet(
                 }
                 PlayerMenuRow(
                     icon = Icons.AutoMirrored.Filled.List,
-                    label = "View queue"
+                    label = "Visualizza coda"
                 ) {
                     onDismiss()
                     navController.navigate(Routes.Queue.route)
@@ -1255,7 +1255,7 @@ fun PlayerOptionsSheet(
                 val realAlbum = currentSong?.album?.ifBlank { null } ?: album
                 PlayerMenuRow(
                     icon = Icons.Default.PlayArrow,
-                    label = "Go to album",
+                    label = "Vai all'album",
                     enabled = realAlbum.isNotBlank()
                 ) {
                     onDismiss()
@@ -1263,7 +1263,7 @@ fun PlayerOptionsSheet(
                 }
                 PlayerMenuRow(
                     icon = Icons.Default.Person,
-                    label = "Go to artist",
+                    label = "Vai all'artista",
                     enabled = singer.isNotBlank()
                 ) {
                     onDismiss()
@@ -1273,12 +1273,12 @@ fun PlayerOptionsSheet(
                 }
                 PlayerMenuRow(
                     icon = Icons.Default.Notifications,
-                    label = "Sleep timer",
+                    label = "Timer di spegnimento",
                     trailingArrow = true
                 ) { showSleep = true }
             } else {
                 Text(
-                    "Sleep timer",
+                    "Timer di spegnimento",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -1286,12 +1286,12 @@ fun PlayerOptionsSheet(
                 )
                 androidx.compose.material3.HorizontalDivider(color = Color(0xFF2A2A2A))
                 val options = listOf(
-                    "Off" to 0L,
-                    "5 minutes" to 5L,
-                    "15 minutes" to 15L,
-                    "30 minutes" to 30L,
-                    "45 minutes" to 45L,
-                    "1 hour" to 60L
+                    "Disattivato" to 0L,
+                    "5 minuti" to 5L,
+                    "15 minuti" to 15L,
+                    "30 minuti" to 30L,
+                    "45 minuti" to 45L,
+                    "1 ora" to 60L
                 )
                 options.forEach { (label, minutes) ->
                     PlayerMenuRow(icon = Icons.Default.Notifications, label = label) {
@@ -1330,7 +1330,7 @@ fun AlternativeStreamEditor(
             )
             Spacer(Modifier.width(12.dp))
             Text(
-                "Alternative stream",
+                "Stream alternativo",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -1339,10 +1339,10 @@ fun AlternativeStreamEditor(
         Spacer(Modifier.height(14.dp))
         Text(
             text = when {
-                currentAlternative == null -> "No alternative stream set"
-                currentAlternative.isYouTube -> "Current: YouTube video ${currentAlternative.value}"
-                currentAlternative.isLocal -> "Current: local file ${currentAlternative.label.ifBlank { currentAlternative.value }}"
-                else -> "Current alternative stream"
+                currentAlternative == null -> "Nessuno stream alternativo impostato"
+                currentAlternative.isYouTube -> "Attuale: video YouTube ${currentAlternative.value}"
+                currentAlternative.isLocal -> "Attuale: file locale ${currentAlternative.label.ifBlank { currentAlternative.value }}"
+                else -> "Stream alternativo attuale"
             },
             color = if (currentAlternative == null) Color(0xFFB3B3B3) else Color(AppPalette.toArgb()),
             fontSize = 13.sp,
@@ -1355,7 +1355,7 @@ fun AlternativeStreamEditor(
             enabled = enabled,
             singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(color = Color.White, fontSize = 14.sp),
-            label = { Text("YouTube link or video ID", color = Color(0xFFB3B3B3)) },
+            label = { Text("Link YouTube o ID video", color = Color(0xFFB3B3B3)) },
             modifier = Modifier.fillMaxWidth(),
         )
         Row(
@@ -1364,19 +1364,19 @@ fun AlternativeStreamEditor(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextButton(enabled = enabled && youtubeText.isNotBlank(), onClick = { onUseYouTube(youtubeText) }) {
-                Text("Use YouTube", color = if (enabled && youtubeText.isNotBlank()) AppPalette else Color.Gray)
+                Text("Usa YouTube", color = if (enabled && youtubeText.isNotBlank()) AppPalette else Color.Gray)
             }
         }
         PlayerMenuRow(
             icon = Icons.Default.Add,
-            label = "Use local audio file",
+            label = "Usa file audio locale",
             enabled = enabled,
         ) {
             onPickLocal()
         }
         PlayerMenuRow(
             icon = Icons.Default.CheckCircle,
-            label = "Clear alternative stream",
+            label = "Rimuovi stream alternativo",
             enabled = enabled && currentAlternative != null,
             iconTint = Color(0xFFE57373),
         ) {
