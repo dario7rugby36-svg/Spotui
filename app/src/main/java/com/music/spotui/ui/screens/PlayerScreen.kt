@@ -524,12 +524,13 @@ fun PlayerScreen(navController: NavController) {
             }
     }
 
-    // Warm the stream cache for the adjacent tracks so next/previous start instantly.
+    // Warm the stream cache for the next two tracks so skipping ahead starts
+    // instantly. (The previous track was just played, so it is usually cached.)
     LaunchedEffect(songId, queueSongs) {
         val idx = queueSongs.indexOfFirst { it.id == songId }
         if (idx >= 0) {
             queueSongs.getOrNull(idx + 1)?.let { SongPlayer.prefetch(it.url, context) }
-            queueSongs.getOrNull(idx - 1)?.let { SongPlayer.prefetch(it.url, context) }
+            queueSongs.getOrNull(idx + 2)?.let { SongPlayer.prefetch(it.url, context) }
         }
     }
 
