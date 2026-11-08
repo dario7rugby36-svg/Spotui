@@ -641,37 +641,6 @@ object SongPlayer {
         }
     }
 
-    /** Extra wait given to lossless mirrors once YouTube is already playable. */
-    private const val FLAC_GRACE_MS = 2_500L
-
-    /**
-     * Waits for [flac] while [yt] resolves in parallel. Returns the FLAC result if it
-     * arrives first, or within [FLAC_GRACE_MS] after YouTube is ready; otherwise
-     * returns (null, true) and hands a FLAC that arrives later to [onLateResult].
-     * If YouTube fails, FLAC is the only option, so it is awaited in full.
-     */
-    private suspend fun <T : Any> awaitFlacWithGrace(
-        flac: kotlinx.coroutines.Deferred<T?>,
-        yt: kotlinx.coroutines.Deferred<*>,
-        onLateResult: (T) -> Unit,
-    ): Pair<T?, Boolean> {
-        val raced = runCatching {
-            kotlinx.coroutines.selects.select<Unit> {
-                flac.onAwait { }
-                yt.onAwait { }
-            }
-        }
-        if (raced.isFailure || flac.isCompleted) {
-            return runCatching { flac.await() }.getOrNull() to false
-        }
-        val ytReady = runCatching { yt.await() }.getOrNull() != null
-        if (!ytReady) return runCatching { flac.await() }.getOrNull() to false
-        val inTime = withTimeoutOrNull(FLAC_GRACE_MS) { runCatching { flac.await() }.getOrNull() }
-        if (inTime != null || flac.isCompleted) return inTime to false
-        scope.launch { runCatching { flac.await() }.getOrNull()?.let(onLateResult) }
-        return null to true
-    }
-
     /** Warm the cache for an upcoming track (e.g. the next/previous queue item). */
     fun prefetch(song: String, context: Context) {
         if (song.isBlank() || streamCache.containsKey(song)) return
@@ -1248,32 +1217,9 @@ object SongPlayer {
 
         var flacFailReason: String? = null
 
-        // Check FLAC first — try all providers in priority order. When playing, don't
-        // let slow lossless mirrors hold the music back: once YouTube is ready, FLAC
-        // gets a short grace period, then YouTube starts and FLAC keeps resolving in
-        // the background so the next play of this track is lossless.
+        // Check FLAC first — try all providers in priority order
         if (flacDeferred != null) {
-            var flacTooSlow = false
-            val flacResult = if (forPlayback && ytDeferred != null) {
-                val (res, timedOut) = awaitFlacWithGrace(flacDeferred, ytDeferred) { late ->
-                    val (lateUrl, lateProvider, lateQuality) = late
-                    val lateLossless = lateQuality.contains("FLAC", ignoreCase = true) ||
-                        lateQuality.contains("Hi-Res", ignoreCase = true) ||
-                        lateQuality.contains("Ultra HD", ignoreCase = true)
-                    val lateLabel = if (lateLossless) "Lossless • $lateProvider" else lateProvider
-                    Log.d(TAG, "Late $lateProvider ($lateQuality) cached for next play of: $song")
-                    streamCache[song] = lateUrl
-                    sourceCache[song] = lateLabel
-                    qualityCache[song] = lateQuality
-                    qualityTierCache[song] = expectedTier
-                    com.music.spotui.data.preferences.setCachedStream(
-                        appContext, song, lateUrl, lateLabel, lateQuality,
-                        21600, qualityTier = expectedTier,
-                    )
-                }
-                flacTooSlow = timedOut
-                res
-            } else flacDeferred.await()
+            val flacResult = flacDeferred.await()
             if (flacResult != null) {
                 val (url, providerName, flacQuality) = flacResult
                 val isLossless = flacQuality.contains("FLAC", ignoreCase = true) ||
@@ -1298,10 +1244,6 @@ object SongPlayer {
                 )
                 ytDeferred?.cancelAndJoin()
                 return url
-            } else if (flacTooSlow) {
-                flacFailReason = "lossless mirrors too slow"
-                logResolution("Lossless still resolving after ${FLAC_GRACE_MS / 1000.0}s — starting on YouTube now; FLAC will be used next time.")
-                Log.w(TAG, "Lossless too slow, starting YouTube for: $song")
             } else {
                 flacFailReason = "All lossless providers failed"
                 Log.w(TAG, "All lossless providers failed, using YouTube fallback for: $song")
