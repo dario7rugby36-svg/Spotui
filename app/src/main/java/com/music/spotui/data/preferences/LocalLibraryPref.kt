@@ -87,9 +87,9 @@ private fun save(context: Context, tracks: List<LocalTrack>) {
 
 fun LocalTrack.toSong(): SongsModel = SongsModel(
     id = id,
-    title = title.ifBlank { "Unknown title" },
+    title = title.ifBlank { "Titolo sconosciuto" },
     album = album,
-    singer = artist.ifBlank { "Unknown artist" },
+    singer = artist.ifBlank { "Artista sconosciuto" },
     coverUri = coverUri,
     url = uri,
     spotifyTrackId = "",

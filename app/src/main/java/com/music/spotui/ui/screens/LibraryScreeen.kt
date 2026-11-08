@@ -146,7 +146,7 @@ fun LibraryFilterChips(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Clear filters",
+                        contentDescription = "Cancella filtri",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)
                     )
@@ -156,7 +156,7 @@ fun LibraryFilterChips(
 
         item {
             LibraryChipItem(
-                label = "Playlists",
+                label = "Playlist",
                 isSelected = selectedFilter == LibraryFilterType.PLAYLISTS,
                 onClick = { onFilterSelected(LibraryFilterType.PLAYLISTS) }
             )
@@ -164,7 +164,7 @@ fun LibraryFilterChips(
 
         item {
             LibraryChipItem(
-                label = "Albums",
+                label = "Album",
                 isSelected = selectedFilter == LibraryFilterType.ALBUMS,
                 onClick = { onFilterSelected(LibraryFilterType.ALBUMS) }
             )
@@ -172,7 +172,7 @@ fun LibraryFilterChips(
 
         item {
             LibraryChipItem(
-                label = "Artists",
+                label = "Artisti",
                 isSelected = selectedFilter == LibraryFilterType.ARTISTS,
                 onClick = { onFilterSelected(LibraryFilterType.ARTISTS) }
             )
@@ -180,7 +180,7 @@ fun LibraryFilterChips(
 
         item {
             LibraryChipItem(
-                label = "Downloaded",
+                label = "Scaricati",
                 isSelected = isDownloadedOnly,
                 onClick = { onToggleDownloaded() }
             )
@@ -247,12 +247,12 @@ fun LibraryScreen(navController: NavController) {
         AlertDialog(
             onDismissRequest = { showCreateDialog = false },
             containerColor = Color(0xFF282828),
-            title = { Text("Create Local Playlist", color = Color.White, fontWeight = FontWeight.Bold) },
+            title = { Text("Crea playlist locale", color = Color.White, fontWeight = FontWeight.Bold) },
             text = {
                 TextField(
                     value = playlistNameInput,
                     onValueChange = { playlistNameInput = it },
-                    placeholder = { Text("Playlist name", color = Color.Gray) },
+                    placeholder = { Text("Nome della playlist", color = Color.Gray) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color(0xFF383838),
@@ -270,13 +270,13 @@ fun LibraryScreen(navController: NavController) {
             },
             confirmButton = {
                 Text(
-                    "Create",
+                    "Crea",
                     color = Color(0xFF1ED760),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     modifier = Modifier
                         .clickable {
-                            val name = playlistNameInput.trim().ifBlank { "My Playlist" }
+                            val name = playlistNameInput.trim().ifBlank { "La mia playlist" }
                             val created = LocalPlaylistPref.createPlaylist(context, name)
                             Api.HomeCache.library = null
                             libraryViewModel.load()
@@ -288,7 +288,7 @@ fun LibraryScreen(navController: NavController) {
             },
             dismissButton = {
                 Text(
-                    "Cancel",
+                    "Annulla",
                     color = Color.Gray,
                     fontSize = 15.sp,
                     modifier = Modifier
@@ -319,7 +319,7 @@ fun LibraryScreen(navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Your Library",
+                text = "La tua libreria",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 22.sp,
@@ -334,7 +334,7 @@ fun LibraryScreen(navController: NavController) {
                     .clickable { showCreateDialog = true },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Create Playlist", tint = Color.White, modifier = Modifier.size(18.dp))
+                Icon(Icons.Default.Add, contentDescription = "Crea playlist", tint = Color.White, modifier = Modifier.size(18.dp))
             }
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -349,7 +349,7 @@ fun LibraryScreen(navController: NavController) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_search_big),
-                    contentDescription = "Search & Filter",
+                    contentDescription = "Cerca e filtra",
                     tint = if (isSearchVisible || searchQuery.isNotEmpty()) Color.Black else Color.White,
                     modifier = Modifier.size(16.dp)
                 )
@@ -370,7 +370,7 @@ fun LibraryScreen(navController: NavController) {
             ) {
                 Icon(
                     painter = painterResource(if (gridView) R.drawable.ic_view_list else R.drawable.ic_view_grid),
-                    contentDescription = if (gridView) "Show as list" else "Show as grid",
+                    contentDescription = if (gridView) "Mostra come elenco" else "Mostra come griglia",
                     tint = Color.White,
                     modifier = Modifier.size(16.dp)
                 )
@@ -429,7 +429,7 @@ fun LibraryScreen(navController: NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search_big),
                         tint = Color.Gray,
-                        contentDescription = "Search Library",
+                        contentDescription = "Cerca nella libreria",
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -448,7 +448,7 @@ fun LibraryScreen(navController: NavController) {
                             Box(contentAlignment = Alignment.CenterStart) {
                                 if (searchQuery.isEmpty()) {
                                     Text(
-                                        text = "Search in library",
+                                        text = "Cerca nella libreria",
                                         color = Color.Gray,
                                         fontSize = 13.sp
                                     )
@@ -461,7 +461,7 @@ fun LibraryScreen(navController: NavController) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Clear search",
+                            contentDescription = "Cancella ricerca",
                             tint = Color.Gray,
                             modifier = Modifier
                                 .size(16.dp)
@@ -491,7 +491,7 @@ fun LibraryScreen(navController: NavController) {
                         )
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Sort Options",
+                            contentDescription = "Opzioni di ordinamento",
                             tint = Color.White,
                             modifier = Modifier.size(14.dp).padding(start = 2.dp)
                         )
@@ -556,7 +556,7 @@ fun LibraryScreen(navController: NavController) {
                     )
                 }
             }
-            else -> Box(modifier = Modifier.padding(20.dp, 100.dp)) { Snackbar(showMessage = "Couldn't load your library") }
+            else -> Box(modifier = Modifier.padding(20.dp, 100.dp)) { Snackbar(showMessage = "Impossibile caricare la tua libreria") }
         }
 
         if (showSortSheet) {
@@ -570,7 +570,7 @@ fun LibraryScreen(navController: NavController) {
                         .navigationBarsPadding()
                 ) {
                     Text(
-                        text = "Sort by",
+                        text = "Ordina per",
                         color = Color.White,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
@@ -662,7 +662,7 @@ fun SumUpLibraryScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "No items found",
+                text = "Nessun elemento trovato",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -670,7 +670,7 @@ fun SumUpLibraryScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Try clearing your active filters or adding more items to your library.",
+                text = "Prova a rimuovere i filtri attivi o ad aggiungere altri elementi alla libreria.",
                 color = Color.Gray,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
@@ -684,7 +684,7 @@ fun SumUpLibraryScreen(
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 Text(
-                    text = "Clear filters",
+                    text = "Cancella filtri",
                     color = Color.Black,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -726,8 +726,8 @@ fun SumUpLibraryScreen(
                         Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
                     }
                     Column(modifier = Modifier.padding(start = 12.dp)) {
-                        Text(text = "Listening history", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                        Text(text = "Your plays and stats", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                        Text(text = "Cronologia ascolti", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Text(text = "I tuoi ascolti e statistiche", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -759,8 +759,8 @@ fun SumUpLibraryScreen(
                     )
                 }
                 Column(modifier = Modifier.padding(start = 12.dp)) {
-                    Text(text = "Local files", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "Music imported from this device", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "File locali", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "Musica importata da questo dispositivo", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -790,7 +790,7 @@ fun SumUpLibraryScreen(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_download),
-                            contentDescription = "Downloaded",
+                            contentDescription = "Scaricati",
                             tint = Color(0xFF1ED760),
                             modifier = Modifier.size(24.dp)
                         )
@@ -809,7 +809,7 @@ fun SumUpLibraryScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Favorite,
-                            contentDescription = "Liked Songs",
+                            contentDescription = "Brani che ti piacciono",
                             tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
@@ -832,7 +832,7 @@ fun SumUpLibraryScreen(
                         if (entry.isLocal) {
                             Icon(
                                 imageVector = Icons.Default.PhoneAndroid,
-                                contentDescription = "Local Storage",
+                                contentDescription = "Memoria locale",
                                 tint = Color(0xFF1ED760),
                                 modifier = Modifier
                                     .size(14.dp)
@@ -848,7 +848,7 @@ fun SumUpLibraryScreen(
         if (followedArtists.isNotEmpty()) {
             item {
                 Text(
-                    text = "Artists you follow",
+                    text = "Artisti che segui",
                     color = Color.White,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
@@ -876,7 +876,7 @@ fun SumUpLibraryScreen(
                     )
                     Column(modifier = Modifier.padding(start = 12.dp)) {
                         Text(text = artist.name, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(text = "Artist", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                        Text(text = "Artista", color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -923,7 +923,7 @@ fun LibraryGridScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "No items found",
+                text = "Nessun elemento trovato",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -931,7 +931,7 @@ fun LibraryGridScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Try clearing your active filters or adding more items to your library.",
+                text = "Prova a rimuovere i filtri attivi o ad aggiungere altri elementi alla libreria.",
                 color = Color.Gray,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
@@ -945,7 +945,7 @@ fun LibraryGridScreen(
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 Text(
-                    text = "Clear filters",
+                    text = "Cancella filtri",
                     color = Color.Black,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -984,8 +984,8 @@ fun LibraryGridScreen(
                         Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = "Listening history", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(text = "Your plays and stats", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(text = "Cronologia ascolti", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(text = "I tuoi ascolti e statistiche", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -1011,7 +1011,7 @@ fun LibraryGridScreen(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_download),
-                            contentDescription = "Downloaded",
+                            contentDescription = "Scaricati",
                             tint = Color(0xFF1ED760),
                             modifier = Modifier.size(32.dp)
                         )
@@ -1031,7 +1031,7 @@ fun LibraryGridScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Favorite,
-                            contentDescription = "Liked Songs",
+                            contentDescription = "Brani che ti piacciono",
                             tint = Color.White,
                             modifier = Modifier.size(32.dp)
                         )
@@ -1055,7 +1055,7 @@ fun LibraryGridScreen(
                     if (entry.isLocal) {
                         Icon(
                             imageVector = Icons.Default.PhoneAndroid,
-                            contentDescription = "Local Storage",
+                            contentDescription = "Memoria locale",
                             tint = Color(0xFF1ED760),
                             modifier = Modifier
                                 .size(12.dp)
@@ -1069,7 +1069,7 @@ fun LibraryGridScreen(
         if (followedArtists.isNotEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    text = "Artists you follow",
+                    text = "Artisti che segui",
                     color = Color.White,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
@@ -1095,7 +1095,7 @@ fun LibraryGridScreen(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(text = artist.name, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-                    Text(text = "Artist", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+                    Text(text = "Artista", color = Color.Gray, fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
                 }
             }
         }

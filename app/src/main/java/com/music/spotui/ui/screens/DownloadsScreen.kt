@@ -86,9 +86,9 @@ import com.music.spotui.ui.components.SwipeToPlayNextWrapper
 
 fun DownloadSortOption.getDescriptiveLabel(isDescending: Boolean): String {
     return when (this) {
-        DownloadSortOption.DATE -> if (isDescending) "Date added (newest to oldest)" else "Date added (oldest to newest)"
-        DownloadSortOption.TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        DownloadSortOption.ARTIST -> if (isDescending) "Artist (Z to A)" else "Artist (A to Z)"
+        DownloadSortOption.DATE -> if (isDescending) "Data di aggiunta (dalla più recente)" else "Data di aggiunta (dalla meno recente)"
+        DownloadSortOption.TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        DownloadSortOption.ARTIST -> if (isDescending) "Artista (Z-A)" else "Artista (A-Z)"
     }
 }
 
@@ -225,14 +225,14 @@ fun DownloadsScreen(navController: NavController) {
                     Spacer(modifier = Modifier.padding(5.dp))
                     Text(
                         modifier = Modifier.padding(20.dp, 5.dp, 0.dp, 0.dp),
-                        text = "Downloaded",
+                        text = "Scaricati",
                         color = Color.White,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp),
-                        text = "${songs.size} songs • available offline",
+                        text = "${songs.size} brani • disponibili offline",
                         color = Color.Gray,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
@@ -244,7 +244,7 @@ fun DownloadsScreen(navController: NavController) {
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     modifier = Modifier.padding(20.dp, 8.dp),
-                    placeholder = "Search downloaded songs",
+                    placeholder = "Cerca nei brani scaricati",
                 )
 
                 // ── Sort and Clear all action ──
@@ -272,7 +272,7 @@ fun DownloadsScreen(navController: NavController) {
                             )
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Sort Options",
+                                contentDescription = "Opzioni di ordinamento",
                                 tint = Color.White,
                                 modifier = Modifier
                                     .size(16.dp)
@@ -285,7 +285,7 @@ fun DownloadsScreen(navController: NavController) {
 
                     if (songs.isNotEmpty() && searchQuery.isBlank()) {
                         Text(
-                            text = "Clear all",
+                            text = "Cancella tutto",
                             color = Color(0xFFE57373),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -358,14 +358,14 @@ fun DownloadsScreen(navController: NavController) {
 
                 if (songs.isEmpty() && inProgress.isEmpty()) {
                     Text(
-                        text = "No downloads yet. Tap ⋯ on a track and choose Download.",
+                        text = "Nessun download. Tocca ⋯ su un brano e scegli Scarica.",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(20.dp),
                     )
                 } else if (displayedSongs.isEmpty() && inProgress.isEmpty()) {
                     Text(
-                        text = "No matches found for \"$searchQuery\"",
+                        text = "Nessun risultato per \"$searchQuery\"",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(20.dp),
@@ -381,7 +381,7 @@ fun DownloadsScreen(navController: NavController) {
                                 playerViewModel.playNext(song)
                                 android.widget.Toast.makeText(
                                     context,
-                                    "${song.title} will play next",
+                                    "${song.title} verrà riprodotto dopo",
                                     android.widget.Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -400,7 +400,7 @@ fun DownloadsScreen(navController: NavController) {
                                             playerViewModel.updateQueue(displayedSongs)
                                             playerViewModel.updateSongState(
                                                 song.coverUri, song.title, song.singer,
-                                                true, song.id, index, "Downloaded"
+                                                true, song.id, index, "Scaricati"
                                             )
                                             SongPlayer.playSong(song.url, context, "song/${song.id}")
                                         },
@@ -466,7 +466,7 @@ fun DownloadsScreen(navController: NavController) {
                                 .navigationBarsPadding()
                         ) {
                             Text(
-                                text = "Sort by",
+                                text = "Ordina per",
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
@@ -528,8 +528,8 @@ fun DownloadsScreen(navController: NavController) {
                 if (showClearConfirmDialog) {
                     AlertDialog(
                         onDismissRequest = { showClearConfirmDialog = false },
-                        title = { Text(text = "Clear all downloads?", color = Color.White, fontWeight = FontWeight.Bold) },
-                        text = { Text(text = "Are you sure you want to remove all downloaded songs? This action cannot be undone.", color = Color(0xFFB3B3B3)) },
+                        title = { Text(text = "Eliminare tutti i download?", color = Color.White, fontWeight = FontWeight.Bold) },
+                        text = { Text(text = "Vuoi davvero rimuovere tutti i brani scaricati? L'operazione non può essere annullata.", color = Color(0xFFB3B3B3)) },
                         confirmButton = {
                             TextButton(onClick = {
                                 val n =
@@ -537,16 +537,16 @@ fun DownloadsScreen(navController: NavController) {
                                 songs = getDownloadedSongs(context)
                                 showClearConfirmDialog = false
                                 android.widget.Toast.makeText(
-                                    context, "Removed $n download${if (n == 1) "" else "s"}",
+                                    context, "Rimoss${if (n == 1) "o 1 download" else "i $n download"}",
                                     android.widget.Toast.LENGTH_SHORT,
                                 ).show()
                             }) {
-                                Text("Clear", color = Color(0xFFE57373))
+                                Text("Cancella", color = Color(0xFFE57373))
                             }
                         },
                         dismissButton = {
                             TextButton(onClick = { showClearConfirmDialog = false }) {
-                                Text("Cancel", color = Color.White)
+                                Text("Annulla", color = Color.White)
                             }
                         },
                         containerColor = Color(0xFF1A1A1A),

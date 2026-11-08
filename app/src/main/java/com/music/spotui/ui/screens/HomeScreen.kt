@@ -211,7 +211,7 @@ fun HomeScreen(navController: NavController){
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Log in to load your personalized playlists, recommendations, and library.",
+                                    text = "Accedi per caricare le tue playlist, i consigli personalizzati e la libreria.",
                                     color = Color.Gray,
                                     fontSize = 13.sp,
                                     textAlign = TextAlign.Center
@@ -225,7 +225,7 @@ fun HomeScreen(navController: NavController){
                                         .padding(horizontal = 24.dp, vertical = 12.dp)
                                 ) {
                                     Text(
-                                        text = "Log in to Spotify",
+                                        text = "Accedi a Spotify",
                                         color = Color.Black,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp
@@ -233,7 +233,7 @@ fun HomeScreen(navController: NavController){
                                 }
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "Go to Downloads",
+                                    text = "Vai ai download",
                                     color = Color.White,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 14.sp,
@@ -339,7 +339,7 @@ private fun HomeHeaderRow(
                 GlideImage(
                     model = avatarUrl,
                     contentScale = ContentScale.Crop,
-                    contentDescription = "Profile",
+                    contentDescription = "Profilo",
                     modifier = Modifier.size(34.dp),
                 )
             } else {
@@ -371,7 +371,7 @@ private fun HomeHeaderRow(
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                         ) {
                             Text(
-                                text = "All",
+                                text = "Tutto",
                                 color = if (isSel) Color.Black else Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
@@ -394,7 +394,7 @@ private fun HomeHeaderRow(
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Music",
+                                        text = "Musica",
                                         color = Color.Black,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
@@ -411,7 +411,7 @@ private fun HomeHeaderRow(
                                         .padding(start = 24.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Following",
+                                        text = "Seguiti",
                                         color = if (isFollowingOnly) Color.Black else Color.White,
                                         fontSize = 14.sp,
                                         fontWeight = if (isFollowingOnly) FontWeight.Bold else FontWeight.Medium
@@ -427,7 +427,7 @@ private fun HomeHeaderRow(
                                     .padding(horizontal = 16.dp, vertical = 8.dp),
                             ) {
                                 Text(
-                                    text = "Music",
+                                    text = "Musica",
                                     color = Color.White,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
@@ -451,7 +451,7 @@ private fun HomeHeaderRow(
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Podcasts",
+                                        text = "Podcast",
                                         color = Color.Black,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
@@ -468,7 +468,7 @@ private fun HomeHeaderRow(
                                         .padding(start = 24.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Following",
+                                        text = "Seguiti",
                                         color = if (isFollowingOnly) Color.Black else Color.White,
                                         fontSize = 14.sp,
                                         fontWeight = if (isFollowingOnly) FontWeight.Bold else FontWeight.Medium
@@ -484,7 +484,7 @@ private fun HomeHeaderRow(
                                     .padding(horizontal = 16.dp, vertical = 8.dp),
                             ) {
                                 Text(
-                                    text = "Podcasts",
+                                    text = "Podcast",
                                     color = Color.White,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
@@ -504,7 +504,7 @@ private fun HomeHeaderRow(
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                         ) {
                             Text(
-                                text = "Audiobooks",
+                                text = "Audiolibri",
                                 color = if (isSel) Color.Black else Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
@@ -576,7 +576,7 @@ private fun HomeMusicFeedContent(
             // ── Spotify "Latest releases" Feed ──
             item {
                 Text(
-                    text = "Latest releases",
+                    text = "Ultime uscite",
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -612,7 +612,7 @@ private fun HomeMusicFeedContent(
             if (filteredSongs.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Top Songs",
+                        text = "Brani più popolari",
                         color = Color.White,
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Bold,
@@ -683,10 +683,10 @@ private fun LatestReleaseCard(
                 songs = emptyList()
             )
             SpotifySync.setAlbumSaved(context, album.id.toString(), true)
-            Toast.makeText(context, "Added to Your Library", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Aggiunto alla tua libreria", Toast.LENGTH_SHORT).show()
         } else {
             SpotifySync.setAlbumSaved(context, album.id.toString(), false)
-            Toast.makeText(context, "Removed from Your Library", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Rimosso dalla tua libreria", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -759,7 +759,7 @@ private fun LatestReleaseCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = album.artists.ifBlank { "Artist" },
+                        text = album.artists.ifBlank { "Artista" },
                         color = Color.White,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
@@ -782,7 +782,7 @@ private fun LatestReleaseCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Options",
+                        contentDescription = "Opzioni",
                         tint = Color(0xFFB3B3B3),
                         modifier = Modifier.size(20.dp)
                     )
@@ -792,7 +792,7 @@ private fun LatestReleaseCard(
             Spacer(modifier = Modifier.height(14.dp))
 
             // Middle Summary Text
-            val songText = if (isSingle) "1 song" else "12 songs"
+            val songText = if (isSingle) "1 brano" else "12 brani"
             Text(
                 text = "$songText • ${album.name}",
                 color = Color(0xFFCCCCCC),
@@ -824,7 +824,7 @@ private fun LatestReleaseCard(
                     ) {
                         Icon(
                             imageVector = if (isSaved) Icons.Default.CheckCircle else Icons.Default.AddCircleOutline,
-                            contentDescription = if (isSaved) "In library" else "Add to library",
+                            contentDescription = if (isSaved) "Nella libreria" else "Aggiungi alla libreria",
                             tint = if (isSaved) Color(0xFF64D36D) else Color.White,
                             modifier = Modifier.size(26.dp)
                         )
@@ -848,7 +848,7 @@ private fun LatestReleaseCard(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Play release",
+                                contentDescription = "Riproduci uscita",
                                 tint = Color.Black,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -910,12 +910,12 @@ private fun LatestReleaseCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Go to album",
+                        contentDescription = "Vai all'album",
                         tint = Color.White,
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(14.dp))
-                    Text(text = "Go to album", color = Color.White, fontSize = 15.sp)
+                    Text(text = "Vai all'album", color = Color.White, fontSize = 15.sp)
                 }
 
                 // Option 2: Go to artist
@@ -937,12 +937,12 @@ private fun LatestReleaseCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Person,
-                            contentDescription = "Go to artist",
+                            contentDescription = "Vai all'artista",
                             tint = Color.White,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(modifier = Modifier.width(14.dp))
-                        Text(text = "Go to artist", color = Color.White, fontSize = 15.sp)
+                        Text(text = "Vai all'artista", color = Color.White, fontSize = 15.sp)
                     }
                 }
 
@@ -960,13 +960,13 @@ private fun LatestReleaseCard(
                 ) {
                     Icon(
                         imageVector = if (isSaved) Icons.Default.CheckCircle else Icons.Default.AddCircleOutline,
-                        contentDescription = "Save album",
+                        contentDescription = "Salva album",
                         tint = if (isSaved) Color(0xFF64D36D) else Color.White,
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(14.dp))
                     Text(
-                        text = if (isSaved) "Remove from Your Library" else "Save to Your Library",
+                        text = if (isSaved) "Rimuovi dalla tua libreria" else "Salva nella tua libreria",
                         color = Color.White,
                         fontSize = 15.sp
                     )
@@ -981,21 +981,21 @@ private fun LatestReleaseCard(
                         .clickable {
                             showBottomSheet = false
                             val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                putExtra(Intent.EXTRA_TEXT, "Check out ${album.name} by ${album.artists} on Spotui!")
+                                putExtra(Intent.EXTRA_TEXT, "Ascolta ${album.name} di ${album.artists} su Spotui!")
                                 type = "text/plain"
                             }
-                            context.startActivity(Intent.createChooser(sendIntent, "Share Release"))
+                            context.startActivity(Intent.createChooser(sendIntent, "Condividi uscita"))
                         }
                         .padding(vertical = 12.dp, horizontal = 8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
-                        contentDescription = "Share",
+                        contentDescription = "Condividi",
                         tint = Color.White,
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(14.dp))
-                    Text(text = "Share release", color = Color.White, fontSize = 15.sp)
+                    Text(text = "Condividi uscita", color = Color.White, fontSize = 15.sp)
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -1063,7 +1063,7 @@ private fun HomeSongRow(
         ) {
             Icon(
                 imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Play",
+                contentDescription = "Riproduci",
                 tint = Color.Black,
                 modifier = Modifier.size(20.dp)
             )
@@ -1106,7 +1106,7 @@ private fun HomePodcastsFeedContent(
 
         item {
             Text(
-                text = "Podcasts & Shows",
+                text = "Podcast e programmi",
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -1123,7 +1123,7 @@ private fun HomePodcastsFeedContent(
         if (shows.isNotEmpty()) {
             item {
                 Text(
-                    text = "Top Shows",
+                    text = "Programmi più popolari",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -1175,7 +1175,7 @@ private fun HomePodcastsFeedContent(
         if (episodes.isNotEmpty()) {
             item {
                 Text(
-                    text = "Recent Episodes",
+                    text = "Episodi recenti",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -1235,7 +1235,7 @@ private fun HomeAudiobooksFeedContent(
 
         item {
             Text(
-                text = "Audiobooks & Stories",
+                text = "Audiolibri e storie",
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -1246,7 +1246,7 @@ private fun HomeAudiobooksFeedContent(
         if (albums.isNotEmpty()) {
             item {
                 Text(
-                    text = "Popular Audiobooks",
+                    text = "Audiolibri popolari",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -1284,7 +1284,7 @@ private fun HomeAudiobooksFeedContent(
                                 maxLines = 1
                             )
                             Text(
-                                text = ab.artists.ifBlank { "Audiobook" },
+                                text = ab.artists.ifBlank { "Audiolibro" },
                                 color = Color(0xFFB3B3B3),
                                 fontSize = 11.sp,
                                 maxLines = 1
@@ -1376,7 +1376,7 @@ private fun HomeFeedCard(item: HomeItem, onClick: () -> Unit) {
     val subtitle = when (item) {
         is HomeItem.Album -> item.subtitle
         is HomeItem.Playlist -> item.subtitle
-        is HomeItem.Artist -> "Artist"
+        is HomeItem.Artist -> "Artista"
     }
     Column(
         horizontalAlignment = if (isArtist) Alignment.CenterHorizontally else Alignment.Start,
@@ -1460,12 +1460,12 @@ fun SumUpHomeScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GreetingSection(name : String = "User") {
+fun GreetingSection(name : String = "Utente") {
     val currentHour = LocalTime.now().hour
     val greeting = when {
-        currentHour < 12 -> "Good Morning"
-        currentHour < 17 -> "Good Afternoon"
-        else -> "Good Evening"
+        currentHour < 12 -> "Buongiorno"
+        currentHour < 17 -> "Buon pomeriggio"
+        else -> "Buonasera"
     }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -1483,13 +1483,13 @@ fun GreetingSection(name : String = "User") {
                 fontWeight = FontWeight.Bold
                 )
             Text(
-                text = "Have a Nice Day",
+                text = "Buona giornata",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 fontSize = 13.sp
                 )
         }
-//        Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profile", tint = Color.White)
+//        Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profilo", tint = Color.White)
     }
 }
 
@@ -1567,7 +1567,7 @@ fun HomePlaylistGrid(navController: NavController, albums: List<AlbumsModel>) {
                             model = chunkedAlbums[it][album].coverUri,
                             loading = placeholder(R.drawable.placeholder),
                             failure = placeholder(R.drawable.placeholder),
-                            contentDescription = "Profile")
+                            contentDescription = "Profilo")
                         Text(modifier = Modifier.padding(5.dp),
                             text = chunkedAlbums[it][album].name,
                             style = MaterialTheme.typography.bodyMedium,
@@ -1594,7 +1594,7 @@ fun HomeAlbums(
     val reversedAlbum = album.reversed().dropLast(1)
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Albums",
+        text = "Album",
         color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold)
@@ -1621,7 +1621,7 @@ fun HomeAlbums(
                         model = reversedAlbum[album].coverUri,
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(
                         fontSize = 13.sp,
                         text = reversedAlbum[album].name,
@@ -1647,7 +1647,7 @@ fun HomeRecentlyPlayed(
 ) {
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Recently Played",
+        text = "Ascoltati di recente",
         color = Color.White,
         fontSize = 23.sp,
         fontWeight = FontWeight.Bold)
@@ -1670,9 +1670,9 @@ fun HomeRecentlyPlayed(
                         .background(Color.Green),
                         contentScale = ContentScale.Crop,
                         painter = painterResource(id = R.drawable.album),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(modifier = Modifier.padding(2.dp),
-                        text = "Album name",
+                        text = "Nome dell'album",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp)
@@ -1691,7 +1691,7 @@ fun HomeArtists(
 ) {
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Best of Artists",
+        text = "Il meglio degli artisti",
         color = Color.White,
         fontSize = 23.sp,
         fontWeight = FontWeight.Bold)
@@ -1719,9 +1719,9 @@ fun HomeArtists(
                         model = artists[artist].coverUri,
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
-                        contentDescription = "Albums")
+                        contentDescription = "Album")
                     Text(modifier = Modifier.padding(2.dp),
-                        text = "This is ${artists[artist].name}",
+                        text = "Questo è ${artists[artist].name}",
                         color = Color.LightGray,
                         fontSize = 11.sp)
                 }
@@ -1743,7 +1743,7 @@ fun ImageCard(
     val albums = allAlbums.takeLast(3)
     Text(modifier = Modifier
         .padding(20.dp, 10.dp, 0.dp, 0.dp),
-        text = "Discover",
+        text = "Scopri",
         color = Color.White,
         fontSize = 22.sp,
         fontWeight = FontWeight.Bold)
@@ -1774,7 +1774,7 @@ fun ImageCard(
                     GlideImage(
                         modifier = Modifier.fillMaxSize(),
                         model = albums[album].coverUri,
-                        contentDescription = "artists",
+                        contentDescription = "artisti",
                         loading = placeholder(R.drawable.placeholder),
                         failure = placeholder(R.drawable.placeholder),
                         contentScale = ContentScale.Crop
@@ -1816,7 +1816,7 @@ private fun formatReleaseDate(raw: String): String {
     val trimmed = raw.trim()
     if (trimmed.isBlank()) return ""
 
-    if (trimmed.contains("ago", ignoreCase = true) || trimmed.matches(Regex("^[A-Z][a-z]{2}\\s+\\d{1,2}$"))) {
+    if ((trimmed.contains("ago", ignoreCase = true) || trimmed.endsWith(" fa") || trimmed == "Oggi") || trimmed.matches(Regex("^[A-Z][a-z]{2}\\s+\\d{1,2}$"))) {
         return trimmed
     }
 
@@ -1834,11 +1834,11 @@ private fun formatReleaseDate(raw: String): String {
         val diffMs = System.currentTimeMillis() - parsedDate.time
         val diffDays = (diffMs / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(0)
         return when {
-            diffDays == 0 -> "Today"
-            diffDays == 1 -> "1 day ago"
-            diffDays in 2..6 -> "$diffDays days ago"
-            diffDays in 7..13 -> "1 week ago"
-            diffDays in 14..27 -> "${diffDays / 7} weeks ago"
+            diffDays == 0 -> "Oggi"
+            diffDays == 1 -> "1 giorno fa"
+            diffDays in 2..6 -> "$diffDays giorni fa"
+            diffDays in 7..13 -> "1 settimana fa"
+            diffDays in 14..27 -> "${diffDays / 7} settimane fa"
             else -> {
                 val sdf = java.text.SimpleDateFormat("MMM d", java.util.Locale.US)
                 sdf.format(parsedDate)

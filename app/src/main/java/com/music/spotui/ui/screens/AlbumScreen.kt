@@ -137,7 +137,7 @@ fun AlbumScreen(navController: NavController, albumName: String, artist: String 
 
             else -> {
                 Log.d("homeMain", "albums ready")
-                if (albumName == "Liked Songs"){
+                if (albumName == "Brani che ti piacciono"){
                     LikedSongsScreen(albumsResponse, songsResponse, navController, context)
                 }
                 else{
@@ -411,10 +411,10 @@ fun SumUpAlbumScreen(
                                     ) {
                                         if (isAlbumLiked) {
                                             removeLikedAlbumId(context, album[0].id.toString())
-                                            snackbarMessage = "Removed from Library"
+                                            snackbarMessage = "Rimosso dalla libreria"
                                         } else {
                                             addLikedAlbumId(context, album[0].id.toString())
-                                            snackbarMessage = "Added to Library"
+                                            snackbarMessage = "Aggiunto alla libreria"
                                         }
                                         isAlbumLiked = isAlbumLiked(context, album[0].id.toString())
                                         snackbarVisible = true
@@ -462,15 +462,15 @@ fun SumUpAlbumScreen(
                                             )
                                             if (!albumDownloaded) {
                                                 SongPlayer.downloadAll(albumSongs, context)
-                                                snackbarMessage = "Downloading ${albumSongs.size} tracks…"
+                                                snackbarMessage = "Download di ${albumSongs.size} brani…"
                                                 snackbarVisible = true
                                             } else {
-                                                snackbarMessage = "Album added to offline library"
+                                                snackbarMessage = "Album aggiunto alla libreria offline"
                                                 snackbarVisible = true
                                             }
                                         }
                                     },
-                                contentDescription = "Download album",
+                                contentDescription = "Scarica album",
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             if (albumSongs.isNotEmpty()) {
@@ -486,11 +486,11 @@ fun SumUpAlbumScreen(
                                             playerViewModel.addAllToQueue(albumSongs)
                                             android.widget.Toast.makeText(
                                                 context,
-                                                "${albumSongs.size} track(s) added to queue",
+                                                "${albumSongs.size} brani aggiunti alla coda",
                                                 android.widget.Toast.LENGTH_SHORT,
                                             ).show()
                                         },
-                                    contentDescription = "Add to queue",
+                                    contentDescription = "Aggiungi alla coda",
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                             }
@@ -517,7 +517,7 @@ fun SumUpAlbumScreen(
                                             SongPlayer.playSong(first.url, context, "song/${first.id}")
                                         }
                                     },
-                                contentDescription = "Shuffle play",
+                                contentDescription = "Riproduzione casuale",
                             )
                         }
 
@@ -562,7 +562,7 @@ fun SumUpAlbumScreen(
                                     painter = painterResource(
                                         id = if (currentInList && playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                     ),
-                                    contentDescription = if (currentInList && playing) "Pause" else "Play")
+                                    contentDescription = if (currentInList && playing) "Pausa" else "Riproduci")
                             }
                         }
                     }
@@ -582,7 +582,7 @@ fun SumUpAlbumScreen(
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     modifier = Modifier.padding(20.dp, 8.dp),
-                    placeholder = "Search in album",
+                    placeholder = "Cerca nell'album",
                 )
 
                 // Sort action button
@@ -608,7 +608,7 @@ fun SumUpAlbumScreen(
                         )
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Sort Options",
+                            contentDescription = "Opzioni di ordinamento",
                             tint = Color.White,
                             modifier = Modifier
                                 .size(16.dp)
@@ -625,7 +625,7 @@ fun SumUpAlbumScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "No matches found for \"$searchQuery\"",
+                            text = "Nessun risultato per \"$searchQuery\"",
                             color = Color.White,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Medium
@@ -776,7 +776,7 @@ fun SumUpAlbumScreen(
                         .navigationBarsPadding()
                 ) {
                     Text(
-                        text = "Sort by",
+                        text = "Ordina per",
                         color = Color.White,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,

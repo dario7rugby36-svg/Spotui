@@ -230,12 +230,12 @@ private fun ArtistOverviewContent(
                         Text("✓", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                     Spacer(Modifier.width(6.dp))
-                    Text("Verified Artist", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text("Artista verificato", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 }
             }
             overview.monthlyListeners?.let {
                 Text(
-                    text = "${grouped(it)} monthly listeners",
+                    text = "${grouped(it)} ascoltatori mensili",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(16.dp, 2.dp, 16.dp, 0.dp),
@@ -270,7 +270,7 @@ private fun ArtistOverviewContent(
                         .padding(16.dp, 7.dp),
                     ) {
                         Text(
-                            text = if (following) "Following" else "Follow",
+                            text = if (following) "Segui già" else "Segui",
                             color = Color.White,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -323,7 +323,7 @@ private fun ArtistOverviewContent(
         if (tracks.isNotEmpty()) {
             item {
                 Text(
-                    text = "Popular",
+                    text = "Popolari",
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -341,9 +341,9 @@ private fun ArtistOverviewContent(
             }
         }
 
-        // ── Popular releases (discography) — vertical list, first few + "Show all" ──
+        // ── Popular releases (discography) — vertical list, first few + "Mostra tutto" ──
         if (overview.popularReleases.isNotEmpty()) {
-            item { SectionHeader("Popular releases") }
+            item { SectionHeader("Uscite popolari") }
             itemsIndexed(overview.popularReleases.take(4)) { _, album ->
                 ReleaseRow(album) {
                     navController.navigate(albumRoute(album.name, album.artists.ifBlank { displayName }))
@@ -360,7 +360,7 @@ private fun ArtistOverviewContent(
 
         // ── Featuring Artist Playlist ──
         overview.featuringPlaylist?.let { playlist ->
-            item { SectionHeader("Featuring $displayName") }
+            item { SectionHeader("Con $displayName") }
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -410,7 +410,7 @@ private fun ArtistOverviewContent(
 
         // ── About ──
         if (!overview.biography.isNullOrBlank()) {
-            item { SectionHeader("About") }
+            item { SectionHeader("Informazioni") }
             item {
                 Box(modifier = Modifier
                     .fillMaxWidth()
@@ -432,7 +432,7 @@ private fun ArtistOverviewContent(
                         }
                         overview.monthlyListeners?.let {
                             Text(
-                                text = "${grouped(it)} monthly listeners",
+                                text = "${grouped(it)} ascoltatori mensili",
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
@@ -452,7 +452,7 @@ private fun ArtistOverviewContent(
 
         // ── Fans also like ──
         if (overview.relatedArtists.isNotEmpty()) {
-            item { SectionHeader("Fans also like") }
+            item { SectionHeader("Ai fan piace anche") }
             item {
                 LazyRow(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp, 0.dp),
@@ -468,7 +468,7 @@ private fun ArtistOverviewContent(
 
         // ── Appears on ──
         if (overview.appearsOn.isNotEmpty()) {
-            item { SectionHeader("Appears on") }
+            item { SectionHeader("Appare in") }
             item {
                 LazyRow(
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp, 0.dp),
@@ -523,7 +523,7 @@ private fun PopularTrackRow(
             playerViewModel.playNext(song)
             android.widget.Toast.makeText(
                 context,
-                "${song.title} will play next",
+                "${song.title} verrà riprodotto dopo",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
@@ -662,7 +662,13 @@ private fun ReleaseRow(album: AlbumsModel, onClick: () -> Unit) {
         Spacer(Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(text = album.name, color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-            val kind = album.type.replaceFirstChar { it.uppercase() }.ifBlank { "" }
+            val kind = when (album.type.lowercase()) {
+                "album" -> "Album"
+                "single" -> "Singolo"
+                "ep" -> "EP"
+                "compilation" -> "Raccolta"
+                else -> album.type.replaceFirstChar { it.uppercase() }
+            }
             val year = releaseYear(album)
             Text(
                 text = listOf(year, kind).filter { it.isNotBlank() }.joinToString(" • "),
@@ -687,7 +693,7 @@ private fun ShowAllButton(onClick: () -> Unit) {
         ) { onClick() }
         .padding(20.dp, 8.dp),
     ) {
-        Text(text = "Show all", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+        Text(text = "Mostra tutto", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -710,7 +716,7 @@ fun ArtistReleasesScreen(navController: NavController, artistName: String) {
         val data = (overview as? Response.Success)?.data
         val releases = data?.popularReleases ?: emptyList()
         val featuredOn = data?.appearsOn ?: emptyList()
-        // Spotify's Releases view: filter chips + a "Latest release" spotlight,
+        // Spotify's Releases view: filter chips + a "Ultima uscita" spotlight,
         // then releases grouped by kind, newest first.
         val albums = releases.filter { it.type == "album" || it.type == "compilation" }
         val singles = releases.filter { it.type == "single" || it.type == "ep" }
@@ -747,7 +753,7 @@ fun ArtistReleasesScreen(navController: NavController, artistName: String) {
                     )
                     Spacer(Modifier.width(16.dp))
                     Text(
-                        text = "Releases",
+                        text = "Uscite",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -756,16 +762,16 @@ fun ArtistReleasesScreen(navController: NavController, artistName: String) {
             }
             item {
                 Row(modifier = Modifier.padding(12.dp, 0.dp, 12.dp, 8.dp)) {
-                    ReleaseFilterChip("Albums", filter == "albums") {
+                    ReleaseFilterChip("Album", filter == "albums") {
                         filter = if (filter == "albums") "" else "albums"
                     }
                     Spacer(Modifier.width(8.dp))
-                    ReleaseFilterChip("Singles and EPs", filter == "singles") {
+                    ReleaseFilterChip("Singoli ed EP", filter == "singles") {
                         filter = if (filter == "singles") "" else "singles"
                     }
                     if (featuredOn.isNotEmpty()) {
                         Spacer(Modifier.width(8.dp))
-                        ReleaseFilterChip("Featured on", filter == "featured") {
+                        ReleaseFilterChip("Presente in", filter == "featured") {
                             filter = if (filter == "featured") "" else "featured"
                         }
                     }
@@ -780,20 +786,20 @@ fun ArtistReleasesScreen(navController: NavController, artistName: String) {
                 "featured" -> items(featuredOn.size) { i -> ReleaseRow(featuredOn[i]) { openAlbum(featuredOn[i]) } }
                 else -> {
                     latest?.let {
-                        item { ReleaseSectionHeader("Latest release") }
+                        item { ReleaseSectionHeader("Ultima uscita") }
                         item { ReleaseRow(it) { openAlbum(it) } }
                     }
                     if (albums.isNotEmpty()) {
-                        item { ReleaseSectionHeader("Albums") }
+                        item { ReleaseSectionHeader("Album") }
                         items(albums.size) { i -> ReleaseRow(albums[i]) { openAlbum(albums[i]) } }
                     }
                     if (singles.isNotEmpty()) {
-                        item { ReleaseSectionHeader("Singles and EPs") }
+                        item { ReleaseSectionHeader("Singoli ed EP") }
                         items(singles.size) { i -> ReleaseRow(singles[i]) { openAlbum(singles[i]) } }
                     }
                     if (untyped.isNotEmpty()) {
                         if (albums.isEmpty() && singles.isEmpty()) {
-                            item { ReleaseSectionHeader("Popular releases") }
+                            item { ReleaseSectionHeader("Uscite popolari") }
                         }
                         items(untyped.size) { i -> ReleaseRow(untyped[i]) { openAlbum(untyped[i]) } }
                     }
@@ -861,6 +867,6 @@ private fun RelatedArtistCard(artist: ArtistsModel, onClick: () -> Unit) {
         )
         Spacer(Modifier.height(6.dp))
         Text(text = artist.name, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium, maxLines = 1)
-        Text(text = "Artist", color = Color.Gray, fontSize = 11.sp)
+        Text(text = "Artista", color = Color.Gray, fontSize = 11.sp)
     }
 }

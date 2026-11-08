@@ -162,7 +162,7 @@ object BackupHelper {
     suspend fun performManualBackup(context: Context): Pair<Boolean, String> = withContext(Dispatchers.IO) {
         val dirUriStr = BackupPref.getDirectoryUri(context)
         if (dirUriStr.isNullOrBlank()) {
-            return@withContext Pair(false, "Please select a backup folder first")
+            return@withContext Pair(false, "Seleziona prima una cartella di backup")
         }
         val timestampStr = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val filename = "spotui_backup_$timestampStr.json"
@@ -173,9 +173,9 @@ object BackupHelper {
 
         if (successManual) {
             val folderName = getFolderDisplayName(context, dirUriStr)
-            Pair(true, "Backup saved as $filename in $folderName")
+            Pair(true, "Backup salvato come $filename in $folderName")
         } else {
-            Pair(false, "Failed to write backup file to selected directory")
+            Pair(false, "Impossibile scrivere il file di backup nella cartella selezionata")
         }
     }
 
@@ -187,11 +187,11 @@ object BackupHelper {
         }.getOrNull()
 
         if (jsonString.isNullOrBlank()) {
-            return@withContext Pair(false, "Could not read selected file")
+            return@withContext Pair(false, "Impossibile leggere il file selezionato")
         }
 
         val root = validateBackupJson(jsonString)
-            ?: return@withContext Pair(false, "Invalid backup file: Not a valid Spotui backup")
+            ?: return@withContext Pair(false, "File non valido: non è un backup di Spotui")
 
         runCatching {
             val data = root.getJSONObject("data")
@@ -256,19 +256,19 @@ object BackupHelper {
             }
 
             Api.HomeCache.clear()
-            Pair(true, "Restored $restoredPlaylists playlist(s) and $restoredLiked liked song(s)!")
+            Pair(true, "Ripristinate $restoredPlaylists playlist e $restoredLiked brani che ti piacciono!")
         }.getOrElse { e ->
             Log.e(TAG, "Error restoring backup", e)
-            Pair(false, "Failed to restore backup: ${e.message}")
+            Pair(false, "Ripristino del backup non riuscito: ${e.message}")
         }
     }
 
     fun getFolderDisplayName(context: Context, dirUriStr: String?): String {
-        if (dirUriStr.isNullOrBlank()) return "Not configured"
+        if (dirUriStr.isNullOrBlank()) return "Non configurata"
         return runCatching {
             val uri = Uri.parse(dirUriStr)
             val doc = DocumentFile.fromTreeUri(context, uri)
-            doc?.name ?: uri.lastPathSegment ?: "Selected Folder"
-        }.getOrDefault("Selected Folder")
+            doc?.name ?: uri.lastPathSegment ?: "Cartella selezionata"
+        }.getOrDefault("Cartella selezionata")
     }
 }

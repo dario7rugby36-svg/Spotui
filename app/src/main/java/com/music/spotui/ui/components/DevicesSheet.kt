@@ -112,7 +112,7 @@ fun DevicesSheet(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Connect to a device",
+                        text = "Connetti a un dispositivo",
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
@@ -120,7 +120,7 @@ fun DevicesSheet(
                 }
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close",
+                    contentDescription = "Chiudi",
                     tint = Color.LightGray,
                     modifier = Modifier
                         .size(24.dp)
@@ -147,7 +147,7 @@ fun DevicesSheet(
                         .padding(horizontal = 14.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        text = "Grant permission to discover paired Bluetooth devices",
+                        text = "Concedi il permesso per trovare i dispositivi Bluetooth associati",
                         color = Color.White,
                         fontSize = 12.sp,
                         modifier = Modifier.weight(1f)
@@ -163,7 +163,7 @@ fun DevicesSheet(
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "Grant",
+                            text = "Consenti",
                             color = Color.Black,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
@@ -177,7 +177,7 @@ fun DevicesSheet(
             val activeDevice = devices.firstOrNull { it.isActive }
             if (activeDevice != null) {
                 Text(
-                    text = "CURRENT DEVICE",
+                    text = "DISPOSITIVO ATTUALE",
                     color = Color.Gray,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
@@ -210,14 +210,14 @@ fun DevicesSheet(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "Listening on this device",
+                            text = "In ascolto su questo dispositivo",
                             color = Color(0xFF1ED760).copy(alpha = 0.8f),
                             fontSize = 12.sp
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = "Active",
+                        contentDescription = "Attivo",
                         tint = Color(0xFF1ED760),
                         modifier = Modifier.size(20.dp)
                     )
@@ -228,7 +228,7 @@ fun DevicesSheet(
 
             // Available Devices Section Title
             Text(
-                text = "SELECT A DEVICE",
+                text = "SELEZIONA UN DISPOSITIVO",
                 color = Color.Gray,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
@@ -288,13 +288,13 @@ fun DevicesSheet(
                 Spacer(modifier = Modifier.width(14.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "System Audio Switcher",
+                        text = "Selettore audio di sistema",
                         color = Color.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Connect or pair Bluetooth devices in Android Settings",
+                        text = "Connetti o associa i dispositivi Bluetooth nelle Impostazioni di Android",
                         color = Color.Gray,
                         fontSize = 11.sp
                     )
@@ -363,7 +363,7 @@ private fun DeviceItemRow(
             )
             val subText = when {
                 item.isActive -> "Active audio route"
-                item.isConnected -> "Connected"
+                item.isConnected -> "Connesso"
                 else -> "Paired Bluetooth Device"
             }
             Text(
@@ -376,7 +376,7 @@ private fun DeviceItemRow(
         if (item.isActive) {
             Icon(
                 imageVector = Icons.Default.Check,
-                contentDescription = "Active",
+                contentDescription = "Attivo",
                 tint = Color(0xFF1ED760),
                 modifier = Modifier.size(18.dp)
             )

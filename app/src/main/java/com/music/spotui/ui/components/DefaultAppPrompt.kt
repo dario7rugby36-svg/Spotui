@@ -103,9 +103,9 @@ fun DefaultAppPrompt(
 
     // Official Spotify app always takes precedence as the primary target for clearing defaults
     val conflictingAppLabel = when {
-        officialSpotifyInstalled -> "Official Spotify"
+        officialSpotifyInstalled -> "Spotify ufficiale"
         handlerApp != null -> handlerApp.label
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> "Official Spotify"
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> "Spotify ufficiale"
         else -> null
     }
 
@@ -155,7 +155,7 @@ fun DefaultAppPrompt(
 
                 // Header Title
                 Text(
-                    text = "Open Links in Spotui",
+                    text = "Apri i link in Spotui",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -164,7 +164,7 @@ fun DefaultAppPrompt(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Set Spotui as default to play Spotify links directly.",
+                    text = "Imposta Spotui come predefinita per aprire direttamente i link di Spotify.",
                     fontSize = 14.sp,
                     color = SpotifyTextSecondary
                 )
@@ -203,7 +203,7 @@ fun DefaultAppPrompt(
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = "Android blocks adding links to Spotui until you clear defaults from $conflictingAppLabel first in Step 1.",
+                                text = "Android non permette di aggiungere i link a Spotui finché non rimuovi le impostazioni predefinite di $conflictingAppLabel nel Passo 1.",
                                 fontSize = 13.sp,
                                 color = Color(0xFFFFE082),
                                 lineHeight = 18.sp,
@@ -217,9 +217,9 @@ fun DefaultAppPrompt(
                     // Step 1: Clear defaults from the conflicting app (Official Spotify, Chrome, etc.)
                     StepCard(
                         stepNumber = "1",
-                        title = "STEP 1 (REQUIRED): Clear $conflictingAppLabel Link Defaults",
-                        description = "Tap below to open $conflictingAppLabel's 'Open by default' screen. Turn OFF 'Open supported links' (or select 'In browser' / 'Clear defaults').",
-                        buttonText = "1. Open $conflictingAppLabel Link Settings",
+                        title = "PASSO 1 (OBBLIGATORIO): rimuovi i link predefiniti di $conflictingAppLabel",
+                        description = "Tocca qui sotto per aprire la schermata 'Apri per impostazione predefinita' di $conflictingAppLabel. Disattiva 'Apri i link supportati' (oppure scegli 'Nel browser' / 'Cancella impostazioni predefinite').",
+                        buttonText = "1. Apri le impostazioni link di $conflictingAppLabel",
                         isPrimary = false,
                         onClick = { DefaultLinkHelper.openAppDetailsSettings(context, conflictingAppPackage) }
                     )
@@ -229,9 +229,9 @@ fun DefaultAppPrompt(
                     // Step 2: Enable Spotui Default Card
                     StepCard(
                         stepNumber = "2",
-                        title = "STEP 2: Enable default links for Spotui",
-                        description = "After completing Step 1, tap below to open Spotui settings -> Tap 'Open by default' -> Tap '+ Add link' -> Check open.spotify.com.",
-                        buttonText = "2. Enable Defaults for Spotui",
+                        title = "PASSO 2: attiva i link predefiniti per Spotui",
+                        description = "Dopo il Passo 1, tocca qui sotto per aprire le impostazioni di Spotui -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
+                        buttonText = "2. Attiva i predefiniti per Spotui",
                         isPrimary = true,
                         onClick = { DefaultLinkHelper.openSpotuiDefaultSettings(context) }
                     )
@@ -239,9 +239,9 @@ fun DefaultAppPrompt(
                     // Single Step Card for when no conflicting app is installed
                     StepCard(
                         stepNumber = "1",
-                        title = "Set Spotui as default handler",
-                        description = "Tap below to open Spotui settings -> Tap 'Open by default' -> Tap '+ Add link' -> Check open.spotify.com.",
-                        buttonText = "Enable Defaults for Spotui",
+                        title = "Imposta Spotui come app predefinita",
+                        description = "Tocca qui sotto per aprire le impostazioni di Spotui -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
+                        buttonText = "Attiva i predefiniti per Spotui",
                         isPrimary = true,
                         onClick = { DefaultLinkHelper.openSpotuiDefaultSettings(context) }
                     )
@@ -262,7 +262,7 @@ fun DefaultAppPrompt(
                         }
                     ) {
                         Text(
-                            text = "Don't ask again",
+                            text = "Non chiedere più",
                             color = SpotifyTextSecondary,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium
@@ -273,7 +273,7 @@ fun DefaultAppPrompt(
                         onClick = { dismiss() }
                     ) {
                         Text(
-                            text = "Later",
+                            text = "Più tardi",
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold

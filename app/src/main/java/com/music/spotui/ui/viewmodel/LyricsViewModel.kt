@@ -148,13 +148,13 @@ class LyricsViewModel @Inject constructor(
         if (current !is State.Loaded) return
 
         if (sourceLanguage == targetLanguage) {
-            translationError = "Source and target language must be different"
+            translationError = "La lingua di origine e quella di destinazione devono essere diverse"
             return
         }
 
         val translatable = current.lyrics.lines.count { it.text.isNotBlank() }
         if (translatable == 0) {
-            translationError = "No translatable lyrics found"
+            translationError = "Nessun testo da tradurre"
             return
         }
 
@@ -179,7 +179,7 @@ class LyricsViewModel @Inject constructor(
                 Log.d(TAG, "Translation complete: $translatedCount/${result.size} lines translated")
                 withContext(Dispatchers.Main) {
                     if (translatedCount == 0) {
-                        translationError = "Translation failed — no lines were translated."
+                        translationError = "Traduzione non riuscita — nessuna riga tradotta."
                     } else {
                         translatedLines = result
                         // Persist to disk so it auto-shows on next load.
@@ -190,8 +190,8 @@ class LyricsViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "Translation failed", e)
                 withContext(Dispatchers.Main) {
-                    modelState = ModelState.Failed(e.localizedMessage ?: "Model download failed")
-                    translationError = "Translation failed: ${e.localizedMessage ?: "Unknown error"}"
+                    modelState = ModelState.Failed(e.localizedMessage ?: "Download del modello non riuscito")
+                    translationError = "Traduzione non riuscita: ${e.localizedMessage ?: "errore sconosciuto"}"
                     translationsLoading = false
                 }
             }

@@ -81,7 +81,7 @@ fun SpotiflacVerifyScreen(navController: NavController, next: String = "") {
                             }
                             Handler(Looper.getMainLooper()).post {
                                 android.widget.Toast.makeText(
-                                    context, "SpotiFLAC session captured", android.widget.Toast.LENGTH_LONG,
+                                    context, "Sessione SpotiFLAC acquisita", android.widget.Toast.LENGTH_LONG,
                                 ).show()
                                 // Onboarding (Spotify → Deezer → SpotiFLAC) lands Home;
                                 // reached from Settings we just return where we came from.

@@ -139,7 +139,7 @@ object ProviderHealthChecker {
                 target = target,
                 status = Status.OFFLINE,
                 latencyMs = null,
-                message = error.message ?: "Connection error",
+                message = error.message ?: "Errore di connessione",
             )
         }
     }

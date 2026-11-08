@@ -146,7 +146,7 @@ fun SettingsScreen(navController: NavController) {
             folderName = BackupHelper.getFolderDisplayName(context, uri.toString())
             scope.launch {
                 val autoOk = BackupHelper.performAutoBackup(context)
-                val msg = if (autoOk) "Backup folder set to $folderName (Auto-backup created)" else "Backup folder set to $folderName"
+                val msg = if (autoOk) "Cartella di backup impostata: $folderName (backup automatico creato)" else "Cartella di backup impostata: $folderName"
                 android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
             }
         }
@@ -197,11 +197,11 @@ fun SettingsScreen(navController: NavController) {
         containerColor = AppBackground,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Settings", color = Color.White, fontWeight = FontWeight.Bold) },
+                title = { Text("Impostazioni", color = Color.White, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = "Indietro",
                         tint = Color.White,
                         modifier = Modifier
                             .padding(start = 8.dp)
@@ -236,7 +236,7 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Audio Output Devices", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Dispositivi di uscita audio", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
                         com.music.spotui.ui.utils.AudioDeviceHelper.getCurrentAudioRouteName(context),
                         color = Color(0xFF1ED760),
@@ -245,7 +245,7 @@ fun SettingsScreen(navController: NavController) {
                 }
                 Icon(
                     painter = painterResource(id = R.drawable.ic_devices),
-                    contentDescription = "Devices",
+                    contentDescription = "Dispositivi",
                     tint = Color(0xFF1ED760),
                     modifier = Modifier.size(22.dp)
                 )
@@ -253,7 +253,7 @@ fun SettingsScreen(navController: NavController) {
 
             Spacer(Modifier.height(16.dp))
 
-            SectionTitle("Background playback")
+            SectionTitle("Riproduzione in background")
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -266,9 +266,9 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Battery optimization", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Ottimizzazione batteria", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        if (batteryOptExempt) "Exempt — app won't be killed" else "Not exempt — tap to change",
+                        if (batteryOptExempt) "Esclusa — l'app non verrà chiusa" else "Non esclusa — tocca per cambiare",
                         color = if (batteryOptExempt) Color(0xFF81C784) else Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )
@@ -276,7 +276,7 @@ fun SettingsScreen(navController: NavController) {
                 if (batteryOptExempt) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Enabled",
+                        contentDescription = "Attivo",
                         tint = AppPalette,
                         modifier = Modifier.size(20.dp)
                     )
@@ -285,7 +285,7 @@ fun SettingsScreen(navController: NavController) {
             BatteryOptimizationHelper.getManufacturerTips()?.let { (name, tip) ->
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = "Tip for $name",
+                    text = "Consiglio per $name",
                     color = Color(0xFFB3B3B3),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -303,7 +303,7 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Link handling")
+            SectionTitle("Gestione dei link")
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -320,9 +320,9 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Open Spotify links by default", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Apri i link di Spotify per impostazione predefinita", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        if (isDefaultLinkHandler) "Spotui handles Spotify URLs by default" else "Not default — tap to open setup guide",
+                        if (isDefaultLinkHandler) "Spotui apre i link di Spotify per impostazione predefinita" else "Non predefinita — tocca per aprire la guida",
                         color = if (isDefaultLinkHandler) Color(0xFF81C784) else Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )
@@ -330,36 +330,36 @@ fun SettingsScreen(navController: NavController) {
                 if (isDefaultLinkHandler) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Enabled",
+                        contentDescription = "Attivo",
                         tint = AppPalette,
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.OpenInNew,
-                        contentDescription = "Open Settings",
+                        contentDescription = "Apri impostazioni",
                         tint = Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
-            SectionTitle("Audio quality")
+            SectionTitle("Qualità audio")
             QualityPicker(
-                title = "Streaming over Wi-Fi",
+                title = "Streaming su Wi-Fi",
                 selected = wifiQ,
                 showFlacWarning = wifiQ == StreamQuality.LOSSLESS,
                 onDeezerLogin = { navController.navigate(com.music.spotui.ui.navigation.Routes.DeezerLogin.route) }
             ) { wifiQ = it; setWifiQuality(context, it) }
 
             QualityPicker(
-                title = "Streaming over cellular",
+                title = "Streaming su rete mobile",
                 selected = cellQ,
                 showFlacWarning = cellQ == StreamQuality.LOSSLESS,
                 onDeezerLogin = { navController.navigate(com.music.spotui.ui.navigation.Routes.DeezerLogin.route) }
             ) { cellQ = it; setCellularQuality(context, it) }
 
             QualityPicker(
-                title = "Download quality",
+                title = "Qualità download",
                 selected = dlQ,
                 showFlacWarning = dlQ == StreamQuality.LOSSLESS,
                 onDeezerLogin = { navController.navigate(com.music.spotui.ui.navigation.Routes.DeezerLogin.route) }
@@ -372,29 +372,29 @@ fun SettingsScreen(navController: NavController) {
                     .clip(RoundedCornerShape(10.dp))
                     .clickable {
                         com.music.spotui.di.SongPlayer.clearCaches(context)
-                        android.widget.Toast.makeText(context, "Stream cache cleared", android.widget.Toast.LENGTH_SHORT).show()
+                        android.widget.Toast.makeText(context, "Cache degli stream svuotata", android.widget.Toast.LENGTH_SHORT).show()
                     }
                     .background(Color(0xFF1E1E24))
                     .padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Clear Audio Stream Cache", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                    Text("Unlocks all cached streams and forces re-resolution", color = Color.Gray, fontSize = 11.sp)
+                    Text("Svuota cache degli stream audio", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Elimina tutti gli stream salvati e forza una nuova ricerca", color = Color.Gray, fontSize = 11.sp)
                 }
                 Icon(
                     imageVector = Icons.Default.Refresh,
-                    contentDescription = "Clear cache",
+                    contentDescription = "Svuota cache",
                     tint = Color.Gray,
                     modifier = Modifier.size(20.dp)
                 )
             }
 
-            var losslessStatusSummary by remember { mutableStateOf("Checking lossless mirrors…") }
+            var losslessStatusSummary by remember { mutableStateOf("Controllo dei server lossless…") }
             LaunchedEffect(Unit) {
                 providerStatuses = com.metrolist.spotify.SpotiFlac.getProviderStatuses()
                 val upCount = providerStatuses.count { it.isUp && !it.isCooldown }
-                losslessStatusSummary = "$upCount/${providerStatuses.size} online • Tap to inspect providers"
+                losslessStatusSummary = "$upCount/${providerStatuses.size} online • Tocca per vedere i fornitori"
             }
 
             Spacer(Modifier.height(6.dp))
@@ -407,7 +407,7 @@ fun SettingsScreen(navController: NavController) {
                             isRefreshingStatuses = true
                             providerStatuses = com.metrolist.spotify.SpotiFlac.getProviderStatuses()
                             val upCount = providerStatuses.count { it.isUp && !it.isCooldown }
-                            losslessStatusSummary = "$upCount/${providerStatuses.size} online • Tap to inspect providers"
+                            losslessStatusSummary = "$upCount/${providerStatuses.size} online • Tocca per vedere i fornitori"
                             isRefreshingStatuses = false
                             showProviderStatusDialog = true
                         }
@@ -417,12 +417,12 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Lossless Provider Status", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Stato dei fornitori lossless", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                     Text(losslessStatusSummary, color = Color(0xFFB3B3B3), fontSize = 12.sp)
                 }
                 Icon(
                     imageVector = Icons.Filled.Refresh,
-                    contentDescription = "Inspect Status",
+                    contentDescription = "Vedi stato",
                     tint = AppPalette,
                     modifier = Modifier.size(18.dp)
                 )
@@ -439,26 +439,26 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Audio Provider Priority", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Priorità dei fornitori audio", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                     Text(providerOrder.joinToString(" → ") { it.displayName }, color = Color(0xFFB3B3B3), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Icon(
                     imageVector = Icons.Filled.SwapVert,
-                    contentDescription = "Priority Order",
+                    contentDescription = "Ordine di priorità",
                     tint = AppPalette,
                     modifier = Modifier.size(18.dp)
                 )
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Deezer (preferred source)")
+            SectionTitle("Deezer (sorgente preferita)")
             var deezerEnabled by remember { mutableStateOf(com.music.spotui.data.preferences.isDeezerEnabled(context)) }
             val deezerConnected = com.music.spotui.data.preferences.getDeezerArl(context) != null
             val deezerTier = com.music.spotui.data.preferences.getDeezerTier(context)
 
             SettingsSwitchRow(
-                title = "Use Deezer",
-                subtitle = "Stream from Deezer first, fall back to YouTube",
+                title = "Usa Deezer",
+                subtitle = "Riproduci prima da Deezer, poi ripiega su YouTube",
                 checked = deezerEnabled,
             ) {
                 deezerEnabled = it
@@ -467,14 +467,14 @@ fun SettingsScreen(navController: NavController) {
             }
             Text(
                 text = if (deezerConnected) {
-                    "Connected" + if (deezerTier.isNotBlank()) " — $deezerTier" else ""
-                } else "Not connected",
+                    "Collegato" + if (deezerTier.isNotBlank()) " — $deezerTier" else ""
+                } else "Non collegato",
                 color = Color(0xFFB3B3B3),
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 4.dp, top = 2.dp),
             )
             Text(
-                text = if (deezerConnected) "Reconnect / switch account" else "Log in to Deezer",
+                text = if (deezerConnected) "Ricollega / cambia account" else "Accedi a Deezer",
                 color = AppPalette,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -488,7 +488,7 @@ fun SettingsScreen(navController: NavController) {
             )
             if (deezerConnected) {
                 Text(
-                    text = "Disconnect Deezer",
+                    text = "Scollega Deezer",
                     color = Color(0xFFE57373),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -506,16 +506,16 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("SpotiFLAC (experimental)")
+            SectionTitle("SpotiFLAC (sperimentale)")
             val sfConnected = com.music.spotui.data.preferences.hasSpotiflacSession(context)
             Text(
-                text = if (sfConnected) "Verified — signed session active" else "Not verified — tap below to solve Turnstile check",
+                text = if (sfConnected) "Verificato — sessione firmata attiva" else "Non verificato — tocca qui sotto per completare il controllo Turnstile",
                 color = Color(0xFFB3B3B3),
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 4.dp, top = 2.dp),
             )
             Text(
-                text = if (sfConnected) "Re-verify SpotiFLAC" else "Verify SpotiFLAC",
+                text = if (sfConnected) "Verifica di nuovo SpotiFLAC" else "Verify SpotiFLAC",
                 color = Color(0xFF00C7B7),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -529,10 +529,10 @@ fun SettingsScreen(navController: NavController) {
             )
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Matching")
+            SectionTitle("Abbinamento")
             SettingsSwitchRow(
-                title = "Allow video fallback",
-                subtitle = "Use regular YouTube videos only after Music song results fail",
+                title = "Consenti ripiego sui video",
+                subtitle = "Usa i normali video YouTube solo se i risultati di YouTube Music non funzionano",
                 checked = videoFallback,
             ) {
                 videoFallback = it
@@ -540,10 +540,10 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Playback")
+            SectionTitle("Riproduzione")
             SettingsSwitchRow(
-                title = "Auto-play on startup",
-                subtitle = "Resume playing the last track when the app opens",
+                title = "Riproduzione automatica all'avvio",
+                subtitle = "Riprendi l'ultimo brano quando apri l'app",
                 checked = autoPlay,
             ) {
                 autoPlay = it
@@ -551,21 +551,21 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Crossfade")
+            SectionTitle("Dissolvenza incrociata")
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Crossfade", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                Text("Dissolvenza incrociata", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                 Text(
-                    if (crossfadeMs <= 0f) "Off" else "${(crossfadeMs / 1000f).let { String.format("%.0f", it) }}s",
+                    if (crossfadeMs <= 0f) "Disattivata" else "${(crossfadeMs / 1000f).let { String.format("%.0f", it) }}s",
                     color = if (crossfadeMs <= 0f) Color(0xFFB3B3B3) else AppPalette,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
             Text(
-                "Blend the end of a song into the start of the next",
+                "Fondi la fine di un brano con l'inizio del successivo",
                 color = Color(0xFFB3B3B3),
                 fontSize = 13.sp,
             )
@@ -582,15 +582,15 @@ fun SettingsScreen(navController: NavController) {
                 ),
             )
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Updates")
+            SectionTitle("Aggiornamenti")
             Text(
-                "Update source repository",
+                "Repository per gli aggiornamenti",
                 color = Color.White,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                "GitHub repo URL used to check for new versions",
+                "URL del repository GitHub usato per cercare nuove versioni",
                 color = Color(0xFFB3B3B3),
                 fontSize = 12.sp,
             )
@@ -616,7 +616,7 @@ fun SettingsScreen(navController: NavController) {
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Reset to default",
+                        contentDescription = "Ripristina predefinito",
                         tint = if (updateRepoUrl != DEFAULT_UPDATE_REPO_URL) AppPalette else Color(0xFF444444),
                         modifier = Modifier
                             .padding(end = 4.dp)
@@ -628,7 +628,7 @@ fun SettingsScreen(navController: NavController) {
                 },
             )
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Backup & Restore")
+            SectionTitle("Backup e ripristino")
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -655,12 +655,12 @@ fun SettingsScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text("Back Up Now", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Esegui backup ora", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                         Text(
                             when {
-                                isBackingUp -> "Creating backup in background…"
-                                backupDirUri.isNullOrBlank() -> "Tap to choose folder & back up"
-                                else -> "Folder: $folderName"
+                                isBackingUp -> "Creazione del backup in background…"
+                                backupDirUri.isNullOrBlank() -> "Tocca per scegliere la cartella ed eseguire il backup"
+                                else -> "Cartella: $folderName"
                             },
                             color = if (backupDirUri.isNullOrBlank()) Color(0xFFFFB74D) else Color(0xFFB3B3B3),
                             fontSize = 12.sp,
@@ -676,7 +676,7 @@ fun SettingsScreen(navController: NavController) {
                     } else {
                         Icon(
                             imageVector = Icons.Filled.Save,
-                            contentDescription = "Back Up Now",
+                            contentDescription = "Esegui backup ora",
                             tint = AppPalette,
                             modifier = Modifier.size(22.dp)
                         )
@@ -695,7 +695,7 @@ fun SettingsScreen(navController: NavController) {
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Folder,
-                            contentDescription = "Change Backup Folder",
+                            contentDescription = "Cambia cartella di backup",
                             tint = Color.White,
                             modifier = Modifier.size(22.dp)
                         )
@@ -717,9 +717,9 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Restore from File", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Ripristina da file", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        if (isRestoring) "Restoring backup in background…" else "Import playlists and settings from a Spotui backup file",
+                        if (isRestoring) "Ripristino del backup in background…" else "Importa playlist e impostazioni da un file di backup di Spotui",
                         color = Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )
@@ -733,7 +733,7 @@ fun SettingsScreen(navController: NavController) {
                 } else {
                     Icon(
                         imageVector = Icons.Filled.FolderOpen,
-                        contentDescription = "Restore",
+                        contentDescription = "Ripristina",
                         tint = Color.White,
                         modifier = Modifier.size(22.dp)
                     )
@@ -743,8 +743,8 @@ fun SettingsScreen(navController: NavController) {
             Spacer(Modifier.height(8.dp))
 
             SettingsSwitchRow(
-                title = "Automatic backup",
-                subtitle = if (backupDirUri.isNullOrBlank()) "Automatically backs up settings and playlists when app opens" else "Auto-backup saved to $folderName",
+                title = "Backup automatico",
+                subtitle = if (backupDirUri.isNullOrBlank()) "Salva automaticamente impostazioni e playlist quando apri l'app" else "Backup automatico salvato in $folderName",
                 checked = isAutoBackup,
             ) { enabled ->
                 if (enabled && backupDirUri.isNullOrBlank()) {
@@ -759,7 +759,7 @@ fun SettingsScreen(navController: NavController) {
             }
 
             Spacer(Modifier.height(12.dp))
-            SectionTitle("Troubleshooting")
+            SectionTitle("Risoluzione problemi")
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -770,7 +770,7 @@ fun SettingsScreen(navController: NavController) {
                             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                                 android.widget.Toast.makeText(
                                     context,
-                                    "YouTube session & stream caches reset",
+                                    "Sessione YouTube e cache degli stream reimpostate",
                                     android.widget.Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -781,16 +781,16 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("Reset YouTube & Bot Session", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Reimposta sessione YouTube e anti-bot", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        "Clears session tokens, visitor ID, PoToken generator, and resolved stream caches",
+                        "Cancella token di sessione, ID visitatore, generatore PoToken e cache degli stream",
                         color = Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )
                 }
                 Icon(
                     imageVector = Icons.Filled.Refresh,
-                    contentDescription = "Reset Session",
+                    contentDescription = "Reimposta sessione",
                     tint = AppPalette,
                     modifier = Modifier.size(20.dp)
                 )
@@ -799,7 +799,7 @@ fun SettingsScreen(navController: NavController) {
             Spacer(Modifier.height(12.dp))
             SectionTitle("Account")
             Text(
-                text = "Log out",
+                text = "Esci",
                 color = Color(0xFFE57373),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -825,7 +825,7 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Maintained with ♥ by ",
+                    text = "Mantenuto con ♥ da ",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
@@ -868,13 +868,13 @@ fun SettingsScreen(navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Lossless Provider Status", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                        Text("Stato dei fornitori lossless", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                         if (isRefreshingStatuses) {
                             CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = AppPalette)
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.Refresh,
-                                contentDescription = "Refresh",
+                                contentDescription = "Aggiorna",
                                 tint = Color.White,
                                 modifier = Modifier
                                     .size(22.dp)
@@ -915,7 +915,7 @@ fun SettingsScreen(navController: NavController) {
                                 }
                                 Spacer(Modifier.width(6.dp))
                                 val (statusText, statusBg, statusFg) = when {
-                                    status.isCooldown -> Triple("Cooldown (${status.cooldownRemainingSec}s)", Color(0x33FFB74D), Color(0xFFFFB74D))
+                                    status.isCooldown -> Triple("In pausa (${status.cooldownRemainingSec}s)", Color(0x33FFB74D), Color(0xFFFFB74D))
                                     status.isUp -> Triple("Online", Color(0x3381C784), Color(0xFF81C784))
                                     else -> Triple("Offline", Color(0x33E57373), Color(0xFFE57373))
                                 }
@@ -933,7 +933,7 @@ fun SettingsScreen(navController: NavController) {
                 },
                 confirmButton = {
                     TextButton(onClick = { showProviderStatusDialog = false }) {
-                        Text("Close", color = AppPalette)
+                        Text("Chiudi", color = AppPalette)
                     }
                 },
                 containerColor = Color(0xFF141418),
@@ -946,10 +946,10 @@ fun SettingsScreen(navController: NavController) {
             var disabledSet by remember { mutableStateOf(com.music.spotui.data.preferences.getDisabledAudioProviders(context)) }
             AlertDialog(
                 onDismissRequest = { showProviderOrderDialog = false },
-                title = { Text("Audio Provider Priority", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+                title = { Text("Priorità dei fornitori audio", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
                 text = {
                     Column {
-                        Text("Check to enable/disable and re-order providers for streaming & downloads:", color = Color.Gray, fontSize = 12.sp)
+                        Text("Seleziona per attivare/disattivare e riordinare i fornitori per streaming e download:", color = Color.Gray, fontSize = 12.sp)
                         Spacer(Modifier.height(8.dp))
                         providerOrder.forEachIndexed { index, item ->
                             val isYoutube = item == AudioProviderOrderItem.YOUTUBE_MUSIC
@@ -977,7 +977,7 @@ fun SettingsScreen(navController: NavController) {
                                     )
                                 }
                                 Text(
-                                    text = "${index + 1}. ${item.displayName}" + if (isYoutube) " (Always Fallback)" else "",
+                                    text = "${index + 1}. ${item.displayName}" + if (isYoutube) " (sempre come riserva)" else "",
                                     color = if (isEnabled) Color.White else Color.Gray,
                                     fontSize = 14.sp,
                                     modifier = Modifier.weight(1f)
@@ -991,7 +991,7 @@ fun SettingsScreen(navController: NavController) {
                                         providerOrder = mutable
                                         setAudioProviderOrder(context, mutable)
                                     }) {
-                                        Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Move up", tint = AppPalette)
+                                        Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Sposta su", tint = AppPalette)
                                     }
                                 }
                                 if (index < providerOrder.size - 1) {
@@ -1003,7 +1003,7 @@ fun SettingsScreen(navController: NavController) {
                                         providerOrder = mutable
                                         setAudioProviderOrder(context, mutable)
                                     }) {
-                                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Move down", tint = AppPalette)
+                                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Sposta giù", tint = AppPalette)
                                     }
                                 }
                             }
@@ -1012,7 +1012,7 @@ fun SettingsScreen(navController: NavController) {
                 },
                 confirmButton = {
                     TextButton(onClick = { showProviderOrderDialog = false }) {
-                        Text("Done", color = AppPalette)
+                        Text("Fatto", color = AppPalette)
                     }
                 },
                 containerColor = Color(0xFF141418),
@@ -1097,7 +1097,7 @@ private fun QualityPicker(
                     if (isSel) {
                         Icon(
                             imageVector = Icons.Filled.Check,
-                            contentDescription = "Selected",
+                            contentDescription = "Selezionato",
                             tint = AppPalette,
                             modifier = Modifier.size(20.dp)
                         )
@@ -1114,14 +1114,14 @@ private fun QualityPicker(
                             .padding(horizontal = 12.dp, vertical = 10.dp)
                     ) {
                         Text(
-                            text = "⚠️ Deezer Login Recommended for Lossless",
+                            text = "⚠️ Accesso a Deezer consigliato per il lossless",
                             color = Color(0xFFFFB74D),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = "Deezer is the most reliable & successful provider for Lossless FLAC playback and downloads. Please log in to Deezer for optimal Lossless availability.",
+                            text = "Deezer è il fornitore più affidabile per riprodurre e scaricare in FLAC lossless. Accedi a Deezer per avere il lossless sul maggior numero di brani.",
                             color = Color(0xFFFFE0B2),
                             fontSize = 12.sp,
                             lineHeight = 16.sp,
@@ -1129,7 +1129,7 @@ private fun QualityPicker(
                         Spacer(Modifier.height(8.dp))
                         if (deezerConnected) {
                             Text(
-                                text = "✓ Deezer account connected (Lossless ready)",
+                                text = "✓ Account Deezer collegato (lossless pronto)",
                                 color = Color(0xFF1ED760),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -1144,7 +1144,7 @@ private fun QualityPicker(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Log in to Deezer now",
+                                    text = "Accedi a Deezer ora",
                                     color = Color.Black,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold

@@ -440,9 +440,9 @@ class PlaybackService : MediaLibraryService() {
             RepeatMode.ALL -> R.drawable.ic_repeat      // plain arrows = loop all
         }
         val repeatLabel = when (mode) {
-            RepeatMode.OFF -> "Repeat off"
-            RepeatMode.ONE -> "Repeat one"
-            RepeatMode.ALL -> "Repeat all"
+            RepeatMode.OFF -> "Ripeti disattivato"
+            RepeatMode.ONE -> "Ripeti brano"
+            RepeatMode.ALL -> "Ripeti tutto"
         }
         val repeatButton = CommandButton.Builder()
             .setDisplayName(repeatLabel)
@@ -451,7 +451,7 @@ class PlaybackService : MediaLibraryService() {
             .build()
 
         val closeButton = CommandButton.Builder()
-            .setDisplayName("Close")
+            .setDisplayName("Chiudi")
             .setSessionCommand(SessionCommand("ACTION_CLOSE", Bundle.EMPTY))
             .setIconResId(R.drawable.ic_close)
             .build()
@@ -663,22 +663,22 @@ class PlaybackService : MediaLibraryService() {
                 parentId == ROOT -> listOf(
                     folder(
                         NODE_LIKED,
-                        "Liked Songs",
+                        "Brani che ti piacciono",
                         mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
                     ),
                     folder(
                         NODE_DOWNLOADS,
-                        "Downloads",
+                        "Download",
                         mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
                     ),
                     folder(
                         NODE_PLAYLISTS,
-                        "Playlists",
+                        "Playlist",
                         mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
                     ),
                     folder(
                         NODE_ALBUMS,
-                        "Albums",
+                        "Album",
                         mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS
                     ),
                 )

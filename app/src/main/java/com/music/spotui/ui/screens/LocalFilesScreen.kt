@@ -89,7 +89,7 @@ fun LocalFilesScreen(navController: NavController) {
             withContext(Dispatchers.Main) {
                 songs = getLocalSongs(context)
                 importing = false
-                toast("Imported ${tracks.size} song${if (tracks.size == 1) "" else "s"}")
+                toast("Importat${if (tracks.size == 1) "o 1 brano" else "i ${tracks.size} brani"}")
             }
         }
     }
@@ -105,7 +105,7 @@ fun LocalFilesScreen(navController: NavController) {
             withContext(Dispatchers.Main) {
                 songs = getLocalSongs(context)
                 importing = false
-                toast("Imported ${tracks.size} song${if (tracks.size == 1) "" else "s"} from folder")
+                toast("Importat${if (tracks.size == 1) "o 1 brano" else "i ${tracks.size} brani"} dalla cartella")
             }
         }
     }
@@ -133,7 +133,7 @@ fun LocalFilesScreen(navController: NavController) {
                         containerColor = Color.Transparent,
                         titleContentColor = Color.White,
                     ),
-                    title = { Text("Local files", color = Color.White, fontWeight = FontWeight.Bold) },
+                    title = { Text("File locali", color = Color.White, fontWeight = FontWeight.Bold) },
                 )
             },
         ) { innerPadding ->
@@ -146,14 +146,14 @@ fun LocalFilesScreen(navController: NavController) {
                     .verticalScroll(rememberScrollState()),
             ) {
                 Text(
-                    text = "On this device",
+                    text = "Su questo dispositivo",
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(20.dp, 8.dp, 20.dp, 2.dp),
                 )
                 Text(
-                    text = if (songs.isEmpty()) "Import FLAC, MP3, WAV and more" else "${songs.size} songs",
+                    text = if (songs.isEmpty()) "Import FLAC, MP3, WAV and more" else "${songs.size} brani",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 12.dp),
@@ -164,16 +164,16 @@ fun LocalFilesScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth().padding(20.dp, 0.dp, 20.dp, 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    ImportButton("Add songs", accent, Modifier.weight(1f), enabled = !importing) {
+                    ImportButton("Aggiungi brani", accent, Modifier.weight(1f), enabled = !importing) {
                         addSongs.launch(arrayOf("audio/*"))
                     }
-                    ImportButton("Add folder", Color(0xFF2A2A33), Modifier.weight(1f), enabled = !importing) {
+                    ImportButton("Aggiungi cartella", Color(0xFF2A2A33), Modifier.weight(1f), enabled = !importing) {
                         addFolder.launch(null)
                     }
                 }
                 if (importing) {
                     Text(
-                        "Importing…",
+                        "Importazione…",
                         color = accent,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(20.dp, 2.dp),
@@ -184,7 +184,7 @@ fun LocalFilesScreen(navController: NavController) {
 
                 if (songs.isEmpty()) {
                     Text(
-                        text = "No local music yet. Tap “Add songs” or “Add folder” to import from your device.",
+                        text = "Ancora nessuna musica locale. Tocca “Aggiungi brani” o “Aggiungi cartella” per importarla dal dispositivo.",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(20.dp),
@@ -204,7 +204,7 @@ fun LocalFilesScreen(navController: NavController) {
                                     onLongClick = {
                                         removeLocalTrack(context, song.url)
                                         songs = getLocalSongs(context)
-                                        toast("Removed from library")
+                                        toast("Rimosso dalla libreria")
                                     },
                                     onClick = {
                                         playerViewModel.updateQueue(songs)
@@ -231,7 +231,7 @@ fun LocalFilesScreen(navController: NavController) {
                         }
                     }
                     Text(
-                        text = "Long-press a song to remove it from your library.",
+                        text = "Tieni premuto un brano per rimuoverlo dalla libreria.",
                         color = Color(0xFF6A6A6A),
                         fontSize = 11.sp,
                         modifier = Modifier.padding(20.dp, 12.dp),

@@ -26,21 +26,21 @@ object BatteryOptimizationHelper {
 
     fun getManufacturerTips(): Pair<String, String>? = when (Build.MANUFACTURER.lowercase()) {
         "xiaomi", "redmi", "poco" -> "Xiaomi / MIUI" to
-            "Settings > Apps > Manage apps > Spotui > Battery saver > No restrictions"
+            "Impostazioni > App > Gestisci app > Spotui > Risparmio batteria > Nessuna restrizione"
         "huawei", "honor" -> "Huawei / EMUI" to
-            "Settings > Apps > Apps > Spotui > Battery > Allow background activity"
+            "Impostazioni > App > App > Spotui > Batteria > Consenti attività in background"
         "samsung" -> "Samsung / One UI" to
-            "Settings > Apps > Spotui > Battery > Allow background activity"
+            "Impostazioni > App > Spotui > Batteria > Consenti attività in background"
         "oneplus", "realme" -> "OnePlus / ColorOS" to
-            "Settings > Apps > Spotui > Battery usage > Allow background activity"
+            "Impostazioni > App > Spotui > Utilizzo batteria > Consenti attività in background"
         "oppo" -> "OPPO / ColorOS" to
-            "Settings > Apps > Spotui > Battery usage > Allow background activity"
+            "Impostazioni > App > Spotui > Utilizzo batteria > Consenti attività in background"
         "vivo" -> "Vivo / Funtouch" to
-            "Settings > Apps > Spotui > Battery > Background restriction > Unrestricted"
+            "Impostazioni > App > Spotui > Batteria > Limitazione in background > Senza restrizioni"
         "sony" -> "Sony / Xperia" to
-            "Settings > Apps > Spotui > Battery > Battery optimization > Don't optimize"
+            "Impostazioni > App > Spotui > Batteria > Ottimizzazione batteria > Non ottimizzare"
         "nothing" -> "Nothing OS" to
-            "Settings > Apps > Spotui > Battery > Unrestricted"
+            "Impostazioni > App > Spotui > Batteria > Senza restrizioni"
         else -> null
     }
 }

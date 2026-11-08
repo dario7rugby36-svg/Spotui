@@ -160,7 +160,7 @@ fun QueueContent(
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Close",
+                contentDescription = "Chiudi",
                 tint = Color.White,
                 modifier = Modifier
                     .size(28.dp)
@@ -170,7 +170,7 @@ fun QueueContent(
                     ) { onClose() }
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Queue", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("Coda", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
 
         val listState = androidx.compose.foundation.lazy.rememberLazyListState()
@@ -184,7 +184,7 @@ fun QueueContent(
                 current?.let {
                     item {
                         Text(
-                            "Now playing",
+                            "In riproduzione",
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
@@ -201,7 +201,7 @@ fun QueueContent(
                 if (upcoming.isNotEmpty()) {
                     item {
                         Text(
-                            "Next up",
+                            "Prossimi brani",
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
@@ -228,7 +228,7 @@ fun QueueContent(
                                         .background(Color(0xFF7A1F1F))
                                         .padding(horizontal = 24.dp),
                                 ) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Remove", tint = Color.White)
+                                    Icon(Icons.Default.Delete, contentDescription = "Rimuovi", tint = Color.White)
                                 }
                             },
                             modifier = Modifier.graphicsLayer {
@@ -343,7 +343,7 @@ private fun QueueRow(
         if (!highlight && dragHandle != null) {
             Icon(
                 imageVector = Icons.Default.Menu,
-                contentDescription = "Reorder",
+                contentDescription = "Riordina",
                 tint = Color(0xFFB3B3B3),
                 modifier = Modifier
                     .size(28.dp)

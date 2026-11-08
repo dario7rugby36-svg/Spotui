@@ -6,16 +6,16 @@ private const val PREF_SORT = "app_sort_preferences"
 
 // ── Album Sort ──
 enum class AlbumSortOption(val label: String) {
-    DEFAULT("Track order"),
-    TITLE("Title"),
-    ARTIST("Artist"),
-    DURATION("Duration");
+    DEFAULT("Ordine dei brani"),
+    TITLE("Titolo"),
+    ARTIST("Artista"),
+    DURATION("Durata");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        DEFAULT -> if (isDescending) "Track order (reverse)" else "Track order (default)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        ARTIST -> if (isDescending) "Artist (Z to A)" else "Artist (A to Z)"
-        DURATION -> if (isDescending) "Duration (longest first)" else "Duration (shortest first)"
+        DEFAULT -> if (isDescending) "Ordine dei brani (inverso)" else "Ordine dei brani (predefinito)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        ARTIST -> if (isDescending) "Artista (Z-A)" else "Artista (A-Z)"
+        DURATION -> if (isDescending) "Durata (dalla più lunga)" else "Durata (dalla più corta)"
     }
 }
 
@@ -39,14 +39,14 @@ fun setAlbumSortOption(context: Context, albumId: String, option: AlbumSortOptio
 
 // ── Show / Podcast Sort ──
 enum class ShowSortOption(val label: String) {
-    DATE("Date published"),
-    TITLE("Title"),
-    DURATION("Duration");
+    DATE("Data di pubblicazione"),
+    TITLE("Titolo"),
+    DURATION("Durata");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        DATE -> if (isDescending) "Date (newest to oldest)" else "Date (oldest to newest)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        DURATION -> if (isDescending) "Duration (longest first)" else "Duration (shortest first)"
+        DATE -> if (isDescending) "Data (dalla più recente)" else "Data (dalla meno recente)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        DURATION -> if (isDescending) "Durata (dalla più lunga)" else "Durata (dalla più corta)"
     }
 }
 
@@ -70,15 +70,15 @@ fun setShowSortOption(context: Context, showId: String, option: ShowSortOption, 
 
 // ── Liked Songs Sort ──
 enum class LikedSongsSortOption(val label: String) {
-    DATE("Date added"),
-    TITLE("Title"),
-    ARTIST("Artist"),
+    DATE("Data di aggiunta"),
+    TITLE("Titolo"),
+    ARTIST("Artista"),
     ALBUM("Album");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        DATE -> if (isDescending) "Date added (newest to oldest)" else "Date added (oldest to newest)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        ARTIST -> if (isDescending) "Artist (Z to A)" else "Artist (A to Z)"
+        DATE -> if (isDescending) "Data di aggiunta (dalla più recente)" else "Data di aggiunta (dalla meno recente)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        ARTIST -> if (isDescending) "Artista (Z-A)" else "Artista (A-Z)"
         ALBUM -> if (isDescending) "Album (Z to A)" else "Album (A to Z)"
     }
 }
@@ -103,14 +103,14 @@ fun setLikedSongsSortOption(context: Context, option: LikedSongsSortOption, desc
 
 // ── History Sort ──
 enum class HistorySortOption(val label: String) {
-    DATE("Recently played"),
-    TITLE("Title"),
-    ARTIST("Artist");
+    DATE("Ascoltati di recente"),
+    TITLE("Titolo"),
+    ARTIST("Artista");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        DATE -> if (isDescending) "Recently played (newest to oldest)" else "Recently played (oldest to newest)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        ARTIST -> if (isDescending) "Artist (Z to A)" else "Artist (A to Z)"
+        DATE -> if (isDescending) "Ascoltati di recente (dal più recente)" else "Ascoltati di recente (dal meno recente)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        ARTIST -> if (isDescending) "Artista (Z-A)" else "Artista (A-Z)"
     }
 }
 
@@ -134,14 +134,14 @@ fun setHistorySortOption(context: Context, option: HistorySortOption, desc: Bool
 
 // ── Library Sort ──
 enum class LibrarySortOption(val label: String) {
-    RECENTS("Recently added"),
-    TITLE("Title"),
-    CREATOR("Artist / Creator");
+    RECENTS("Aggiunti di recente"),
+    TITLE("Titolo"),
+    CREATOR("Artista / Autore");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        RECENTS -> if (isDescending) "Recently added (newest first)" else "Recently added (oldest first)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        CREATOR -> if (isDescending) "Artist / Creator (Z to A)" else "Artist / Creator (A to Z)"
+        RECENTS -> if (isDescending) "Aggiunti di recente (dal più recente)" else "Aggiunti di recente (dal meno recente)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        CREATOR -> if (isDescending) "Artista / Autore (Z-A)" else "Artista / Autore (A-Z)"
     }
 }
 
@@ -167,15 +167,15 @@ fun setLibrarySortOption(context: Context, option: LibrarySortOption, desc: Bool
 private const val PREF_PLAYLIST_SORTS = "PlaylistSorts"
 
 enum class PlaylistSortOption(val label: String) {
-    DATE("Date added"),
-    TITLE("Title"),
-    ARTIST("Artist"),
+    DATE("Data di aggiunta"),
+    TITLE("Titolo"),
+    ARTIST("Artista"),
     ALBUM("Album");
 
     fun getDescriptiveLabel(isDescending: Boolean): String = when (this) {
-        DATE -> if (isDescending) "Date added (newest to oldest)" else "Date added (oldest to newest)"
-        TITLE -> if (isDescending) "Title (Z to A)" else "Title (A to Z)"
-        ARTIST -> if (isDescending) "Artist (Z to A)" else "Artist (A to Z)"
+        DATE -> if (isDescending) "Data di aggiunta (dalla più recente)" else "Data di aggiunta (dalla meno recente)"
+        TITLE -> if (isDescending) "Titolo (Z-A)" else "Titolo (A-Z)"
+        ARTIST -> if (isDescending) "Artista (Z-A)" else "Artista (A-Z)"
         ALBUM -> if (isDescending) "Album (Z to A)" else "Album (A to Z)"
     }
 }

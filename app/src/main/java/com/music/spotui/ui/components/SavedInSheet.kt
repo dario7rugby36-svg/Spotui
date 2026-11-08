@@ -71,7 +71,7 @@ import kotlinx.coroutines.withContext
 private val SpotifyGreen = Color(0xFF1ED760)
 
 /**
- * Spotify-style "Saved in" sheet: Liked Songs plus local playlists and Spotify user playlists.
+ * Spotify-style "Salvato in" sheet: Liked Songs plus local playlists and Spotify user playlists.
  * Allows toggling tracks into/out of playlists and creating new local playlists stored on device.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -117,14 +117,14 @@ fun SavedInSheet(
     }
 
     fun createNow() {
-        val name = newName.trim().ifBlank { "My Playlist" }
+        val name = newName.trim().ifBlank { "La mia playlist" }
         isCreatingPlaylist = true
         newName = ""
         val created = LocalPlaylistPref.createPlaylist(context, name, song)
         localPlaylists = LocalPlaylistPref.getLocalPlaylists(context)
         membership[created.id] = true
         Api.HomeCache.library = null
-        android.widget.Toast.makeText(context, "Playlist '$name' created", android.widget.Toast.LENGTH_SHORT).show()
+        android.widget.Toast.makeText(context, "Playlist '$name' creata", android.widget.Toast.LENGTH_SHORT).show()
         creating = false
         isCreatingPlaylist = false
     }
@@ -142,9 +142,9 @@ fun SavedInSheet(
                     .fillMaxWidth()
                     .padding(20.dp, 4.dp, 20.dp, 12.dp),
             ) {
-                Text("Saved in", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Salvato in", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "New playlist",
+                    "Nuova playlist",
                     color = SpotifyGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -162,7 +162,7 @@ fun SavedInSheet(
                     value = newName,
                     onValueChange = { newName = it },
                     singleLine = true,
-                    placeholder = { Text("Playlist name", color = Color.Gray) },
+                    placeholder = { Text("Nome della playlist", color = Color.Gray) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { createNow() }),
                     colors = TextFieldDefaults.colors(
@@ -181,7 +181,7 @@ fun SavedInSheet(
                 )
                 Row(modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 12.dp)) {
                     Text(
-                        if (isCreatingPlaylist) "Creating..." else "Create",
+                        if (isCreatingPlaylist) "Creazione…" else "Crea",
                         color = if (isCreatingPlaylist) Color.Gray else SpotifyGreen,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -193,7 +193,7 @@ fun SavedInSheet(
                     )
                     Spacer(Modifier.width(24.dp))
                     Text(
-                        "Cancel",
+                        "Annulla",
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier = Modifier.clickable(
@@ -209,8 +209,8 @@ fun SavedInSheet(
                 // ── Liked Songs ──
                 item {
                     SavedInRow(
-                        name = "Liked Songs",
-                        subtitle = "Liked tracks",
+                        name = "Brani che ti piacciono",
+                        subtitle = "Brani che ti piacciono",
                         saved = liked,
                         isLocal = false,
                         cover = {
@@ -241,7 +241,7 @@ fun SavedInSheet(
                     val saved = membership[pl.id] ?: LocalPlaylistPref.isSongInPlaylist(context, pl.id, song.id, song.spotifyTrackId)
                     SavedInRow(
                         name = pl.name,
-                        subtitle = "${pl.songs.size} song" + (if (pl.songs.size == 1) "" else "s"),
+                        subtitle = "${pl.songs.size} " + (if (pl.songs.size == 1) "brano" else "brani"),
                         saved = saved,
                         isLocal = true,
                         cover = {
@@ -284,7 +284,7 @@ fun SavedInSheet(
                     val saved = membership[pl.id] == true
                     SavedInRow(
                         name = pl.name,
-                        subtitle = pl.tracks?.total?.let { n -> "$n song" + (if (n == 1) "" else "s") } ?: "",
+                        subtitle = pl.tracks?.total?.let { n -> "$n " + (if (n == 1) "brano" else "brani") } ?: "",
                         saved = saved,
                         isLocal = false,
                         cover = {
@@ -342,7 +342,7 @@ private fun SavedInRow(
                 if (isLocal) {
                     Icon(
                         imageVector = Icons.Default.PhoneAndroid,
-                        contentDescription = "Local Storage",
+                        contentDescription = "Memoria locale",
                         tint = SpotifyGreen,
                         modifier = Modifier
                             .size(14.dp)
@@ -355,9 +355,9 @@ private fun SavedInRow(
             }
         }
         if (saved) {
-            Icon(Icons.Default.CheckCircle, contentDescription = "Saved", tint = SpotifyGreen, modifier = Modifier.size(26.dp))
+            Icon(Icons.Default.CheckCircle, contentDescription = "Salvato", tint = SpotifyGreen, modifier = Modifier.size(26.dp))
         } else {
-            Icon(Icons.Default.Add, contentDescription = "Add", tint = Color(0xFFB3B3B3), modifier = Modifier.size(26.dp))
+            Icon(Icons.Default.Add, contentDescription = "Aggiungi", tint = Color(0xFFB3B3B3), modifier = Modifier.size(26.dp))
         }
     }
 }

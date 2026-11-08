@@ -420,7 +420,7 @@ fun MiniPlayer(navController: NavHostController) {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) { showSavedIn = true },
-                        contentDescription = "Saved",
+                        contentDescription = "Salvato",
                     )
                 } else {
                     Icon(
@@ -441,7 +441,7 @@ fun MiniPlayer(navController: NavHostController) {
                             ),
                         painter = painterResource(id = R.drawable.ic_add),
                         tint = Color.White,
-                        contentDescription = "Add",
+                        contentDescription = "Aggiungi",
                     )
                 }
 
@@ -635,7 +635,7 @@ fun SwipeToPlayNextWrapper(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_queue_add),
-                    contentDescription = "Play next",
+                    contentDescription = "Riproduci dopo",
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
@@ -654,7 +654,7 @@ fun AppSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "What do you want to listen to?",
+    placeholder: String = "Cosa vuoi ascoltare?",
     focusRequester: FocusRequester? = null,
     onFocusChange: ((Boolean) -> Unit)? = null,
     onClear: (() -> Unit)? = null,
@@ -677,7 +677,7 @@ fun AppSearchBar(
         Icon(
             painter = painterResource(id = R.drawable.ic_search_big),
             tint = Color(0xFFB3B3B3),
-            contentDescription = "Search",
+            contentDescription = "Cerca",
             modifier = Modifier
                 .size(22.dp)
                 .clickable(
@@ -735,7 +735,7 @@ fun AppSearchBar(
         if (query.isNotEmpty()) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Clear",
+                contentDescription = "Cancella",
                 tint = Color(0xFFB3B3B3),
                 modifier = Modifier
                     .size(20.dp)

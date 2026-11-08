@@ -55,7 +55,7 @@ fun DeezerLoginScreen(navController: NavController, next: String = "") {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var statusMessage by remember { mutableStateOf("Log in to Deezer") }
+    var statusMessage by remember { mutableStateOf("Accedi a Deezer") }
     var hasError by remember { mutableStateOf(false) }
     val captured = remember { AtomicBoolean(false) }
 
@@ -66,7 +66,7 @@ fun DeezerLoginScreen(navController: NavController, next: String = "") {
             if (captured.get()) continue
             val arl = extractDeezerCookie("arl")
             if (!arl.isNullOrBlank() && captured.compareAndSet(false, true)) {
-                statusMessage = "Connecting…"
+                statusMessage = "Connessione…"
                 setDeezerArl(context, arl)
                 scope.launch(Dispatchers.IO) {
                     DeezerSession.setArl(arl)
@@ -74,11 +74,11 @@ fun DeezerLoginScreen(navController: NavController, next: String = "") {
                     val tier = when (DeezerSession.entitledQuality) {
                         DeezerSession.QUALITY_FLAC -> "Premium (FLAC)"
                         DeezerSession.QUALITY_MP3_320 -> "Premium (MP3 320)"
-                        else -> "Free (MP3 128)"
+                        else -> "Gratuito (MP3 128)"
                     }
                     setDeezerTier(context, tier)
                     withContext(Dispatchers.Main) {
-                        statusMessage = "Signed in — $tier"
+                        statusMessage = "Accesso effettuato — $tier"
                         delay(400)
                         if (next == "home") {
                             // Onboarding order is Spotify → Deezer → SpotiFLAC: hand off

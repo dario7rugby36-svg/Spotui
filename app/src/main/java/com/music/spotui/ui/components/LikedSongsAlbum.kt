@@ -80,7 +80,7 @@ fun LikedSongsScreen(
     val playerViewModel : PlayerViewModel = hiltViewModel()
 
 
-    val album = albums.filter { it.name == "Liked Songs" }
+    val album = albums.filter { it.name == "Brani che ti piacciono" }
     val likesSongIds = getLikedSongIds(context)
     var likedSongs  by remember { mutableStateOf(emptyList<SongsModel>()) }
 
@@ -177,12 +177,12 @@ fun LikedSongsScreen(
                             .width(200.dp)
                     ) {
                         Text(modifier = Modifier,
-                            text = "Liked Songs",
+                            text = "Brani che ti piacciono",
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold)
                         Text(modifier = Modifier,
-                            text = " ${likedSongs.size} songs",
+                            text = " ${likedSongs.size} brani",
                             color = Color.Gray,
                             letterSpacing = 0.sp,
                             fontSize = 12.sp,
@@ -207,11 +207,11 @@ fun LikedSongsScreen(
                                         playerViewModel.addAllToQueue(likedSongs)
                                         android.widget.Toast.makeText(
                                             context,
-                                            "${likedSongs.size} track(s) added to queue",
+                                            "${likedSongs.size} brani aggiunti alla coda",
                                             android.widget.Toast.LENGTH_SHORT,
                                         ).show()
                                     },
-                                contentDescription = "Add to queue",
+                                contentDescription = "Aggiungi alla coda",
                             )
                         }
 
@@ -234,7 +234,7 @@ fun LikedSongsScreen(
                                             true,
                                             likedSongs[0].id,
                                             0,
-                                            "Liked Songs"
+                                            "Brani che ti piacciono"
                                         )
                                         SongPlayer.playSong(likedSongs[0].url, context, "song/${likedSongs[0].id}")
                                     }
@@ -280,7 +280,7 @@ fun LikedSongsScreen(
                             playerViewModel.playNext(likedSongs[song])
                             android.widget.Toast.makeText(
                                 context,
-                                "${likedSongs[song].title} will play next",
+                                "${likedSongs[song].title} verrà riprodotto dopo",
                                 android.widget.Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -303,7 +303,7 @@ fun LikedSongsScreen(
                                         true,
                                         likedSongs[song].id,
                                         song,
-                                        "Liked Songs"
+                                        "Brani che ti piacciono"
                                     )
                                     SongPlayer.playSong(likedSongs[song].url, context, "song/${likedSongs[song].id}")
                                 }

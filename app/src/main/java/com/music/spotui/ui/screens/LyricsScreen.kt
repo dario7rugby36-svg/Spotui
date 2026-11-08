@@ -287,13 +287,13 @@ fun LyricsScreen(
                     .padding(16.dp, 8.dp)
             ) {
                 Column(modifier = Modifier.padding(end = 12.dp)) {
-                    Text("Lyrics", color = Color.White.copy(alpha = 0.7f), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("Testo", color = Color.White.copy(alpha = 0.7f), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Close",
+                        contentDescription = "Chiudi",
                         tint = Color.White,
                         modifier = Modifier
                             .size(30.dp)
@@ -318,7 +318,7 @@ fun LyricsScreen(
                         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("Couldn't find lyrics for this track", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
+                        Text("Impossibile trovare il testo di questo brano", color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp)
                     }
                 is LyricsViewModel.State.Loaded -> {
                     val lyrics = s.lyrics
@@ -379,7 +379,7 @@ private fun TranslateFloatingPanel(vm: LyricsViewModel, modifier: Modifier = Mod
                     ) {
                         Icon(
                             imageVector = Icons.Default.ClearAll,
-                            contentDescription = "Clear translation",
+                            contentDescription = "Rimuovi traduzione",
                             tint = Color.Black,
                             modifier = Modifier.size(16.dp),
                         )
@@ -411,7 +411,7 @@ private fun TranslateFloatingPanel(vm: LyricsViewModel, modifier: Modifier = Mod
         ) {
             Icon(
                 imageVector = Icons.Default.Translate,
-                contentDescription = "Translate",
+                contentDescription = "Traduci",
                 tint = if (vm.showLanguageBar) Color(0xFF1DB954) else Color.White,
                 modifier = Modifier.size(24.dp),
             )
@@ -419,13 +419,13 @@ private fun TranslateFloatingPanel(vm: LyricsViewModel, modifier: Modifier = Mod
     }
 }
 
-/** How many lines the inline lyrics card previews before "Show lyrics". */
+/** How many lines the inline lyrics card previews before "Mostra testo". */
 private const val PREVIEW_LINE_COUNT = 5
 
 /**
  * Inline lyrics card shown in the Now Playing scroll (no full-screen chrome).
  * Spotify-style *preview*: only a handful of lines (following the active synced
- * line) plus a "Show lyrics" button that opens the full-screen lyrics view.
+ * line) plus a "Mostra testo" button that opens the full-screen lyrics view.
  */
 @Composable
 fun InlineLyrics(
@@ -478,15 +478,15 @@ fun InlineLyrics(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Lyrics preview", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("Anteprima testo", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(12.dp))
 
         when (val s = state) {
             is LyricsViewModel.State.Loading ->
-                Text("Loading lyrics…", color = Color.White.copy(alpha = 0.8f), fontSize = 15.sp)
+                Text("Caricamento testo…", color = Color.White.copy(alpha = 0.8f), fontSize = 15.sp)
             is LyricsViewModel.State.NotFound ->
-                Text("No lyrics found for this track", color = Color.White.copy(alpha = 0.8f), fontSize = 15.sp)
+                Text("Nessun testo trovato per questo brano", color = Color.White.copy(alpha = 0.8f), fontSize = 15.sp)
             is LyricsViewModel.State.Loaded -> {
                 val lyrics = s.lyrics
                 val activeIndex = activeIndexFor(lyrics, positionMs)
@@ -520,7 +520,7 @@ fun InlineLyrics(
                         ) { onExpand() }
                         .padding(16.dp, 8.dp)
                 ) {
-                    Text("Show lyrics", color = Color.Black, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Mostra testo", color = Color.Black, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
@@ -580,7 +580,7 @@ private fun TranslationBar(vm: LyricsViewModel) {
                         modifier = Modifier.size(14.dp),
                     )
                     Text(
-                        text = "  Downloading\u2026",
+                        text = "  Download\u2026",
                         color = Color.White.copy(alpha = 0.8f),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -602,7 +602,7 @@ private fun TranslationBar(vm: LyricsViewModel) {
                         modifier = Modifier.size(14.dp),
                     )
                     Text(
-                        text = "  Translating\u2026",
+                        text = "  Traduzione\u2026",
                         color = Color.White.copy(alpha = 0.8f),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -621,7 +621,7 @@ private fun TranslationBar(vm: LyricsViewModel) {
                         ) { vm.startTranslation() }
                         .padding(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Text("Translate", color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
+                    Text("Traduci", color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
                 }
             }
         }
@@ -729,7 +729,7 @@ private fun LanguagePickerBottomSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Select Language",
+                    text = "Seleziona lingua",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -737,7 +737,7 @@ private fun LanguagePickerBottomSheet(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                        contentDescription = "Chiudi",
                         tint = Color.White.copy(alpha = 0.7f)
                     )
                 }
@@ -747,14 +747,14 @@ private fun LanguagePickerBottomSheet(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Search languages...", color = Color.White.copy(alpha = 0.4f), fontSize = 14.sp) },
+                placeholder = { Text("Cerca lingue…", color = Color.White.copy(alpha = 0.4f), fontSize = 14.sp) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search icon",
+                        contentDescription = "Cerca",
                         tint = Color.White.copy(alpha = 0.5f)
                     )
                 },
@@ -763,7 +763,7 @@ private fun LanguagePickerBottomSheet(
                         IconButton(onClick = { searchQuery = "" }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Clear search",
+                                contentDescription = "Cancella ricerca",
                                 tint = Color.White.copy(alpha = 0.5f)
                             )
                         }
@@ -791,7 +791,7 @@ private fun LanguagePickerBottomSheet(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No languages found",
+                        text = "Nessuna lingua trovata",
                         color = Color.White.copy(alpha = 0.5f),
                         fontSize = 14.sp
                     )
@@ -824,7 +824,7 @@ private fun LanguagePickerBottomSheet(
                             if (isSelected) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
-                                    contentDescription = "Selected",
+                                    contentDescription = "Selezionato",
                                     tint = Color(0xFF1DB954),
                                     modifier = Modifier.size(18.dp)
                                 )

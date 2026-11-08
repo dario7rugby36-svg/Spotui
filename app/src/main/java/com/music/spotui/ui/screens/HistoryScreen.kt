@@ -196,11 +196,11 @@ fun HistoryScreen(navController: NavController) {
                                     ) { navController.navigateUp() },
                             )
                             Spacer(Modifier.width(16.dp))
-                            Text("Listening history", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text("Cronologia ascolti", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         }
                         if (history.isNotEmpty()) {
                             Text(
-                                "Clear all",
+                                "Cancella tutto",
                                 color = MutedText,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -216,7 +216,7 @@ fun HistoryScreen(navController: NavController) {
                 if (history.isEmpty()) {
                     item {
                         Text(
-                            "Nothing here yet — play something!",
+                            "Ancora niente qui — ascolta qualcosa!",
                             color = Color.Gray,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(16.dp, 32.dp),
@@ -241,15 +241,15 @@ fun HistoryScreen(navController: NavController) {
                                 .padding(16.dp),
                         ) {
                             Column {
-                                Text("YOUR LISTENING HABITS", color = Color(0xFFB09BE8), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text("LE TUE ABITUDINI DI ASCOLTO", color = Color(0xFFB09BE8), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(12.dp))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceAround,
                                 ) {
-                                    StatPill("Total plays", "${history.size}", SpotifyGreen)
-                                    StatPill("Unique songs", "${history.distinctBy { it.songId }.size}", Color(0xFF4CB0E8))
-                                    StatPill("Artists", "${history.distinctBy { it.singer.substringBefore(",") }.size}", Color(0xFFE89BDB))
+                                    StatPill("Ascolti totali", "${history.size}", SpotifyGreen)
+                                    StatPill("Brani diversi", "${history.distinctBy { it.songId }.size}", Color(0xFF4CB0E8))
+                                    StatPill("Artisti", "${history.distinctBy { it.singer.substringBefore(",") }.size}", Color(0xFFE89BDB))
                                 }
                             }
                         }
@@ -259,7 +259,7 @@ fun HistoryScreen(navController: NavController) {
                     if (topArtists.isNotEmpty()) {
                         item {
                             Text(
-                                "Top artists",
+                                "Artisti più ascoltati",
                                 color = Color.White,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
@@ -289,7 +289,7 @@ fun HistoryScreen(navController: NavController) {
                     if (topTracks.isNotEmpty()) {
                         item {
                             Text(
-                                "Top tracks",
+                                "Brani più ascoltati",
                                 color = Color.White,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
@@ -325,7 +325,7 @@ fun HistoryScreen(navController: NavController) {
                     // ── History list ──
                     item {
                         Text(
-                            "History",
+                            "Cronologia",
                             color = Color.White,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -339,7 +339,7 @@ fun HistoryScreen(navController: NavController) {
                             query = searchQuery,
                             onQueryChange = { searchQuery = it },
                             modifier = Modifier.padding(16.dp, 8.dp),
-                            placeholder = "Search in history",
+                            placeholder = "Cerca nella cronologia",
                         )
                     }
 
@@ -367,7 +367,7 @@ fun HistoryScreen(navController: NavController) {
                                 )
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Sort Options",
+                                    contentDescription = "Opzioni di ordinamento",
                                     tint = Color.White,
                                     modifier = Modifier
                                         .size(16.dp)
@@ -386,7 +386,7 @@ fun HistoryScreen(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No matches found for \"$searchQuery\"",
+                                    text = "Nessun risultato per \"$searchQuery\"",
                                     color = Color.White,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Medium
@@ -436,7 +436,7 @@ fun HistoryScreen(navController: NavController) {
                             .navigationBarsPadding()
                     ) {
                         Text(
-                            text = "Sort by",
+                            text = "Ordina per",
                             color = Color.White,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
@@ -499,20 +499,20 @@ fun HistoryScreen(navController: NavController) {
             if (showClearDialog) {
                 AlertDialog(
                     onDismissRequest = { showClearDialog = false },
-                    title = { Text("Clear listening history?", color = Color.White, fontWeight = FontWeight.Bold) },
-                    text = { Text("This will remove all ${history.size} plays. This action cannot be undone.", color = MutedText) },
+                    title = { Text("Cancellare la cronologia ascolti?", color = Color.White, fontWeight = FontWeight.Bold) },
+                    text = { Text("Verranno rimossi tutti i ${history.size} ascolti. L'operazione non può essere annullata.", color = MutedText) },
                     confirmButton = {
                         TextButton(onClick = {
                             clearListeningHistory(context)
                             history = emptyList()
                             showClearDialog = false
                         }) {
-                            Text("Clear", color = Color(0xFFE57373))
+                            Text("Cancella", color = Color(0xFFE57373))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showClearDialog = false }) {
-                            Text("Cancel", color = Color.White)
+                            Text("Annulla", color = Color.White)
                         }
                     },
                     containerColor = Color(0xFF1A1A1A),
@@ -598,7 +598,7 @@ private fun TopArtistRow(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "$plays plays",
+                "$plays ascolti",
                 color = MutedText,
                 fontSize = 12.sp,
             )
@@ -682,7 +682,7 @@ private fun TopTrackRow(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "$plays plays",
+                "$plays ascolti",
                 color = MutedText,
                 fontSize = 12.sp,
             )
@@ -734,7 +734,7 @@ private fun HistoryRow(
         }
         Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Remove",
+            contentDescription = "Rimuovi",
             tint = MutedText,
             modifier = Modifier
                 .size(18.dp)

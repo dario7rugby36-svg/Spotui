@@ -173,12 +173,12 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
         AlertDialog(
             onDismissRequest = { showRenameDialog = false },
             containerColor = Color(0xFF282828),
-            title = { Text("Rename Playlist", color = Color.White, fontWeight = FontWeight.Bold) },
+            title = { Text("Rinomina playlist", color = Color.White, fontWeight = FontWeight.Bold) },
             text = {
                 TextField(
                     value = newPlaylistNameInput,
                     onValueChange = { newPlaylistNameInput = it },
-                    placeholder = { Text("Playlist name", color = Color.Gray) },
+                    placeholder = { Text("Nome della playlist", color = Color.Gray) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color(0xFF383838),
@@ -196,7 +196,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
             },
             confirmButton = {
                 Text(
-                    "Save",
+                    "Salva",
                     color = Color(0xFF1ED760),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
@@ -216,7 +216,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
             },
             dismissButton = {
                 Text(
-                    "Cancel",
+                    "Annulla",
                     color = Color.Gray,
                     fontSize = 15.sp,
                     modifier = Modifier
@@ -231,11 +231,11 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             containerColor = Color(0xFF282828),
-            title = { Text("Delete Playlist", color = Color.White, fontWeight = FontWeight.Bold) },
-            text = { Text("Are you sure you want to delete this playlist?", color = Color.LightGray) },
+            title = { Text("Elimina playlist", color = Color.White, fontWeight = FontWeight.Bold) },
+            text = { Text("Vuoi davvero eliminare questa playlist?", color = Color.LightGray) },
             confirmButton = {
                 Text(
-                    "Delete",
+                    "Elimina",
                     color = Color(0xFFFF5252),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
@@ -252,7 +252,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
             },
             dismissButton = {
                 Text(
-                    "Cancel",
+                    "Annulla",
                     color = Color.Gray,
                     fontSize = 15.sp,
                     modifier = Modifier
@@ -395,7 +395,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit Playlist Name",
+                                    contentDescription = "Modifica nome playlist",
                                     tint = Color.White,
                                     modifier = Modifier.size(20.dp)
                                 )
@@ -417,14 +417,14 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                             if (playlistId.startsWith("local_pl_")) {
                                 Icon(
                                     imageVector = Icons.Default.PhoneAndroid,
-                                    contentDescription = "Local Playlist",
+                                    contentDescription = "Playlist locale",
                                     tint = Color(0xFF1ED760),
                                     modifier = Modifier
                                         .size(14.dp)
                                         .padding(end = 4.dp)
                                 )
                                 Text(
-                                    text = "Local Playlist",
+                                    text = "Playlist locale",
                                     color = Color.White,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium
@@ -494,11 +494,11 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                                     playlistViewModel.addAllToQueue(filteredSongs)
                                                     android.widget.Toast.makeText(
                                                         context,
-                                                        "${filteredSongs.size} track(s) added to queue",
+                                                        "${filteredSongs.size} brani aggiunti alla coda",
                                                         android.widget.Toast.LENGTH_SHORT,
                                                     ).show()
                                                 },
-                                            contentDescription = "Add to queue",
+                                            contentDescription = "Aggiungi alla coda",
                                         )
                                         Spacer(modifier = Modifier.width(18.dp))
                                         Icon(
@@ -522,14 +522,14 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                                     )
                                                     if (!playlistDownloaded) {
                                                         SongPlayer.downloadAll(songs, context)
-                                                        snackbarMessage = "Downloading ${songs.size} tracks…"
+                                                        snackbarMessage = "Download di ${songs.size} brani…"
                                                         snackbarVisible = true
                                                     } else {
-                                                        snackbarMessage = "Playlist added to offline library"
+                                                        snackbarMessage = "Playlist aggiunta alla libreria offline"
                                                         snackbarVisible = true
                                                     }
                                                 },
-                                            contentDescription = "Download playlist",
+                                            contentDescription = "Scarica playlist",
                                         )
                                         Spacer(modifier = Modifier.width(18.dp))
                                         // Shuffle-play: start the playlist in random order.
@@ -555,13 +555,13 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                                         SongPlayer.playSong(first.url, context, "song/${first.id}")
                                                     }
                                                 },
-                                            contentDescription = "Shuffle play",
+                                            contentDescription = "Riproduzione casuale",
                                         )
                                         if (playlistId.startsWith("local_pl_")) {
                                             Spacer(modifier = Modifier.width(18.dp))
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
-                                                contentDescription = "Delete Playlist",
+                                                contentDescription = "Elimina playlist",
                                                 tint = Color.White,
                                                 modifier = Modifier
                                                     .size(24.dp)
@@ -613,7 +613,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                         painter = painterResource(
                                             id = if (currentInList && playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                         ),
-                                        contentDescription = if (currentInList && playing) "Pause" else "Play"
+                                        contentDescription = if (currentInList && playing) "Pausa" else "Riproduci"
                                     )
                                 }
                             }
@@ -627,7 +627,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                         query = searchQuery,
                         onQueryChange = { searchQuery = it },
                         modifier = Modifier.padding(20.dp, 8.dp),
-                        placeholder = "Search in playlist",
+                        placeholder = "Cerca nella playlist",
                     )
                 }
                 
@@ -656,7 +656,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                                 )
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Sort Options",
+                                    contentDescription = "Opzioni di ordinamento",
                                     tint = Color.White,
                                     modifier = Modifier
                                         .size(16.dp)
@@ -676,7 +676,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                             playerViewModel.playNext(song)
                             android.widget.Toast.makeText(
                                 context,
-                                "${song.title} will play next",
+                                "${song.title} verrà riprodotto dopo",
                                 android.widget.Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -761,7 +761,7 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                         .navigationBarsPadding()
                 ) {
                     Text(
-                        text = "Sort by",
+                        text = "Ordina per",
                         color = Color.White,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,

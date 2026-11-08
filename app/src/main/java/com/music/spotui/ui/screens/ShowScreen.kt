@@ -131,7 +131,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     tint = Color.White,
-                    contentDescription = "Back",
+                    contentDescription = "Indietro",
                     modifier = Modifier
                         .padding(16.dp)
                         .size(26.dp)
@@ -179,11 +179,11 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                                     playerViewModel.addAllToQueue(episodes)
                                     android.widget.Toast.makeText(
                                         context,
-                                        "${episodes.size} episode(s) added to queue",
+                                        "${episodes.size} episodi aggiunti alla coda",
                                         android.widget.Toast.LENGTH_SHORT,
                                     ).show()
                                 },
-                            contentDescription = "Add all to queue",
+                            contentDescription = "Aggiungi tutto alla coda",
                         )
                     }
                 }
@@ -200,7 +200,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                         query = searchQuery,
                         onQueryChange = { searchQuery = it },
                         modifier = Modifier.padding(20.dp, 8.dp),
-                        placeholder = "Search in episodes",
+                        placeholder = "Cerca negli episodi",
                     )
                 }
 
@@ -228,7 +228,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                             )
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Sort Options",
+                                contentDescription = "Opzioni di ordinamento",
                                 tint = Color.White,
                                 modifier = Modifier
                                     .size(16.dp)
@@ -248,7 +248,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "No matches found for \"$searchQuery\"",
+                            text = "Nessun risultato per \"$searchQuery\"",
                             color = Color.White,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Medium
@@ -263,7 +263,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                             playerViewModel.playNext(ep)
                             android.widget.Toast.makeText(
                                 context,
-                                "${ep.title} will play next",
+                                "${ep.title} verrà riprodotto dopo",
                                 android.widget.Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -321,7 +321,7 @@ fun ShowScreen(navController: NavController, showId: String, showName: String = 
                         .navigationBarsPadding()
                 ) {
                     Text(
-                        text = "Sort by",
+                        text = "Ordina per",
                         color = Color.White,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,

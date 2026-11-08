@@ -216,7 +216,7 @@ fun SpotifyLoginScreen(navController: NavController) {
                             error: WebResourceError?,
                         ) {
                             if (request?.isForMainFrame == true) {
-                                val desc = error?.description?.toString() ?: "Connection error"
+                                val desc = error?.description?.toString() ?: "Errore di connessione"
                                 Timber.w("SpotifyLogin WebView error: $desc on ${request.url}")
                                 pageErrorMessage = desc
                                 hasPageError = true
@@ -255,7 +255,7 @@ fun SpotifyLoginScreen(navController: NavController) {
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = "Unable to load Spotify login page",
+                        text = "Impossibile caricare la pagina di accesso di Spotify",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
@@ -283,13 +283,13 @@ fun SpotifyLoginScreen(navController: NavController) {
                         ),
                         shape = RoundedCornerShape(50),
                     ) {
-                        Text("Retry", fontWeight = FontWeight.Bold)
+                        Text("Riprova", fontWeight = FontWeight.Bold)
                     }
                     Spacer(Modifier.height(12.dp))
                     TextButton(
                         onClick = { showManualCookieDialog = true },
                     ) {
-                        Text("Or Log In with Cookie (sp_dc)", color = Color.White)
+                        Text("Oppure accedi con il cookie (sp_dc)", color = Color.White)
                     }
                 }
             }
@@ -325,9 +325,9 @@ fun SpotifyLoginScreen(navController: NavController) {
                     }
                     Text(
                         text = if (isProcessing) {
-                            statusMessage.ifBlank { "Signing in…" }
+                            statusMessage.ifBlank { "Accesso in corso…" }
                         } else {
-                            "Log in to Spotify"
+                            "Accedi a Spotify"
                         },
                         color = if (hasError) Color(0xFFE22134) else Color.White,
                         fontWeight = FontWeight.Bold,
@@ -354,7 +354,7 @@ fun SpotifyLoginScreen(navController: NavController) {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Key,
-                                contentDescription = "Manual cookie login",
+                                contentDescription = "Accesso manuale con cookie",
                                 tint = Color(0xFFB3B3B3),
                             )
                         }
@@ -368,7 +368,7 @@ fun SpotifyLoginScreen(navController: NavController) {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Reload page",
+                                contentDescription = "Ricarica pagina",
                                 tint = Color(0xFFB3B3B3),
                             )
                         }
@@ -427,7 +427,7 @@ private fun ManualCookieDialog(
         containerColor = Color(0xFF1E1E1E),
         title = {
             Text(
-                "Manual Spotify Cookie Login",
+                "Accesso manuale a Spotify con cookie",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -452,7 +452,7 @@ private fun ManualCookieDialog(
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("Open Spotify in Browser", color = Color.White, fontSize = 13.sp)
+                    Text("Apri Spotify nel browser", color = Color.White, fontSize = 13.sp)
                 }
                 Spacer(Modifier.height(12.dp))
                 OutlinedTextField(
@@ -486,7 +486,7 @@ private fun ManualCookieDialog(
                     disabledContainerColor = Color(0xFF12863B),
                 ),
             ) {
-                Text("Log In", fontWeight = FontWeight.Bold)
+                Text("Accedi", fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -538,14 +538,14 @@ private fun finishLogin(
     if (spDc.isBlank()) {
         setProcessing(true)
         setError(true)
-        setStatus("Couldn't read login cookie. Make sure you completed the Spotify login, then try again.")
+        setStatus("Impossibile leggere il cookie di accesso. Assicurati di aver completato l'accesso a Spotify, poi riprova.")
         tokenFetchStarted.set(false)
         return
     }
 
     setProcessing(true)
     setError(false)
-    setStatus("Connecting…")
+    setStatus("Connessione…")
     view?.stopLoading()
     view?.loadUrl("about:blank")
 
@@ -557,7 +557,7 @@ private fun finishLogin(
             val result = SpotifyAuth.fetchAccessToken(spDc, spKey)
             result.onSuccess { token ->
                 Spotify.accessToken = token.accessToken
-                withContext(Dispatchers.Main) { setStatus("Success!") }
+                withContext(Dispatchers.Main) { setStatus("Fatto!") }
                 delay(300)
                 withContext(Dispatchers.Main) { onSuccess() }
                 return@launch

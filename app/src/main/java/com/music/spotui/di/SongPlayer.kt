@@ -458,14 +458,14 @@ object SongPlayer {
             exoPlayer?.clearMediaItems()
             android.widget.Toast.makeText(
                 appContext,
-                "Cache cleared for '$title' — Reloading...",
+                "Cache svuotata per '$title' — ricaricamento…",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
             playSong(songUrl, appContext, if (songId != null && songId != 0) "song/$songId" else null)
         } else {
             android.widget.Toast.makeText(
                 appContext,
-                "Cache cleared for '$title'",
+                "Cache svuotata per '$title'",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
@@ -533,7 +533,7 @@ object SongPlayer {
                 runCatching { player?.pause() }
                 currentSource = "Spotify"
                 currentQuality = ""
-                updateResolveStatus(true, "Loading Spotify track...")
+                updateResolveStatus(true, "Caricamento brano Spotify…")
                 SpotifyWebPlayer.play(spotifyId)
                 scope.launch {
                     delay(1500)
@@ -553,13 +553,13 @@ object SongPlayer {
                     if (currentRequest == song && existingError.isNullOrBlank()) {
                         withContext(Dispatchers.Main) {
                             android.widget.Toast.makeText(
-                                appContext, "No stream found",
+                                appContext, "Nessuno stream trovato",
                                 android.widget.Toast.LENGTH_SHORT,
                             ).show()
                         }
                     }
                     if (existingError == null) {
-                        boundState?.updateResolveError("No stream found")
+                        boundState?.updateResolveError("Nessuno stream trovato")
                     }
                     updateResolveStatus(false)
                     return@launch
@@ -592,7 +592,7 @@ object SongPlayer {
             } catch (e: Exception) {
                 releaseWakeLock("spotui:playSong")
                 Log.e(TAG, "playSong failed for query: $song", e)
-                boundState?.updateResolveError(e.message ?: "Playback failed")
+                boundState?.updateResolveError(e.message ?: "Riproduzione non riuscita")
                 updateResolveStatus(false)
             }
         }
@@ -774,7 +774,7 @@ object SongPlayer {
     internal suspend fun resolveStreamUrl(song: String, appContext: Context, forPlayback: Boolean = false): String? {
         if (song.startsWith("content://") || song.startsWith("file://")) {
             if (forPlayback) {
-                currentSource = "Local file"
+                currentSource = "File locale"
                 currentQuality = song.substringBefore('?').substringAfterLast('.', "")
                     .uppercase().takeIf { it.length in 2..5 }.orEmpty()
             }
@@ -792,7 +792,7 @@ object SongPlayer {
             val logTitle = trackMeta?.title ?: fallbackSong?.title ?: cleanTrackTitle(song, logArtist)
             if (forPlayback) {
                 logResolution("Awaiting in-flight background resolution for '$logTitle'...")
-                updateResolveStatus(true, "Resolving stream...")
+                updateResolveStatus(true, "Ricerca dello stream…")
             }
             val result = runCatching { existingDeferred.await() }.getOrNull()
             if (result != null) {
@@ -840,7 +840,7 @@ object SongPlayer {
             resolutionLogs.clear()
             logResolution("Resolving stream for '$cleanTitle' by '$songArtist'")
             boundState?.updateResolveError(null)
-            updateResolveStatus(true, "Checking cache...")
+            updateResolveStatus(true, "Controllo della cache…")
         }
         streamCache[song]?.let { url ->
             if (qualityTierCache[song] == expectedTier || qualityTierCache[song] == null) {
@@ -872,7 +872,7 @@ object SongPlayer {
         // Persistent stream cache: survives app restarts. YouTube URLs are cached
         // with their server-provided expiry so stale entries are never served.
         if (forPlayback) {
-            updateResolveStatus(true, "Checking saved cache...")
+            updateResolveStatus(true, "Controllo della cache salvata…")
         }
         com.music.spotui.data.preferences.getCachedStream(appContext, song, expectedTier = expectedTier)?.let { (url, source, cachedQuality) ->
             if (YTPlayerUtils.validateStatus(url)) {
@@ -895,13 +895,13 @@ object SongPlayer {
             }
         }
         if (forPlayback) {
-            updateResolveStatus(true, "Checking alternative source...")
+            updateResolveStatus(true, "Controllo della sorgente alternativa…")
         }
         alternativeStreamForPlayback(song, appContext)?.let { alt ->
             return when {
                 alt.isLocal -> {
                     if (forPlayback) {
-                        currentSource = "Alternative file"
+                        currentSource = "File alternativo"
                         currentQuality = alt.label.substringAfterLast('.', "").uppercase().takeIf { it.length in 2..5 }.orEmpty()
                         val note = "Source: Alternative File • Format: ${currentQuality.ifBlank { "Local" }}"
                         logResolution("✓ Playing user alternative local file")
@@ -912,7 +912,7 @@ object SongPlayer {
                 }
                 alt.isYouTube -> {
                     if (forPlayback) {
-                        currentSource = "Alternative YouTube"
+                        currentSource = "YouTube alternativo"
                         currentQuality = ""
                         logResolution("Resolving user alternative YouTube link...")
                     }
@@ -947,11 +947,11 @@ object SongPlayer {
         }
         // Offline: if this track was downloaded, play the local file instead of the network.
         if (forPlayback) {
-            updateResolveStatus(true, "Locating local file...")
+            updateResolveStatus(true, "Ricerca del file locale…")
         }
         com.music.spotui.data.preferences.downloadedPathForQuery(appContext, song)?.let { path ->
             if (forPlayback) {
-                currentSource = "Downloaded"
+                currentSource = "Scaricato"
                 currentQuality = path.substringAfterLast('.', "").uppercase()
                 val note = "Source: Downloaded Local File • Format: $currentQuality"
                 logResolution("✓ Playing downloaded offline file ($currentQuality)")
@@ -982,12 +982,12 @@ object SongPlayer {
             if (shouldTryFlac) {
                 currentSource = "Lossless"
                 currentQuality = ""
-                updateResolveStatus(true, "Searching High-Res Lossless Audio Providers...")
+                updateResolveStatus(true, "Ricerca nei fornitori audio lossless…")
                 logResolution("Target Quality: ${if (losslessHiRes) "24-bit Hi-Res / Ultra HD" else "16-bit FLAC"}")
             } else if (shouldTryYoutube) {
                 currentSource = "YouTube"
                 currentQuality = ""
-                updateResolveStatus(true, "Locating YouTube source...")
+                updateResolveStatus(true, "Ricerca della sorgente YouTube…")
                 logResolution("High-res FLAC disabled or cellular quality cap in effect. Using YouTube Music.")
             }
         }
@@ -1209,7 +1209,7 @@ object SongPlayer {
                 if (runForPlayback) {
                     currentSource = "YouTube"
                     currentQuality = ""
-                    updateResolveStatus(true, "Locating YouTube source...")
+                    updateResolveStatus(true, "Ricerca della sorgente YouTube…")
                 }
                 resolveYtPlayback(song, quality.audioQuality, appContext, forPlayback = runForPlayback)
             }
@@ -1268,7 +1268,7 @@ object SongPlayer {
             boundState?.updateResolveDetailNote(note)
             // Show resolve status only if YouTube is not fully loaded yet.
             if (ytDeferred != null && !ytDeferred.isCompleted) {
-                updateResolveStatus(true, "Locating YouTube source...")
+                updateResolveStatus(true, "Ricerca della sorgente YouTube…")
             }
         }
 
@@ -1278,9 +1278,9 @@ object SongPlayer {
                 val cacheKey = "$song|${com.metrolist.innertube.YouTube.SearchFilter.FILTER_SONG.value}"
                 val cachedCandidates = videoCandidatesCache[cacheKey]
                 val reason = when {
-                    cachedCandidates == null -> "YouTube search failed"
-                    cachedCandidates.isEmpty() -> "No matching song found on YouTube"
-                    else -> lastYtFailureReason ?: "All candidates failed to resolve"
+                    cachedCandidates == null -> "Ricerca su YouTube non riuscita"
+                    cachedCandidates.isEmpty() -> "Nessun brano corrispondente trovato su YouTube"
+                    else -> lastYtFailureReason ?: "Nessun risultato riproducibile"
                 }
                 boundState?.updateResolveError(reason)
                 updateResolveStatus(false)
@@ -1388,7 +1388,7 @@ object SongPlayer {
                         try {
                             val code = conn.responseCode
                             if (code !in 200..299) {
-                                lastDownloadError = "Stream returned HTTP $code"
+                                lastDownloadError = "Lo stream ha restituito HTTP $code"
                                 return false
                             }
                             if (total < 0) {
@@ -1487,7 +1487,7 @@ object SongPlayer {
                 if (!ok) {
                     android.widget.Toast.makeText(
                         appContext,
-                        "Download failed: ${lastDownloadError ?: "unknown reason"}",
+                        "Download non riuscito: ${lastDownloadError ?: "motivo sconosciuto"}",
                         android.widget.Toast.LENGTH_LONG,
                     ).show()
                 }
@@ -1513,7 +1513,7 @@ object SongPlayer {
         }
 
         if (!youtubeEnabled) {
-            lastDownloadError = "Track not available on configured audio providers"
+            lastDownloadError = "Brano non disponibile sui fornitori audio configurati"
             return false
         }
 
@@ -1521,7 +1521,7 @@ object SongPlayer {
         // Resolve a fresh network stream URL (bypass any local-file short-circuit),
         // walking the ranked video candidates like playback does.
         val playback = resolveYtPlayback(query, dlQuality.audioQuality, appContext) ?: run {
-            lastDownloadError = "Couldn't resolve a stream"
+            lastDownloadError = "Impossibile trovare uno stream"
             return false
         }
 
@@ -1534,7 +1534,7 @@ object SongPlayer {
             return false
         }
         if (!tmpFile.renameTo(outFile)) {
-            lastDownloadError = "Couldn't save file"
+            lastDownloadError = "Impossibile salvare il file"
             runCatching { tmpFile.delete() }
             return false
         }
@@ -1878,7 +1878,7 @@ object SongPlayer {
             }
         }
         if (forPlayback) {
-            updateResolveStatus(true, "Searching YouTube videos...")
+            updateResolveStatus(true, "Ricerca nei video YouTube…")
         }
         val wantExplicit = explicitRegistry[query]
         val baseSearchText = searchTextForPlayback(query)
@@ -2035,7 +2035,7 @@ object SongPlayer {
             for ((index, videoId) in ids.withIndex()) {
                 if (!tried.add(videoId)) continue
                 if (forPlayback) {
-                    updateResolveStatus(true, "Resolving YouTube stream ${index + 1}/${ids.size}...")
+                    updateResolveStatus(true, "Ricerca stream YouTube ${index + 1}/${ids.size}…")
                 }
                 YTPlayerUtils.playerResponseForPlayback(
                     videoId = videoId,

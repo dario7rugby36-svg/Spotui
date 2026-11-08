@@ -81,7 +81,7 @@ class AlternativeSearchViewModel @Inject constructor(
                 },
                 onFailure = { e ->
                     Log.w(TAG, "YouTube search failed", e)
-                    error = "Search failed"
+                    error = "Ricerca non riuscita"
                     searchResults = emptyList()
                 }
             )

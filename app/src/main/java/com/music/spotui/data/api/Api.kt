@@ -130,7 +130,7 @@ class Api @Inject constructor(
     suspend fun getAlbums(): Flow<Response<List<AlbumsModel>>> = flow {
         HomeCache.albums?.let { emit(Response.Success(it)) } ?: emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            if (HomeCache.albums == null) emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+            if (HomeCache.albums == null) emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             return@flow
         }
         Spotify.newReleases(limit = 20).fold(
@@ -141,7 +141,7 @@ class Api @Inject constructor(
             },
             onFailure = {
                 Log.e("Api", "getAlbums failed", it)
-                if (HomeCache.albums == null) emit(Response.Error(it.message ?: "error"))
+                if (HomeCache.albums == null) emit(Response.Error(it.message ?: "errore"))
             },
         )
     }
@@ -157,7 +157,7 @@ class Api @Inject constructor(
     suspend fun getArtists(): Flow<Response<List<ArtistsModel>>> = flow {
         HomeCache.artists?.let { emit(Response.Success(it)) } ?: emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            if (HomeCache.artists == null) emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+            if (HomeCache.artists == null) emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             return@flow
         }
         Spotify.topArtists(limit = 20).fold(
@@ -168,7 +168,7 @@ class Api @Inject constructor(
             },
             onFailure = {
                 Log.e("Api", "getArtists failed", it)
-                if (HomeCache.artists == null) emit(Response.Error(it.message ?: "error"))
+                if (HomeCache.artists == null) emit(Response.Error(it.message ?: "errore"))
             },
         )
     }
@@ -176,11 +176,11 @@ class Api @Inject constructor(
     suspend fun getSongs(): Flow<Response<List<SongsModel>>> = flow {
         emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         Spotify.topTracks(limit = 50).fold(
             onSuccess = { paging -> emit(Response.Success(paging.items.map { it.toSongModel() })) },
-            onFailure = { Log.e("Api", "getSongs failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getSongs failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -192,7 +192,7 @@ class Api @Inject constructor(
     suspend fun getHomeFeed(): Flow<Response<HomeFeedModel>> = flow {
         HomeCache.home?.let { emit(Response.Success(it)) } ?: emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            if (HomeCache.home == null) emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+            if (HomeCache.home == null) emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             return@flow
         }
         Spotify.home(sectionItemsLimit = 20).fold(
@@ -220,7 +220,7 @@ class Api @Inject constructor(
             },
             onFailure = {
                 Log.e("Api", "getHomeFeed failed", it)
-                if (HomeCache.home == null) emit(Response.Error(it.message ?: "error"))
+                if (HomeCache.home == null) emit(Response.Error(it.message ?: "errore"))
             },
         )
     }
@@ -255,11 +255,11 @@ class Api @Inject constructor(
             emit(Response.Success(emptyList())); return@flow
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         Spotify.search(query, types = listOf("track"), limit = 30).fold(
             onSuccess = { res -> emit(Response.Success(res.tracks?.items.orEmpty().map { it.toSongModel() })) },
-            onFailure = { Log.e("Api", "searchTracks failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "searchTracks failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -274,7 +274,7 @@ class Api @Inject constructor(
             emit(Response.Success(SearchResults())); return@flow
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         Spotify.search(query, types = listOf("track", "album", "artist"), limit = 20).fold(
             onSuccess = { res ->
@@ -292,7 +292,7 @@ class Api @Inject constructor(
                     episodes = podcasts?.episodes?.items.orEmpty().map { it.toEpisodeSongModel(null) },
                 )))
             },
-            onFailure = { Log.e("Api", "searchEverything failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "searchEverything failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -300,14 +300,14 @@ class Api @Inject constructor(
     suspend fun getShowEpisodes(showId: String): Flow<Response<List<SongsModel>>> = flow {
         emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         val show = Spotify.show(showId).getOrNull()
         Spotify.showEpisodes(showId, limit = 50).fold(
             onSuccess = { paging ->
                 emit(Response.Success(paging.items.map { it.toEpisodeSongModel(show?.name) }))
             },
-            onFailure = { Log.e("Api", "getShowEpisodes failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getShowEpisodes failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -419,7 +419,7 @@ class Api @Inject constructor(
             emit(Response.Success(emptyList())); return@flow
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         Spotify.search(genre, types = listOf("playlist"), limit = 24).fold(
             onSuccess = { res ->
@@ -434,7 +434,7 @@ class Api @Inject constructor(
                 }.distinctBy { cleanId(it.spotifyId).ifBlank { it.name.trim().lowercase() } }
                 emit(Response.Success(mapped))
             },
-            onFailure = { Log.e("Api", "getCategoryPlaylists failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getCategoryPlaylists failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -449,7 +449,7 @@ class Api @Inject constructor(
             emit(Response.Success(emptyList())); return@flow
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         val artist = Spotify.search(artistName, types = listOf("artist"), limit = 1).getOrNull()
             ?.artists?.items?.firstOrNull()
@@ -466,7 +466,7 @@ class Api @Inject constructor(
                     if (song.coverUri.isBlank()) song.copy(coverUri = artistCover) else song
                 }))
             },
-            onFailure = { Log.e("Api", "getArtistSongs failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getArtistSongs failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -483,7 +483,7 @@ class Api @Inject constructor(
             emit(Response.Success(ArtistOverviewModel(name = artistName))); return@flow
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated — set sp_dc cookie")); return@flow
+            emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
         }
         val knownId = if (knownArtistId.isNotBlank()) knownArtistId
                       else if (artistName.matches(Regex("^[a-zA-Z0-9]{22}$"))) artistName
@@ -497,7 +497,7 @@ class Api @Inject constructor(
         } else null
         val artistId = knownId.ifBlank { artist?.id.orEmpty() }
         if (artistId.isBlank()) {
-            emit(Response.Error("Artist not found")); return@flow
+            emit(Response.Error("Artista non trovato")); return@flow
         }
         val searchCover = artist?.images?.firstOrNull()?.url ?: ""
 
@@ -561,7 +561,7 @@ class Api @Inject constructor(
                     featuringPlaylist = featuringPlaylist,
                 )))
             },
-            onFailure = { Log.e("Api", "getArtistOverview failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getArtistOverview failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -583,7 +583,7 @@ class Api @Inject constructor(
                 }
                 emit(Response.Success(downloadedSongs))
             } else {
-                emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+                emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             }
             return@flow
         }
@@ -611,7 +611,7 @@ class Api @Inject constructor(
         }
         Spotify.album(albumId).fold(
             onSuccess = { full -> emit(Response.Success(full.tracks?.items.orEmpty().map { it.toSongModel() })) },
-            onFailure = { Log.e("Api", "getAlbumSongs failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getAlbumSongs failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -654,7 +654,7 @@ class Api @Inject constructor(
                 }
                 emit(Response.Success(downloadedSongs))
             } else if (cached == null) {
-                emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+                emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             }
             return@flow
         }
@@ -668,7 +668,7 @@ class Api @Inject constructor(
             val error = probeResult.exceptionOrNull()
             Log.e("Api", "getPlaylistSongs probe failed", error)
             if (cached == null) {
-                emit(Response.Error(error?.message ?: "error"))
+                emit(Response.Error(error?.message ?: "errore"))
             }
             return@flow
         }
@@ -706,7 +706,7 @@ class Api @Inject constructor(
                     HomeCache.setPlaylistSongs(clean, songs)
                     emit(Response.Success(songs))
                 } else if (cached == null) {
-                    emit(Response.Error(pageResult.exceptionOrNull()?.message ?: "error"))
+                    emit(Response.Error(pageResult.exceptionOrNull()?.message ?: "errore"))
                 }
             } else {
                 val songs = mutableListOf<SongsModel>()
@@ -770,7 +770,7 @@ class Api @Inject constructor(
             com.music.spotui.data.entity.LibraryEntry(
                 spotifyId = pl.id,
                 name = pl.name,
-                subtitle = "Local Playlist • ${pl.songs.size} song" + (if (pl.songs.size == 1) "" else "s"),
+                subtitle = "Playlist locale • ${pl.songs.size} " + (if (pl.songs.size == 1) "brano" else "brani"),
                 coverUri = pl.coverUri,
                 isPlaylist = true,
                 isLocal = true,
@@ -790,15 +790,15 @@ class Api @Inject constructor(
             if (HomeCache.library == null) {
                 val liked = com.music.spotui.data.entity.LibraryEntry(
                     spotifyId = LIKED_SONGS_ID,
-                    name = "Liked Songs",
-                    subtitle = "Playlist • Liked songs",
+                    name = "Brani che ti piacciono",
+                    subtitle = "Playlist • Brani che ti piacciono",
                     coverUri = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
                     isPlaylist = true,
                 )
                 val downloaded = com.music.spotui.data.entity.LibraryEntry(
                     spotifyId = DOWNLOADS_ID,
-                    name = "Downloaded",
-                    subtitle = "Available offline",
+                    name = "Scaricati",
+                    subtitle = "Disponibili offline",
                     coverUri = "",
                     isPlaylist = true,
                 )
@@ -842,16 +842,16 @@ class Api @Inject constructor(
         // Pin "Liked Songs" first, exactly like the Spotify app.
         val liked = com.music.spotui.data.entity.LibraryEntry(
             spotifyId = LIKED_SONGS_ID,
-            name = "Liked Songs",
-            subtitle = "Playlist • Liked songs",
+            name = "Brani che ti piacciono",
+            subtitle = "Playlist • Brani che ti piacciono",
             coverUri = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
             isPlaylist = true,
         )
         // Pin a "Downloaded" shortcut to the offline tracks, like Spotify's library.
         val downloaded = com.music.spotui.data.entity.LibraryEntry(
             spotifyId = DOWNLOADS_ID,
-            name = "Downloaded",
-            subtitle = "Available offline",
+            name = "Scaricati",
+            subtitle = "Disponibili offline",
             coverUri = "",
             isPlaylist = true,
         )
@@ -928,7 +928,7 @@ class Api @Inject constructor(
                     emit(Response.Success(models.toList()))
                 }
             },
-            onFailure = { Log.e("Api", "getLikedSongs failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getLikedSongs failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -936,7 +936,7 @@ class Api @Inject constructor(
     suspend fun getAccount(): Flow<Response<com.music.spotui.data.entity.AccountModel>> = flow {
         emit(Response.Loading())
         if (!SpotifyTokenProvider.ensureToken(context)) {
-            emit(Response.Error("Spotify not authenticated")); return@flow
+            emit(Response.Error("Spotify non autenticato")); return@flow
         }
         Spotify.me().fold(
             onSuccess = { u ->
@@ -947,7 +947,7 @@ class Api @Inject constructor(
                     plan = u.product?.replaceFirstChar { it.uppercase() } ?: "",
                 )))
             },
-            onFailure = { Log.e("Api", "getAccount failed", it); emit(Response.Error(it.message ?: "error")) },
+            onFailure = { Log.e("Api", "getAccount failed", it); emit(Response.Error(it.message ?: "errore")) },
         )
     }
 
@@ -961,7 +961,7 @@ class Api @Inject constructor(
             emit(Response.Loading())
         }
         if (playlistId.isBlank()) {
-            emit(Response.Error("missing playlist id")); return@flow
+            emit(Response.Error("ID playlist mancante")); return@flow
         }
         if (playlistId.startsWith("local_pl_")) {
             val local = com.music.spotui.data.preferences.LocalPlaylistPref.getLocalPlaylist(context, playlistId)
@@ -971,7 +971,7 @@ class Api @Inject constructor(
                     artists = "Local Playlist",
                     coverUri = local.coverUri,
                     name = local.name,
-                    time = "${local.songs.size} song" + (if (local.songs.size == 1) "" else "s"),
+                    time = "${local.songs.size} " + (if (local.songs.size == 1) "brano" else "brani"),
                 )
                 HomeCache.setPlaylistDetail(clean, model)
                 emit(Response.Success(model))
@@ -986,11 +986,11 @@ class Api @Inject constructor(
                     artists = col.artists,
                     coverUri = col.coverUri,
                     name = col.name,
-                    time = "Available offline",
+                    time = "Disponibili offline",
                 )
                 emit(Response.Success(model))
             } else if (cached == null) {
-                emit(Response.Error("Spotify not authenticated — set sp_dc cookie"))
+                emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc"))
             }
             return@flow
         }
@@ -1008,7 +1008,7 @@ class Api @Inject constructor(
             },
             onFailure = {
                 Log.e("Api", "getPlaylist failed", it)
-                if (cached == null) emit(Response.Error(it.message ?: "error"))
+                if (cached == null) emit(Response.Error(it.message ?: "errore"))
             },
         )
     }

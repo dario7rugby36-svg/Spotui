@@ -113,7 +113,7 @@ fun MainBottomNavigation(navController: NavHostController, bottomBarState: Mutab
                                     Icon(
                                         painter = painterResource(
                                             id = item.icon
-                                        ), contentDescription = "home"
+                                        ), contentDescription = item.label
                                     )
                                 },
                                 label = {
@@ -130,10 +130,11 @@ fun MainBottomNavigation(navController: NavHostController, bottomBarState: Mutab
                                 onClick = {
                                     if (currentTab != item.route) {
                                         navController.navigate(item.route) {
-                                            navController.graph.startDestinationRoute?.let { startRoute ->
-                                                popUpTo(startRoute) {
-                                                    saveState = true
-                                                }
+                                            // Pop to Home, not the graph's start destination:
+                                            // that is often Login, which is no longer on the
+                                            // back stack, so popUpTo did nothing and tabs piled up.
+                                            popUpTo(Routes.Home.route) {
+                                                saveState = true
                                             }
                                             launchSingleTop = true
                                             restoreState = true

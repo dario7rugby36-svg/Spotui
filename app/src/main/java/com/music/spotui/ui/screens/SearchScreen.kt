@@ -211,13 +211,13 @@ fun SumUpSearchScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                "Recent searches",
+                                "Ricerche recenti",
                                 color = Color.White,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
-                                "Clear",
+                                "Cancella",
                                 color = Color(0xFFB3B3B3),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -368,7 +368,7 @@ fun SumUpSearchScreen(
                 }
                 // ── Podcasts: shows (→ detail) then individual episodes (→ play) ──
                 if (results.shows.isNotEmpty()) {
-                    item { SearchSectionHeader("Podcasts") }
+                    item { SearchSectionHeader("Podcast") }
                     items(results.shows.size) { i ->
                         val show = results.shows[i]
                         SearchShowRow(show) {
@@ -386,7 +386,7 @@ fun SumUpSearchScreen(
                     }
                 }
                 if (results.episodes.isNotEmpty()) {
-                    item { SearchSectionHeader("Episodes") }
+                    item { SearchSectionHeader("Episodi") }
                     items(results.episodes.size) { i ->
                         val ep = results.episodes[i]
                         SearchSongRow(
@@ -500,8 +500,8 @@ fun RecentItemRow(
                 maxLines = 1
             )
             val subtitle = when (item.type) {
-                "song" -> "Song • ${item.singer}"
-                "artist" -> "Artist"
+                "song" -> "Brano • ${item.singer}"
+                "artist" -> "Artista"
                 "album" -> "Album • ${item.singer}"
                 "show" -> "Podcast" + (if (item.singer.isNotBlank()) " • ${item.singer}" else "")
                 else -> ""
@@ -523,7 +523,7 @@ fun RecentItemRow(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) { onRemove() },
-            contentDescription = "Remove",
+            contentDescription = "Rimuovi",
         )
     }
 }
@@ -560,7 +560,7 @@ fun SearchSongRow(
             playerViewModel.playNext(song)
             android.widget.Toast.makeText(
                 context,
-                "${song.title} will play next",
+                "${song.title} verrà riprodotto dopo",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
@@ -625,7 +625,7 @@ fun SearchSongRow(
                         )
                     }
                     Text(
-                        text = "Song • ${song.singer}",
+                        text = "Brano • ${song.singer}",
                         color = Color.Gray,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
@@ -741,7 +741,7 @@ fun SearchArtistRow(artist: com.music.spotui.data.entity.ArtistsModel, onClick: 
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "Artist",
+                text = "Artista",
                 color = Color.Gray,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -794,10 +794,10 @@ fun SearchAlbumRow(album: com.music.spotui.data.entity.AlbumsModel, onClick: () 
 
 /** Spotify's "Browse all" categories: name + tile colour + the search query it runs. */
 private val browseCategories: List<Triple<String, Color, String>> = listOf(
-    Triple("Music", Color(0xFFDC148C), "Top hits"),
-    Triple("Podcasts", Color(0xFF1E3264), "Podcast"),
-    Triple("Made For You", Color(0xFF8768A8), "Discover weekly"),
-    Triple("New Releases", Color(0xFFE8115B), "New releases"),
+    Triple("Musica", Color(0xFFDC148C), "Top hits"),
+    Triple("Podcast", Color(0xFF1E3264), "Podcast"),
+    Triple("Creati per te", Color(0xFF8768A8), "Discover weekly"),
+    Triple("Nuove uscite", Color(0xFFE8115B), "New releases"),
     Triple("Pop", Color(0xFF8D67AB), "Pop"),
     Triple("Hip-Hop", Color(0xFF477D95), "Hip hop"),
     Triple("Rock", Color(0xFFE61E32), "Rock"),
@@ -806,11 +806,11 @@ private val browseCategories: List<Triple<String, Color, String>> = listOf(
     Triple("R&B", Color(0xFFBA5D07), "R&B"),
     Triple("K-Pop", Color(0xFF148A08), "K-pop"),
     Triple("Indie", Color(0xFF608108), "Indie"),
-    Triple("Dance/Electronic", Color(0xFF056952), "Electronic dance"),
+    Triple("Dance/Elettronica", Color(0xFF056952), "Electronic dance"),
     Triple("Metal", Color(0xFF777777), "Metal"),
     Triple("Chill", Color(0xFF1E3264), "Chill"),
-    Triple("Charts", Color(0xFF8C1932), "Top charts"),
-    Triple("Workout", Color(0xFF777777), "Workout"),
+    Triple("Classifiche", Color(0xFF8C1932), "Top charts"),
+    Triple("Allenamento", Color(0xFF777777), "Workout"),
     Triple("Jazz", Color(0xFF503750), "Jazz"),
 )
 
@@ -818,7 +818,7 @@ private val browseCategories: List<Triple<String, Color, String>> = listOf(
 fun BrowseAllSection(onCategoryClick: (genre: String, title: String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Browse all",
+            text = "Sfoglia tutto",
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -904,7 +904,7 @@ fun SearchTopBar() {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = "Search", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Cerca", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         //Icon(imageVector = Icons.Default.Person, contentDescription = "", tint = Color.White)
     }
 
@@ -937,7 +937,7 @@ fun SearchStickyBar(
         query = text,
         onQueryChange = onTextChange,
         modifier = Modifier.padding(10.dp),
-        placeholder = "What do you want to listen to?",
+        placeholder = "Cosa vuoi ascoltare?",
         focusRequester = focusRequester,
         onFocusChange = onFocusChange,
     )

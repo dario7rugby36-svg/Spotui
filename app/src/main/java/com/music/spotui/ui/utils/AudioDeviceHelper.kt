@@ -33,7 +33,7 @@ object AudioDeviceHelper {
     @Volatile
     private var forcedSpeakerMode: Boolean = false
 
-    val currentRouteNameState = androidx.compose.runtime.mutableStateOf("This Phone (Speaker)")
+    val currentRouteNameState = androidx.compose.runtime.mutableStateOf("Questo telefono (altoparlante)")
 
     fun updateRouteName(context: Context) {
         currentRouteNameState.value = getCurrentAudioRouteName(context)
@@ -55,7 +55,7 @@ object AudioDeviceHelper {
      */
     fun getCurrentAudioRouteName(context: Context): String {
         if (forcedSpeakerMode) {
-            return "This Phone (Speaker)"
+            return "Questo telefono (altoparlante)"
         }
         return try {
             val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -73,9 +73,9 @@ object AudioDeviceHelper {
                         it.type == AudioDeviceInfo.TYPE_WIRED_HEADSET ||
                         it.type == AudioDeviceInfo.TYPE_USB_HEADSET
             }
-            if (wired != null) "Headphones" else "This Phone (Speaker)"
+            if (wired != null) "Cuffie" else "Questo telefono (altoparlante)"
         } catch (e: Exception) {
-            "This Phone (Speaker)"
+            "Questo telefono (altoparlante)"
         }
     }
 
@@ -118,7 +118,7 @@ object AudioDeviceHelper {
             var hasActiveBtSet = false
             for (bt in uniqueBtOutputs) {
                 val name = bt.productName?.toString()?.takeIf { it.isNotBlank() } ?: "Bluetooth Device"
-                val isActive = !forcedSpeakerMode && (name.equals(activeRouteName, ignoreCase = true) || (!hasActiveBtSet && uniqueBtOutputs.size == 1 && activeRouteName != "This Phone (Speaker)" && activeRouteName != "Headphones"))
+                val isActive = !forcedSpeakerMode && (name.equals(activeRouteName, ignoreCase = true) || (!hasActiveBtSet && uniqueBtOutputs.size == 1 && activeRouteName != "Questo telefono (altoparlante)" && activeRouteName != "Cuffie"))
                 if (isActive) hasActiveBtSet = true
 
                 deviceList.add(
@@ -140,8 +140,8 @@ object AudioDeviceHelper {
                         it.type == AudioDeviceInfo.TYPE_USB_HEADSET
             }
             if (wiredOutput != null) {
-                val name = wiredOutput.productName?.toString()?.takeIf { it.isNotBlank() } ?: "Wired Headphones"
-                val isActive = !forcedSpeakerMode && !hasActiveBtSet && (name.equals(activeRouteName, ignoreCase = true) || activeRouteName == "Headphones")
+                val name = wiredOutput.productName?.toString()?.takeIf { it.isNotBlank() } ?: "Cuffie con filo"
+                val isActive = !forcedSpeakerMode && !hasActiveBtSet && (name.equals(activeRouteName, ignoreCase = true) || activeRouteName == "Cuffie")
                 deviceList.add(
                     AudioDeviceItem(
                         id = "wired_${wiredOutput.id}",
@@ -162,7 +162,7 @@ object AudioDeviceHelper {
             deviceList.add(
                 AudioDeviceItem(
                     id = "speaker",
-                    name = "This Phone (Speaker)",
+                    name = "Questo telefono (altoparlante)",
                     type = AudioDeviceType.SPEAKER,
                     isActive = isSpeakerActive,
                     isConnected = true,
@@ -208,7 +208,7 @@ object AudioDeviceHelper {
                 deviceList.add(
                     AudioDeviceItem(
                         id = "speaker",
-                        name = "This Phone (Speaker)",
+                        name = "Questo telefono (altoparlante)",
                         type = AudioDeviceType.SPEAKER,
                         isActive = true,
                         isConnected = true

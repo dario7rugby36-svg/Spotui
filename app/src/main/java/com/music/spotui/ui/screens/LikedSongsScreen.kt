@@ -236,14 +236,14 @@ fun LikedSongsScreen(navController: NavController) {
                             Spacer(modifier = Modifier.padding(5.dp))
                             Text(
                                 modifier = Modifier.padding(20.dp, 5.dp, 0.dp, 0.dp),
-                                text = "Liked Songs",
+                                text = "Brani che ti piacciono",
                                 color = Color.White,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp),
-                                text = "${songs.size} songs",
+                                text = "${songs.size} brani",
                                 color = Color.Gray,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
@@ -285,11 +285,11 @@ fun LikedSongsScreen(navController: NavController) {
                                                     ) {
                                                         if (!likedDownloaded) {
                                                             SongPlayer.downloadAll(songs, context)
-                                                            snackbarMessage = "Downloading ${songs.size} tracks…"
+                                                            snackbarMessage = "Download di ${songs.size} brani…"
                                                             snackbarVisible = true
                                                         }
                                                     },
-                                                contentDescription = "Download liked songs",
+                                                contentDescription = "Scarica i brani che ti piacciono",
                                             )
                                             Spacer(modifier = Modifier.width(18.dp))
                                             Icon(
@@ -304,11 +304,11 @@ fun LikedSongsScreen(navController: NavController) {
                                                         playerViewModel.addAllToQueue(songs)
                                                         android.widget.Toast.makeText(
                                                             context,
-                                                            "${songs.size} track(s) added to queue",
+                                                            "${songs.size} brani aggiunti alla coda",
                                                             android.widget.Toast.LENGTH_SHORT,
                                                         ).show()
                                                     },
-                                                contentDescription = "Add to queue",
+                                                contentDescription = "Aggiungi alla coda",
                                             )
                                             Spacer(modifier = Modifier.width(18.dp))
                                             Icon(
@@ -328,12 +328,12 @@ fun LikedSongsScreen(navController: NavController) {
                                                                 true,
                                                                 first.id,
                                                                 0,
-                                                                "Liked Songs",
+                                                                "Brani che ti piacciono",
                                                             )
                                                             SongPlayer.playSong(first.url, context, "song/${first.id}")
                                                         }
                                                     },
-                                                contentDescription = "Shuffle play",
+                                                contentDescription = "Riproduzione casuale",
                                             )
                                         }
                                     }
@@ -362,7 +362,7 @@ fun LikedSongsScreen(navController: NavController) {
                                                             true,
                                                             songs[0].id,
                                                             0,
-                                                            "Liked Songs"
+                                                            "Brani che ti piacciono"
                                                         )
                                                         SongPlayer.playSong(songs[0].url, context, "song/${songs[0].id}")
                                                     }
@@ -375,7 +375,7 @@ fun LikedSongsScreen(navController: NavController) {
                                             painter = painterResource(
                                                 id = if (currentInList && playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com,
                                             ),
-                                            contentDescription = if (currentInList && playing) "Pause" else "Play"
+                                            contentDescription = if (currentInList && playing) "Pausa" else "Riproduci"
                                         )
                                     }
                                 }
@@ -390,7 +390,7 @@ fun LikedSongsScreen(navController: NavController) {
                                 query = searchQuery,
                                 onQueryChange = { searchQuery = it },
                                 modifier = Modifier.padding(20.dp, 8.dp),
-                                placeholder = "Search in liked songs",
+                                placeholder = "Cerca nei brani che ti piacciono",
                             )
                         }
 
@@ -418,7 +418,7 @@ fun LikedSongsScreen(navController: NavController) {
                                     )
                                     Icon(
                                         imageVector = Icons.Default.KeyboardArrowDown,
-                                        contentDescription = "Sort Options",
+                                        contentDescription = "Opzioni di ordinamento",
                                         tint = Color.White,
                                         modifier = Modifier
                                             .size(16.dp)
@@ -438,7 +438,7 @@ fun LikedSongsScreen(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No matches found for \"$searchQuery\"",
+                                    text = "Nessun risultato per \"$searchQuery\"",
                                     color = Color.White,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Medium
@@ -455,7 +455,7 @@ fun LikedSongsScreen(navController: NavController) {
                                     playerViewModel.playNext(song)
                                     android.widget.Toast.makeText(
                                         context,
-                                        "${song.title} will play next",
+                                        "${song.title} verrà riprodotto dopo",
                                         android.widget.Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -479,7 +479,7 @@ fun LikedSongsScreen(navController: NavController) {
                                                     true,
                                                     song.id,
                                                     index,
-                                                    "Liked Songs"
+                                                    "Brani che ti piacciono"
                                                 )
                                                 SongPlayer.playSong(song.url, context, "song/${song.id}")
                                             },
@@ -541,7 +541,7 @@ fun LikedSongsScreen(navController: NavController) {
                                 .navigationBarsPadding()
                         ) {
                             Text(
-                                text = "Sort by",
+                                text = "Ordina per",
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,

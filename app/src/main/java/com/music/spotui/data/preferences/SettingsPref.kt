@@ -14,10 +14,10 @@ enum class StreamQuality(
     val audioQuality: AudioQuality,
     val lossless: Boolean,
 ) {
-    LOW("Low", "Data saver — smallest size", AudioQuality.LOW, false),
-    NORMAL("Normal", "Balanced for the network", AudioQuality.AUTO, false),
-    HIGH("High", "Best compressed quality", AudioQuality.HIGH, false),
-    LOSSLESS("Lossless", "FLAC when available, else High", AudioQuality.HIGH, true),
+    LOW("Bassa", "Risparmio dati — dimensione minima", AudioQuality.LOW, false),
+    NORMAL("Normale", "Bilanciata per la rete", AudioQuality.AUTO, false),
+    HIGH("Alta", "Migliore qualità compressa", AudioQuality.HIGH, false),
+    LOSSLESS("Lossless", "FLAC se disponibile, altrimenti Alta", AudioQuality.HIGH, true),
 }
 
 private const val PREF = "settings_prefs"
