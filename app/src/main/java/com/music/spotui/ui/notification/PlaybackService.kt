@@ -435,6 +435,8 @@ class PlaybackService : MediaLibraryService() {
         // Android Auto content-style hints (androidx.media MediaConstants values):
         // playlists/albums as a cover grid, tracks as a list.
         private const val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
+        // Without this root hint Android Auto hides the search button entirely.
+        private const val SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED"
         private const val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
         private const val CONTENT_STYLE_PLAYABLE_HINT = "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
         private const val CONTENT_STYLE_LIST = 1
@@ -590,6 +592,7 @@ class PlaybackService : MediaLibraryService() {
                     LibraryParams.Builder()
                         .setExtras(Bundle().apply {
                             putBoolean(CONTENT_STYLE_SUPPORTED, true)
+                            putBoolean(SEARCH_SUPPORTED, true)
                             putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID)
                             putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST)
                         })
@@ -654,16 +657,10 @@ class PlaybackService : MediaLibraryService() {
             query: String,
             params: LibraryParams?,
         ): ListenableFuture<LibraryResult<Void>> = future {
-            if (query.isNotBlank()) {
-                try {
-                    val songs = lastSuccess(repository.searchSongs(query)).orEmpty()
-                    searchCache[query] = songs
-                    registerTracks("search/$query", songs)
-                    session.notifySearchResultChanged(browser, query, songs.size, params)
-                } catch (e: Exception) {
-                    android.util.Log.e("PlaybackService", "Error in onSearch for query: $query", e)
-                }
-            }
+            val songs = searchForCar(query)
+            // Always answer, even with zero results or after an error: Android Auto
+            // waits for this notification and otherwise spins forever.
+            session.notifySearchResultChanged(browser, query, songs.size, params)
             LibraryResult.ofVoid()
         }
 
@@ -674,13 +671,30 @@ class PlaybackService : MediaLibraryService() {
             page: Int,
             pageSize: Int,
             params: LibraryParams?,
-        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-            val songs = searchCache[query].orEmpty()
-            val items = songs.map { playable(it) }
-            return Futures.immediateFuture(
-                LibraryResult.ofItemList(ImmutableList.copyOf(items), params)
-            )
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> = future {
+            // Results normally come from onSearch; search here too if they're missing.
+            val songs = searchCache[query] ?: searchForCar(query)
+            LibraryResult.ofItemList(ImmutableList.copyOf(songs.map { playable(it) }), params)
         }
+    }
+
+    /** Song search for the car, cached per query and registered so taps can play. */
+    private suspend fun searchForCar(query: String): List<SongsModel> {
+        val q = query.trim()
+        if (q.isBlank()) return emptyList()
+        searchCache[q]?.let { return it }
+        val songs = try {
+            lastSuccess(repository.searchSongs(q)).orEmpty()
+        } catch (e: Exception) {
+            android.util.Log.e("PlaybackService", "Error in car search for query: $q", e)
+            emptyList()
+        }
+        if (songs.isNotEmpty()) {
+            searchCache[q] = songs
+            searchCache[query] = songs
+            registerTracks("search/$q", songs)
+        }
+        return songs
     }
 
     private suspend fun childrenOf(parentId: String): List<MediaItem> = try {
