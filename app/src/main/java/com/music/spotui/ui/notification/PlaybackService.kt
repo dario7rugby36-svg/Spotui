@@ -427,6 +427,18 @@ class PlaybackService : MediaLibraryService() {
         const val NODE_DOWNLOADS = "downloads"
         const val NODE_PLAYLISTS = "playlists"
         const val NODE_ALBUMS = "albums"
+        const val NODE_RECENT = "recent"
+
+        /** Most recent distinct tracks shown under "Ascoltati di recente" in the car. */
+        private const val RECENT_LIMIT = 50
+
+        // Android Auto content-style hints (androidx.media MediaConstants values):
+        // playlists/albums as a cover grid, tracks as a list.
+        private const val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
+        private const val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
+        private const val CONTENT_STYLE_PLAYABLE_HINT = "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
+        private const val CONTENT_STYLE_LIST = 1
+        private const val CONTENT_STYLE_GRID = 2
     }
 
     /**
@@ -572,7 +584,18 @@ class PlaybackService : MediaLibraryService() {
             browser: MediaSession.ControllerInfo,
             params: LibraryParams?,
         ): ListenableFuture<LibraryResult<MediaItem>> =
-            Futures.immediateFuture(LibraryResult.ofItem(folder(ROOT, "spotui"), params))
+            Futures.immediateFuture(
+                LibraryResult.ofItem(
+                    folder(ROOT, "spotui"),
+                    LibraryParams.Builder()
+                        .setExtras(Bundle().apply {
+                            putBoolean(CONTENT_STYLE_SUPPORTED, true)
+                            putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID)
+                            putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST)
+                        })
+                        .build(),
+                ),
+            )
 
         override fun onGetChildren(
             session: MediaLibrarySession,
@@ -615,6 +638,10 @@ class PlaybackService : MediaLibraryService() {
                     song.id, idx, song.album,
                 )
                 SongPlayer.playSong(song.url, applicationContext, "song/${song.id}")
+            } else if (requested != null) {
+                // Voice request from the car ("Ok Google, play <x> on Spotui"): the item
+                // carries only a search query. An empty query means "play something".
+                playFromVoice(requested.requestMetadata.searchQuery.orEmpty().trim())
             }
             return Futures.immediateFuture(
                 MediaSession.MediaItemsWithStartPosition(emptyList(), C.INDEX_UNSET, C.TIME_UNSET),
@@ -660,15 +687,17 @@ class PlaybackService : MediaLibraryService() {
         // Enforce a strict fallback timeout for Android Auto responsiveness
         kotlinx.coroutines.withTimeoutOrNull(8000) {
             when {
+                // Android Auto shows the root's children as tabs (up to four), so
+                // Downloads lives at the top of the Playlist tab instead.
                 parentId == ROOT -> listOf(
+                    folder(
+                        NODE_RECENT,
+                        "Ascoltati di recente",
+                        mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED
+                    ),
                     folder(
                         NODE_LIKED,
                         "Brani che ti piacciono",
-                        mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
-                    ),
-                    folder(
-                        NODE_DOWNLOADS,
-                        "Download",
                         mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
                     ),
                     folder(
@@ -683,6 +712,9 @@ class PlaybackService : MediaLibraryService() {
                     ),
                 )
 
+                parentId == NODE_RECENT ->
+                    registerTracks(NODE_RECENT, recentSongs())
+
                 parentId == NODE_LIKED ->
                     registerTracks(
                         NODE_LIKED,
@@ -696,7 +728,13 @@ class PlaybackService : MediaLibraryService() {
                     )
 
                 parentId == NODE_PLAYLISTS ->
-                    libraryEntries().filter {
+                    listOf(
+                        folder(
+                            NODE_DOWNLOADS,
+                            "Download",
+                            mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS
+                        )
+                    ) + libraryEntries().filter {
                         it.isPlaylist && it.spotifyId != Api.LIKED_SONGS_ID && it.spotifyId != Api.DOWNLOADS_ID
                     }.map {
                         folder(
@@ -739,6 +777,46 @@ class PlaybackService : MediaLibraryService() {
     } catch (e: Exception) {
         android.util.Log.e("PlaybackService", "Error retrieving children for $parentId", e)
         emptyList()
+    }
+
+    /** Distinct tracks from the listening history, newest first, as playable songs. */
+    private fun recentSongs(): List<SongsModel> =
+        com.music.spotui.data.preferences.getListeningHistory(applicationContext)
+            .sortedByDescending { it.ts }
+            .filter { it.url.isNotBlank() }
+            .distinctBy { it.songId }
+            .take(RECENT_LIMIT)
+            .map { SongsModel(it.songId, it.title, it.album, it.singer, it.image, it.url) }
+
+    /**
+     * Plays the result of a voice search from the car. A blank query plays the
+     * recent tracks (or Liked Songs), so "play music on Spotui" does something.
+     */
+    private fun playFromVoice(query: String) {
+        serviceScope.launch {
+            val songs = try {
+                if (query.isBlank()) {
+                    recentSongs().ifEmpty { lastSuccess(repository.provideLikedSongs()).orEmpty() }
+                } else {
+                    lastSuccess(repository.searchSongs(query)).orEmpty()
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("PlaybackService", "Voice search failed for: $query", e)
+                emptyList()
+            }
+            val first = songs.firstOrNull() ?: run {
+                android.util.Log.w("PlaybackService", "Voice search found nothing for: $query")
+                return@launch
+            }
+            // serviceScope runs on the main thread, like the browse callbacks.
+            registerTracks("voice/$query", songs)
+            currentSongState.updateQueue(songs)
+            currentSongState.updateSongState(
+                first.coverUri, first.title, first.singer, true,
+                first.id, 0, first.album,
+            )
+            SongPlayer.playSong(first.url, applicationContext, "song/${first.id}")
+        }
     }
 
     private suspend fun libraryEntries() =
