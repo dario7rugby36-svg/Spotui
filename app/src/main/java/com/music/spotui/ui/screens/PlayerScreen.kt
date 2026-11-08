@@ -382,6 +382,11 @@ fun PlayerScreen(navController: NavController) {
     val isLiked = remember(songId) {
         mutableStateOf(isSongLiked(context, songId.toString()))
     }
+    // A like from the notification or Android Auto updates the heart here too.
+    val sharedLikeState = playerViewModel.likeState.value
+    LaunchedEffect(songId, sharedLikeState) {
+        isLiked.value = isSongLiked(context, songId.toString())
+    }
     var showMenu by remember { mutableStateOf(false) }
     var showLyrics by remember { mutableStateOf(false) }
     var showSavedIn by remember { mutableStateOf(false) }

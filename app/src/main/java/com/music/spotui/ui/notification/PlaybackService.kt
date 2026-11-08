@@ -197,15 +197,18 @@ class PlaybackService : MediaLibraryService() {
                         "getMediaButtons: button displayName=${b.displayName}, customAction=${b.sessionCommand?.customAction}, playerCommand=${b.playerCommand}"
                     )
                 }
-                val repeatBtn = base.find { it.sessionCommand?.customAction == "ACTION_REPEAT" }
+                // Notifications fit five actions: like, previous, play/pause, next,
+                // close. Repeat stays in the app (and in Android 13+ / Auto controls).
+                val likeBtn = base.find { it.sessionCommand?.customAction == "ACTION_LIKE" }
                 val closeBtn = base.find { it.sessionCommand?.customAction == "ACTION_CLOSE" }
                 val transport = base.filter {
-                    it.sessionCommand?.customAction != "ACTION_REPEAT" &&
+                    it.sessionCommand?.customAction != "ACTION_LIKE" &&
+                            it.sessionCommand?.customAction != "ACTION_REPEAT" &&
                             it.sessionCommand?.customAction != "ACTION_CLOSE" &&
                             it.sessionCommand?.customAction != "ACTION_NONE"
                 }
                 return ImmutableList.builder<CommandButton>()
-                    .apply { repeatBtn?.let { add(it) } }
+                    .apply { likeBtn?.let { add(it) } }
                     .addAll(transport)
                     .apply { closeBtn?.let { add(it) } }
                     .build()
@@ -249,9 +252,16 @@ class PlaybackService : MediaLibraryService() {
         // Keep the notification's repeat icon in sync whenever the repeat mode
         // changes from ANY source (full-screen UI, notification button, etc.).
         serviceScope.launch {
-            snapshotFlow { currentSongState.repeat.value }
+            // Also refresh on track changes and in-app likes, so the heart is right.
+            snapshotFlow {
+                Triple(
+                    currentSongState.repeat.value,
+                    currentSongState.songId.value,
+                    currentSongState.likeState.value,
+                )
+            }
                 .distinctUntilChanged()
-                .collect { mode ->
+                .collect { (mode, _, _) ->
                     mediaSession?.setCustomLayout(buildCustomLayout(mode))
                 }
         }
@@ -470,7 +480,38 @@ class PlaybackService : MediaLibraryService() {
             .setIconResId(R.drawable.ic_close)
             .build()
 
-        return ImmutableList.of(repeatButton, closeButton)
+        val liked = isCurrentSongLiked()
+        val likeButton = CommandButton.Builder()
+            .setDisplayName(if (liked) "Rimuovi da Brani che ti piacciono" else "Mi piace")
+            .setSessionCommand(SessionCommand("ACTION_LIKE", Bundle.EMPTY))
+            .setIconResId(if (liked) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
+            .build()
+
+        // Like first: Android 13+ media controls and Android Auto show the first
+        // custom actions of this list next to the transport buttons.
+        return ImmutableList.of(likeButton, repeatButton, closeButton)
+    }
+
+    private fun isCurrentSongLiked(): Boolean {
+        val id = currentSongState.songId.value
+        return id != 0 && com.music.spotui.data.preferences.isSongLiked(applicationContext, id.toString())
+    }
+
+    /**
+     * "Mi piace" from the notification / Android Auto: same as the heart in the
+     * player — saves locally, mirrors to the Spotify account, refreshes the button.
+     */
+    private fun toggleLikeCurrentSong() {
+        val id = currentSongState.songId.value
+        if (id == 0) return
+        val ctx = applicationContext
+        val nowLiked = !com.music.spotui.data.preferences.isSongLiked(ctx, id.toString())
+        if (nowLiked) com.music.spotui.data.preferences.addLikedSongId(ctx, id.toString())
+        else com.music.spotui.data.preferences.removeLikedSongId(ctx, id.toString())
+        currentSongState.likeState.value = nowLiked
+        val spotifyId = currentSongState.queue.value.firstOrNull { it.id == id }?.spotifyTrackId.orEmpty()
+        com.music.spotui.data.api.SpotifySync.setTrackSaved(ctx, spotifyId, nowLiked)
+        mediaSession?.setCustomLayout(buildCustomLayout(currentSongState.repeat.value))
     }
 
     private inner class LibraryCallback : MediaLibrarySession.Callback {
@@ -540,6 +581,7 @@ class PlaybackService : MediaLibraryService() {
             val sessionCommands = baseResult.availableSessionCommands.buildUpon()
                 .add(SessionCommand("ACTION_CLOSE", Bundle.EMPTY))
                 .add(SessionCommand("ACTION_REPEAT", Bundle.EMPTY))
+                .add(SessionCommand("ACTION_LIKE", Bundle.EMPTY))
                 .build()
 
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
@@ -557,6 +599,11 @@ class PlaybackService : MediaLibraryService() {
             args: Bundle
         ): ListenableFuture<SessionResult> {
             when (customCommand.customAction) {
+                "ACTION_LIKE" -> {
+                    toggleLikeCurrentSong()
+                    return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+                }
+
                 "ACTION_CLOSE" -> {
                     // exit the player and kill the process directly to terminate the app cleanly
                     SongPlayer.pause()
