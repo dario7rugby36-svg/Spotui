@@ -87,21 +87,41 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** Polls ExoPlayer's position every 250ms so the active lyric line tracks the music. */
+/**
+ * User correction for lyrics timing, shared by the full-screen and inline lyrics and
+ * saved in Settings. Positive values show lyrics later (useful with Bluetooth delay).
+ */
+private object LyricsSync {
+    const val STEP_MS = 250L
+    const val MAX_MS = 3_000L
+    val offsetMs = mutableStateOf(
+        com.music.spotui.data.preferences.getLyricsOffsetMs(com.music.spotui.MyApplication.instance)
+    )
+    fun change(delta: Long) {
+        val v = (offsetMs.value + delta).coerceIn(-MAX_MS, MAX_MS)
+        offsetMs.value = v
+        com.music.spotui.data.preferences.setLyricsOffsetMs(com.music.spotui.MyApplication.instance, v)
+    }
+    /** Playback position as the lyrics should see it. */
+    fun position(): Long = (SongPlayer.getCurrentPosition() - offsetMs.value).coerceAtLeast(0L)
+}
+
+/** Polls the playback position every 50ms so the active lyric line switches on time. */
 @Composable
 private fun rememberPlaybackPositionMs(): State<Long> {
     val pos = remember { mutableStateOf(0L) }
     LaunchedEffect(Unit) {
         while (true) {
-            pos.value = SongPlayer.getCurrentPosition().coerceAtLeast(0L)
-            delay(250L)
+            pos.value = LyricsSync.position()
+            delay(50L)
         }
     }
     return pos
 }
 
+// A small lead so a line lights up as it starts, not a poll later.
 private fun activeIndexFor(lyrics: Lyrics, positionMs: Long): Int =
-    if (lyrics.synced) lyrics.lines.indexOfLast { it.timeMs <= positionMs + 250 }.coerceAtLeast(0)
+    if (lyrics.synced) lyrics.lines.indexOfLast { it.timeMs <= positionMs + 80 }.coerceAtLeast(0)
     else -1
 
 /**
@@ -111,14 +131,16 @@ private fun activeIndexFor(lyrics: Lyrics, positionMs: Long): Int =
  */
 private fun karaokeEndMs(lines: List<com.music.spotui.data.entity.LyricLine>, index: Int): Long {
     val line = lines.getOrNull(index) ?: return 0L
-    val next = lines.getOrNull(index + 1)?.timeMs ?: (line.timeMs + 6_000L)
+    val gap = (lines.getOrNull(index + 1)?.timeMs ?: (line.timeMs + 6_000L)) - line.timeMs
     val estimate = (line.text.count { !it.isWhitespace() } * 110L).coerceIn(1_500L, 8_000L)
-    return minOf(next, line.timeMs + estimate).coerceAtLeast(line.timeMs + 1)
+    // Singers usually finish a line a moment before the next one starts.
+    val sung = (gap * 0.9).toLong()
+    return line.timeMs + minOf(sung, estimate).coerceAtLeast(1L)
 }
 
 /** Seek to a tapped synced line and make sure we're playing. */
 private fun jumpTo(timeMs: Long) {
-    SongPlayer.seekTo(timeMs)
+    SongPlayer.seekTo((timeMs + LyricsSync.offsetMs.value).coerceAtLeast(0L))
     if (!SongPlayer.isPlaying()) SongPlayer.play()
 }
 
@@ -303,6 +325,7 @@ fun LyricsScreen(
                     Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    LyricsSyncControl()
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Chiudi",
@@ -856,6 +879,47 @@ private fun LanguagePickerBottomSheet(
     }
 }
 
+/** "− 0,0 s +" control that shifts the lyrics earlier/later. */
+@Composable
+private fun LyricsSyncControl() {
+    val offset by LyricsSync.offsetMs
+    val label = if (offset == 0L) "Sync" else
+        (if (offset > 0) "+" else "−") + String.format(java.util.Locale.ITALY, "%.2f s", kotlin.math.abs(offset) / 1000f)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(end = 10.dp)
+            .background(Color.White.copy(alpha = 0.12f), androidx.compose.foundation.shape.RoundedCornerShape(50))
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+    ) {
+        Text(
+            "−",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .clickable { LyricsSync.change(-LyricsSync.STEP_MS) }
+                .padding(horizontal = 8.dp),
+        )
+        Text(
+            label,
+            color = Color.White.copy(alpha = 0.85f),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.clickable { LyricsSync.change(-offset) },
+        )
+        Text(
+            "+",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .clickable { LyricsSync.change(LyricsSync.STEP_MS) }
+                .padding(horizontal = 8.dp),
+        )
+    }
+}
+
 @Composable
 private fun LyricLineText(
     text: String,
@@ -879,7 +943,7 @@ private fun LyricLineText(
         LaunchedEffect(text, startMs, endMs) {
             while (true) {
                 androidx.compose.runtime.withFrameMillis { }
-                val pos = SongPlayer.getCurrentPosition()
+                val pos = LyricsSync.position()
                 progress = ((pos - startMs).toFloat() / (endMs - startMs)).coerceIn(0f, 1f)
             }
         }

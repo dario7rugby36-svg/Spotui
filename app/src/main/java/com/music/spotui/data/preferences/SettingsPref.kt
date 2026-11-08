@@ -30,6 +30,7 @@ private const val KEY_CROSSFADE_DJ = "crossfade_dj_mode"
 private const val KEY_WEB_PLAYBACK = "web_playback_enabled"
 private const val KEY_VIDEO_FALLBACK = "video_fallback_enabled"
 private const val KEY_NEON_PLAYER = "neon_player_style"
+private const val KEY_LYRICS_OFFSET_MS = "lyrics_offset_ms"
 private const val KEY_LIBRARY_GRID = "library_grid_view"
 private const val KEY_AUTO_PLAY = "auto_play_startup"
 private const val KEY_IGNORE_BATTERY_OPT = "ignore_battery_optimization"
@@ -105,6 +106,10 @@ fun isVideoFallbackEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_VIDEO_
 /** "Neon" now-playing style: dark screen, glowing artwork, animated wave, cyan/pink accents. */
 fun isNeonPlayerEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_NEON_PLAYER, true)
 fun setNeonPlayerEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean(KEY_NEON_PLAYER, v).apply()
+
+/** Lyrics timing correction in ms: positive shows lyrics later (e.g. Bluetooth delay). */
+fun getLyricsOffsetMs(c: Context): Long = prefs(c).getLong(KEY_LYRICS_OFFSET_MS, 0L)
+fun setLyricsOffsetMs(c: Context, v: Long) = prefs(c).edit().putLong(KEY_LYRICS_OFFSET_MS, v).apply()
 fun setVideoFallbackEnabled(c: Context, v: Boolean) =
     prefs(c).edit().putBoolean(KEY_VIDEO_FALLBACK, v).apply()
 
