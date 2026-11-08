@@ -46,31 +46,14 @@ class PlayerViewModel @Inject constructor(private val currentSongState: CurrentS
 
     fun updateQueue(songs: List<SongsModel>) = currentSongState.updateQueue(songs)
 
-    /** Insert a track right after the one currently playing ("Play next"). */
-    fun playNext(song: SongsModel) {
-        val q = currentSongState.queue.value.toMutableList()
-        q.removeAll { it.id == song.id }
-        val cur = q.indexOfFirst { it.id == currentSongId.value }
-        val insertAt = (if (cur >= 0) cur + 1 else 0).coerceAtMost(q.size)
-        q.add(insertAt, song)
-        currentSongState.updateQueue(q)
-    }
+    /** Insert a track right after the one currently playing ("Riproduci dopo"). */
+    fun playNext(song: SongsModel): Int = currentSongState.enqueue(listOf(song), playNext = true)
 
-    /** Append a track to the end of the queue ("Add to queue"). */
-    fun addToQueue(song: SongsModel) {
-        val q = currentSongState.queue.value
-        if (q.any { it.id == song.id }) return
-        currentSongState.updateQueue(q + song)
-    }
+    /** Queue a track after the current one and after other hand-queued tracks ("Aggiungi alla coda"). */
+    fun addToQueue(song: SongsModel): Int = currentSongState.enqueue(listOf(song), playNext = false)
 
-    /** Append multiple tracks to the end of the queue. */
-    fun addAllToQueue(songs: List<SongsModel>) {
-        val current = currentSongState.queue.value
-        val newSongs = songs.filter { s -> current.none { it.id == s.id } }
-        if (newSongs.isNotEmpty()) {
-            currentSongState.updateQueue(current + newSongs)
-        }
-    }
+    /** Queue several tracks, in order, the same way as [addToQueue]. */
+    fun addAllToQueue(songs: List<SongsModel>): Int = currentSongState.enqueue(songs, playNext = false)
 
     /** Reorder the queue, moving the track at [from] to [to] (both absolute indices). */
     fun moveQueueItem(from: Int, to: Int) {

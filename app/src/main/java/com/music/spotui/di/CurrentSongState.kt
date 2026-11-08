@@ -58,8 +58,41 @@ class CurrentSongState @Inject constructor() {
     private val _queue: MutableState<List<SongsModel>> = mutableStateOf(emptyList())
     val queue: State<List<SongsModel>> get() = _queue
 
+    // Ids the user queued by hand ("Aggiungi alla coda" / "Riproduci dopo"). They stay
+    // grouped right after the current track, in the order added (Spotify's "Next in
+    // queue"), instead of landing after the last track of a long playlist.
+    private val userQueuedIds = mutableSetOf<Int>()
+
+    /**
+     * Queues [songs] right after the current track. With [playNext] they go first;
+     * otherwise after anything else the user already queued. A song already in the
+     * list is moved, since next/previous need unique ids. The current track is
+     * skipped. Returns how many tracks were queued.
+     */
+    fun enqueue(songs: List<SongsModel>, playNext: Boolean): Int {
+        val toAdd = songs.filter { it.id != _songId.value }.distinctBy { it.id }
+        if (toAdd.isEmpty()) return 0
+        val ids = toAdd.map { it.id }.toSet()
+        val q = _queue.value.filterNot { it.id in ids }.toMutableList()
+        val cur = q.indexOfFirst { it.id == _songId.value }
+        var insertAt = if (cur >= 0) cur + 1 else 0
+        if (!playNext) {
+            while (insertAt < q.size && q[insertAt].id in userQueuedIds) insertAt++
+        }
+        q.addAll(insertAt, toAdd)
+        updateQueue(q)
+        userQueuedIds += ids
+        val idx = q.indexOfFirst { it.id == _songId.value }
+        if (idx >= 0) _songIndex.value = idx
+        return toAdd.size
+    }
+
     fun updateQueue(songs: List<SongsModel>) {
         _queue.value = songs
+        // A new list (another playlist/album) drops the "queued by hand" marks of
+        // tracks that are no longer in it.
+        val present = songs.mapTo(HashSet()) { it.id }
+        userQueuedIds.retainAll(present)
         // Seed the lossless resolver: map each track's play query → its Spotify id so
         // SongPlayer can resolve a FLAC stream from a play site that only has the query.
         SongPlayer.registerLossless(songs.map { it.url to it.spotifyTrackId })
@@ -124,8 +157,17 @@ class CurrentSongState @Inject constructor() {
             // replaced by another list while shuffled). Keep tracks appended in
             // the meantime (queue edits, autoplay radio).
             if (original != null && original.any { it.id == _songId.value }) {
-                val appended = q.filter { s -> original.none { it.id == s.id } }
-                val restored = original + appended
+                // Tracks queued by hand stay right after the current one.
+                val cur = q.indexOfFirst { it.id == _songId.value }
+                val handQueued = if (cur >= 0) {
+                    q.drop(cur + 1).takeWhile { it.id in userQueuedIds }
+                } else emptyList()
+                val handIds = handQueued.mapTo(HashSet()) { it.id }
+                val appended = q.filter { s -> original.none { it.id == s.id } && s.id !in handIds }
+                val base = (original + appended).filterNot { it.id in handIds }.toMutableList()
+                val baseCur = base.indexOfFirst { it.id == _songId.value }
+                base.addAll(baseCur + 1, handQueued)
+                val restored = base
                 _queue.value = restored
                 val idx = restored.indexOfFirst { it.id == _songId.value }
                 if (idx >= 0) _songIndex.value = idx

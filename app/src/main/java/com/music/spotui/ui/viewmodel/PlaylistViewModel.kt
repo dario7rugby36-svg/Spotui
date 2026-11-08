@@ -34,13 +34,7 @@ class PlaylistViewModel @Inject constructor(
 
     fun updateQueue(songs: List<SongsModel>) = currentSongState.updateQueue(songs)
 
-    fun addAllToQueue(songs: List<SongsModel>) {
-        val current = currentSongState.queue.value
-        val newSongs = songs.filter { s -> current.none { it.id == s.id } }
-        if (newSongs.isNotEmpty()) {
-            currentSongState.updateQueue(current + newSongs)
-        }
-    }
+    fun addAllToQueue(songs: List<SongsModel>): Int = currentSongState.enqueue(songs, playNext = false)
 
     fun startShuffled(songs: List<SongsModel>) = currentSongState.startShuffled(songs)
 

@@ -137,11 +137,21 @@ fun SongOptionsSheet(
             HorizontalDivider(color = Color(0xFF2A2A2A))
 
             SongMenuRow(Icons.Default.PlayArrow, "Riproduci dopo") {
-                playerViewModel.playNext(song)
+                val queued = playerViewModel.playNext(song)
+                android.widget.Toast.makeText(
+                    context,
+                    if (queued > 0) "${song.title} verrà riprodotto dopo" else "È il brano in riproduzione",
+                    android.widget.Toast.LENGTH_SHORT,
+                ).show()
                 onDismiss()
             }
             SongMenuRow(Icons.AutoMirrored.Filled.List, "Aggiungi alla coda") {
-                playerViewModel.addToQueue(song)
+                val queued = playerViewModel.addToQueue(song)
+                android.widget.Toast.makeText(
+                    context,
+                    if (queued > 0) "Aggiunto alla coda" else "È il brano in riproduzione",
+                    android.widget.Toast.LENGTH_SHORT,
+                ).show()
                 onDismiss()
             }
             SongMenuRow(
