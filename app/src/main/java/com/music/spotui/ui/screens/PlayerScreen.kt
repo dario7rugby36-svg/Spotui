@@ -145,16 +145,16 @@ import kotlinx.coroutines.launch
 private val artistImageCache = java.util.concurrent.ConcurrentHashMap<String, String>()
 private val artistIdCache = java.util.concurrent.ConcurrentHashMap<String, String>()
 
-@OptIn(
-    ExperimentalGlideComposeApi::class,
-    androidx.compose.foundation.ExperimentalFoundationApi::class
-)
 /** True while the player renders in the "Neon" style (Settings → Riproduzione). */
 val LocalNeonPlayer = androidx.compose.runtime.compositionLocalOf { false }
 private val NeonBackground = Color(0xFF07070C)
 private val NeonCyan = Color(0xFF00F5D4)
 private val NeonPink = Color(0xFFF72585)
 
+@OptIn(
+    ExperimentalGlideComposeApi::class,
+    androidx.compose.foundation.ExperimentalFoundationApi::class
+)
 @Composable
 fun PlayerScreen(navController: NavController) {
     val density = LocalDensity.current
