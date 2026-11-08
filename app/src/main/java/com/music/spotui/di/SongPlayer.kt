@@ -282,6 +282,15 @@ object SongPlayer {
                     return@launch
                 }
                 val streamUrl = resolveStreamUrl(song, appContext, forPlayback = true) ?: run {
+                    // YouTube often rejects an anonymous request for a moment (or the
+                    // network is slow): one fresh attempt after a short pause usually
+                    // succeeds, so retry once before giving up on the track.
+                    Log.w(TAG, "no stream on first attempt, retrying once for: $song")
+                    invalidateResolvedStream(song)
+                    delay(2_500L)
+                    if (currentRequest != song) return@launch
+                    resolveStreamUrl(song, appContext, forPlayback = true)
+                } ?: run {
                     // Tell the user instead of silently leaving the request on.
                     if (currentRequest == song) withContext(Dispatchers.Main) {
                         android.widget.Toast.makeText(
@@ -414,7 +423,25 @@ object SongPlayer {
         when {
             better != null && isLosslessSource(song) && fast != null -> swapToLossless(song, better)
             better != null && fast == null -> startStream(song, better, ctx, streamMimeType(better, sourceCache[song].orEmpty()))
-            fast == null -> streamFailed(song, ctx)
+            fast == null -> {
+                // Same one-shot retry as the normal path: YouTube often refuses an
+                // anonymous request for a moment and works on a fresh attempt.
+                Log.w(TAG, "quick start found no stream, retrying once for: $song")
+                delay(2_500L)
+                if (currentRequest != song) return@coroutineScope
+                val retry = resolveYtPlayback(song, quality.audioQuality, ctx)
+                if (currentRequest != song) return@coroutineScope
+                if (retry != null) {
+                    currentSource = "YouTube"
+                    currentQuality = ytQualityLabel(retry)
+                    streamCache[song] = retry.streamUrl
+                    sourceCache[song] = "YouTube"
+                    qualityCache[song] = currentQuality
+                    startStream(song, retry.streamUrl, ctx)
+                } else {
+                    streamFailed(song, ctx)
+                }
+            }
             else -> {
                 // No lossless copy: remember the YouTube stream so a replay starts at once.
                 streamCache[song] = fast.streamUrl
