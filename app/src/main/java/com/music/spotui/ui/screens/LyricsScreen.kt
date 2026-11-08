@@ -104,6 +104,18 @@ private fun activeIndexFor(lyrics: Lyrics, positionMs: Long): Int =
     if (lyrics.synced) lyrics.lines.indexOfLast { it.timeMs <= positionMs + 250 }.coerceAtLeast(0)
     else -1
 
+/**
+ * When the karaoke fill of line [index] should finish. Lyrics only carry line start
+ * times, so this is the next line's start, capped by an estimate from the line's
+ * length so a long instrumental gap doesn't make the fill crawl.
+ */
+private fun karaokeEndMs(lines: List<com.music.spotui.data.entity.LyricLine>, index: Int): Long {
+    val line = lines.getOrNull(index) ?: return 0L
+    val next = lines.getOrNull(index + 1)?.timeMs ?: (line.timeMs + 6_000L)
+    val estimate = (line.text.count { !it.isWhitespace() } * 110L).coerceIn(1_500L, 8_000L)
+    return minOf(next, line.timeMs + estimate).coerceAtLeast(line.timeMs + 1)
+}
+
 /** Seek to a tapped synced line and make sure we're playing. */
 private fun jumpTo(timeMs: Long) {
     SongPlayer.seekTo(timeMs)
@@ -345,6 +357,8 @@ fun LyricsScreen(
                                 fontSize = 24.sp,
                                 onTap = if (lyrics.synced) ({ jumpTo(line.timeMs) }) else null,
                                 translatedText = if (showTranslations && translated != null && index < translated.size) translated[index].translatedText else null,
+                                startMs = line.timeMs,
+                                endMs = karaokeEndMs(lyrics.lines, index),
                             )
                         }
                     }
@@ -507,6 +521,8 @@ fun InlineLyrics(
                             fontSize = 22.sp,
                             onTap = if (lyrics.synced) ({ jumpTo(line.timeMs) }) else null,
                             translatedText = if (showTranslations && translated != null && globalIndex < translated.size) translated[globalIndex].translatedText else null,
+                            startMs = line.timeMs,
+                            endMs = karaokeEndMs(lyrics.lines, globalIndex),
                         )
                     }
                 }
@@ -848,11 +864,44 @@ private fun LyricLineText(
     fontSize: androidx.compose.ui.unit.TextUnit,
     onTap: (() -> Unit)?,
     translatedText: String? = null,
+    startMs: Long = 0L,
+    endMs: Long = 0L,
 ) {
     if (text.isBlank()) {
         Box(modifier = Modifier.size(1.dp))
         return
     }
+    // Karaoke: the active synced line fills with colour from left to right as it is
+    // sung. Position is read every frame (only for this one line) so the fill is smooth.
+    val karaoke = synced && isActive && endMs > startMs
+    var progress by remember(text, startMs) { mutableStateOf(0f) }
+    if (karaoke) {
+        LaunchedEffect(text, startMs, endMs) {
+            while (true) {
+                androidx.compose.runtime.withFrameMillis { }
+                val pos = SongPlayer.getCurrentPosition()
+                progress = ((pos - startMs).toFloat() / (endMs - startMs)).coerceIn(0f, 1f)
+            }
+        }
+    }
+    val sungColor = Color.White
+    val unsungColor = Color.White.copy(alpha = 0.45f)
+    val lineText: androidx.compose.ui.text.AnnotatedString = if (karaoke) {
+        val filled = progress * text.length
+        val full = filled.toInt().coerceIn(0, text.length)
+        androidx.compose.ui.text.buildAnnotatedString {
+            append(text)
+            if (full > 0) addStyle(androidx.compose.ui.text.SpanStyle(color = sungColor), 0, full)
+            if (full < text.length) {
+                // The letter being sung fades in, so the sweep looks continuous.
+                val partial = androidx.compose.ui.graphics.lerp(unsungColor, sungColor, filled - full)
+                addStyle(androidx.compose.ui.text.SpanStyle(color = partial), full, full + 1)
+                if (full + 1 < text.length) {
+                    addStyle(androidx.compose.ui.text.SpanStyle(color = unsungColor), full + 1, text.length)
+                }
+            }
+        }
+    } else androidx.compose.ui.text.AnnotatedString(text)
     val target = when {
         !synced -> Color.White.copy(alpha = 0.95f)
         isActive -> Color.White
@@ -867,7 +916,7 @@ private fun LyricLineText(
     if (translatedText != null) {
         Column(modifier = clickModifier) {
             Text(
-                text = text,
+                text = lineText,
                 color = color,
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
@@ -882,7 +931,7 @@ private fun LyricLineText(
         }
     } else {
         Text(
-            text = text,
+            text = lineText,
             color = color,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
