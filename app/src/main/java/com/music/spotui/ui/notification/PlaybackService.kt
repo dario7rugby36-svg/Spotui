@@ -588,7 +588,7 @@ class PlaybackService : MediaLibraryService() {
         ): ListenableFuture<LibraryResult<MediaItem>> =
             Futures.immediateFuture(
                 LibraryResult.ofItem(
-                    folder(ROOT, "spotui"),
+                    folder(ROOT, "SplashBeat"),
                     LibraryParams.Builder()
                         .setExtras(Bundle().apply {
                             putBoolean(CONTENT_STYLE_SUPPORTED, true)

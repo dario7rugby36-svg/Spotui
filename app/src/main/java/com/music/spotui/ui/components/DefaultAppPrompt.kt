@@ -155,7 +155,7 @@ fun DefaultAppPrompt(
 
                 // Header Title
                 Text(
-                    text = "Apri i link in Spotui",
+                    text = "Apri i link in SplashBeat",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -164,7 +164,7 @@ fun DefaultAppPrompt(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Imposta Spotui come predefinita per aprire direttamente i link di Spotify.",
+                    text = "Imposta SplashBeat come predefinita per aprire direttamente i link di Spotify.",
                     fontSize = 14.sp,
                     color = SpotifyTextSecondary
                 )
@@ -203,7 +203,7 @@ fun DefaultAppPrompt(
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = "Android non permette di aggiungere i link a Spotui finché non rimuovi le impostazioni predefinite di $conflictingAppLabel nel Passo 1.",
+                                text = "Android non permette di aggiungere i link a SplashBeat finché non rimuovi le impostazioni predefinite di $conflictingAppLabel nel Passo 1.",
                                 fontSize = 13.sp,
                                 color = Color(0xFFFFE082),
                                 lineHeight = 18.sp,
@@ -226,12 +226,12 @@ fun DefaultAppPrompt(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Step 2: Enable Spotui Default Card
+                    // Step 2: Enable SplashBeat Default Card
                     StepCard(
                         stepNumber = "2",
-                        title = "PASSO 2: attiva i link predefiniti per Spotui",
-                        description = "Dopo il Passo 1, tocca qui sotto per aprire le impostazioni di Spotui -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
-                        buttonText = "2. Attiva i predefiniti per Spotui",
+                        title = "PASSO 2: attiva i link predefiniti per SplashBeat",
+                        description = "Dopo il Passo 1, tocca qui sotto per aprire le impostazioni di SplashBeat -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
+                        buttonText = "2. Attiva i predefiniti per SplashBeat",
                         isPrimary = true,
                         onClick = { DefaultLinkHelper.openSpotuiDefaultSettings(context) }
                     )
@@ -239,9 +239,9 @@ fun DefaultAppPrompt(
                     // Single Step Card for when no conflicting app is installed
                     StepCard(
                         stepNumber = "1",
-                        title = "Imposta Spotui come app predefinita",
-                        description = "Tocca qui sotto per aprire le impostazioni di Spotui -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
-                        buttonText = "Attiva i predefiniti per Spotui",
+                        title = "Imposta SplashBeat come app predefinita",
+                        description = "Tocca qui sotto per aprire le impostazioni di SplashBeat -> Tocca 'Apri per impostazione predefinita' -> Tocca '+ Aggiungi link' -> Seleziona open.spotify.com.",
+                        buttonText = "Attiva i predefiniti per SplashBeat",
                         isPrimary = true,
                         onClick = { DefaultLinkHelper.openSpotuiDefaultSettings(context) }
                     )

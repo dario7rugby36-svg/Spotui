@@ -981,7 +981,7 @@ private fun LatestReleaseCard(
                         .clickable {
                             showBottomSheet = false
                             val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                putExtra(Intent.EXTRA_TEXT, "Ascolta ${album.name} di ${album.artists} su Spotui!")
+                                putExtra(Intent.EXTRA_TEXT, "Ascolta ${album.name} di ${album.artists} su SplashBeat!")
                                 type = "text/plain"
                             }
                             context.startActivity(Intent.createChooser(sendIntent, "Condividi uscita"))

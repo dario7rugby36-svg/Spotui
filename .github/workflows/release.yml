@@ -55,5 +55,5 @@ jobs:
           apk=$(ls app/build/outputs/apk/release/*.apk | head -1)
           gh release create "v$VERSION" "$apk" \
             --target "$GITHUB_SHA" \
-            --title "Spotui $VERSION" \
-            --notes "Versione $VERSION di Spotui. Scarica l'APK qui sotto e installalo, oppure aggiorna direttamente dall'app."
+            --title "SplashBeat $VERSION" \
+            --notes "Versione $VERSION di SplashBeat. Scarica l'APK qui sotto e installalo, oppure aggiorna direttamente dall'app."

@@ -84,7 +84,7 @@ fun DeezerIntroScreen(navController: NavController) {
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Spotui riproduce la tua musica da Deezer. Se salti questo passaggio, la riproduzione userà YouTube — più lento da caricare, e alcuni brani potrebbero essere censurati o in una versione diversa.",
+                "SplashBeat riproduce la tua musica da Deezer. Se salti questo passaggio, la riproduzione userà YouTube — più lento da caricare, e alcuni brani potrebbero essere censurati o in una versione diversa.",
                 color = Color(0xFFB3B3B3),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,

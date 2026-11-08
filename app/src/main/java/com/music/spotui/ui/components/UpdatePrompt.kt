@@ -88,7 +88,7 @@ fun UpdatePrompt() {
                     RenderMarkdown(info.releaseBody)
                 } else {
                     Text(
-                        "È disponibile una nuova versione di Spotui.",
+                        "È disponibile una nuova versione di SplashBeat.",
                         color = Color(0xFFB3B3B3),
                     )
                 }

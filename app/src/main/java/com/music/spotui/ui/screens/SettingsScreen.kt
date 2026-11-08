@@ -325,7 +325,7 @@ fun SettingsScreen(navController: NavController) {
                 Column(Modifier.weight(1f)) {
                     Text("Apri i link di Spotify per impostazione predefinita", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        if (isDefaultLinkHandler) "Spotui apre i link di Spotify per impostazione predefinita" else "Non predefinita — tocca per aprire la guida",
+                        if (isDefaultLinkHandler) "SplashBeat apre i link di Spotify per impostazione predefinita" else "Non predefinita — tocca per aprire la guida",
                         color = if (isDefaultLinkHandler) Color(0xFF81C784) else Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )
@@ -730,7 +730,7 @@ fun SettingsScreen(navController: NavController) {
                 Column(Modifier.weight(1f)) {
                     Text("Ripristina da file", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Text(
-                        if (isRestoring) "Ripristino del backup in background…" else "Importa playlist e impostazioni da un file di backup di Spotui",
+                        if (isRestoring) "Ripristino del backup in background…" else "Importa playlist e impostazioni da un file di backup di SplashBeat",
                         color = Color(0xFFB3B3B3),
                         fontSize = 12.sp,
                     )

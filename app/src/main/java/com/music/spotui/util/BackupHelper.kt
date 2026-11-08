@@ -191,7 +191,7 @@ object BackupHelper {
         }
 
         val root = validateBackupJson(jsonString)
-            ?: return@withContext Pair(false, "File non valido: non è un backup di Spotui")
+            ?: return@withContext Pair(false, "File non valido: non è un backup di SplashBeat")
 
         runCatching {
             val data = root.getJSONObject("data")

@@ -26,21 +26,21 @@ object BatteryOptimizationHelper {
 
     fun getManufacturerTips(): Pair<String, String>? = when (Build.MANUFACTURER.lowercase()) {
         "xiaomi", "redmi", "poco" -> "Xiaomi / MIUI" to
-            "Impostazioni > App > Gestisci app > Spotui > Risparmio batteria > Nessuna restrizione"
+            "Impostazioni > App > Gestisci app > SplashBeat > Risparmio batteria > Nessuna restrizione"
         "huawei", "honor" -> "Huawei / EMUI" to
-            "Impostazioni > App > App > Spotui > Batteria > Consenti attività in background"
+            "Impostazioni > App > App > SplashBeat > Batteria > Consenti attività in background"
         "samsung" -> "Samsung / One UI" to
-            "Impostazioni > App > Spotui > Batteria > Consenti attività in background"
+            "Impostazioni > App > SplashBeat > Batteria > Consenti attività in background"
         "oneplus", "realme" -> "OnePlus / ColorOS" to
-            "Impostazioni > App > Spotui > Utilizzo batteria > Consenti attività in background"
+            "Impostazioni > App > SplashBeat > Utilizzo batteria > Consenti attività in background"
         "oppo" -> "OPPO / ColorOS" to
-            "Impostazioni > App > Spotui > Utilizzo batteria > Consenti attività in background"
+            "Impostazioni > App > SplashBeat > Utilizzo batteria > Consenti attività in background"
         "vivo" -> "Vivo / Funtouch" to
-            "Impostazioni > App > Spotui > Batteria > Limitazione in background > Senza restrizioni"
+            "Impostazioni > App > SplashBeat > Batteria > Limitazione in background > Senza restrizioni"
         "sony" -> "Sony / Xperia" to
-            "Impostazioni > App > Spotui > Batteria > Ottimizzazione batteria > Non ottimizzare"
+            "Impostazioni > App > SplashBeat > Batteria > Ottimizzazione batteria > Non ottimizzare"
         "nothing" -> "Nothing OS" to
-            "Impostazioni > App > Spotui > Batteria > Senza restrizioni"
+            "Impostazioni > App > SplashBeat > Batteria > Senza restrizioni"
         else -> null
     }
 }
