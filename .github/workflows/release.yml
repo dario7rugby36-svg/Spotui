@@ -1,0 +1,60 @@
+name: Release APK
+
+# Builds the normal (release) APK and publishes it as a GitHub Release, so the
+# in-app update checker (which reads this repo's latest release) can offer it.
+# A release is created only when versionName in app/build.gradle.kts changes:
+# bump it (and versionCode) to ship a new version.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: ver
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(sed -nE 's/^[[:space:]]*versionName = "([^"]+)".*/\1/p' app/build.gradle.kts | head -1)
+          if [ -z "$v" ]; then echo "versionName not found"; exit 1; fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if gh release view "v$v" >/dev/null 2>&1; then
+            echo "Release v$v already exists: nothing to publish (bump versionName to release)."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-java@v4
+        if: steps.ver.outputs.exists == 'false'
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build release APK
+        if: steps.ver.outputs.exists == 'false'
+        run: chmod +x gradlew && ./gradlew assembleRelease
+
+      - name: Publish GitHub Release
+        if: steps.ver.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          apk=$(ls app/build/outputs/apk/release/*.apk | head -1)
+          gh release create "v$VERSION" "$apk" \
+            --target "$GITHUB_SHA" \
+            --title "Spotui $VERSION" \
+            --notes "Versione $VERSION di Spotui. Scarica l'APK qui sotto e installalo, oppure aggiorna direttamente dall'app."
