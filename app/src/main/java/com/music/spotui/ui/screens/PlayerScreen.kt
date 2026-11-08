@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -92,6 +93,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -147,6 +149,12 @@ private val artistIdCache = java.util.concurrent.ConcurrentHashMap<String, Strin
     ExperimentalGlideComposeApi::class,
     androidx.compose.foundation.ExperimentalFoundationApi::class
 )
+/** True while the player renders in the "Neon" style (Settings → Riproduzione). */
+val LocalNeonPlayer = androidx.compose.runtime.compositionLocalOf { false }
+private val NeonBackground = Color(0xFF07070C)
+private val NeonCyan = Color(0xFF00F5D4)
+private val NeonPink = Color(0xFFF72585)
+
 @Composable
 fun PlayerScreen(navController: NavController) {
     val density = LocalDensity.current
@@ -444,6 +452,7 @@ fun PlayerScreen(navController: NavController) {
         mutableStateOf(Color(AppBackground.toArgb()))
     }
     var showDevicesSheet by remember { mutableStateOf(false) }
+    val neon = remember { com.music.spotui.data.preferences.isNeonPlayerEnabled(context) }
     Palette().extractSecondColorFromCoverUrl(context = context, songCoverUri) { color ->
         dominentColor = color
     }
@@ -586,7 +595,8 @@ fun PlayerScreen(navController: NavController) {
             }
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(dominentColor, Color.Black),
+                    colors = if (neon) listOf(NeonBackground, NeonBackground)
+                    else listOf(dominentColor, Color.Black),
                     startY = 100f
                 )
             )
@@ -615,6 +625,7 @@ fun PlayerScreen(navController: NavController) {
                     )
             )
         }
+        androidx.compose.runtime.CompositionLocalProvider(LocalNeonPlayer provides neon) {
         androidx.compose.foundation.lazy.LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -660,7 +671,15 @@ fun PlayerScreen(navController: NavController) {
                                     .sizeIn(maxWidth = 385.dp, maxHeight = 385.dp)
                                     .aspectRatio(1f)
                                     .padding(20.dp)
-                                    .clip(RoundedCornerShape(10.dp))
+                                    .then(
+                                        if (neon && canvasUrl == null) Modifier.shadow(
+                                            elevation = 28.dp,
+                                            shape = RoundedCornerShape(16.dp),
+                                            ambientColor = NeonPink,
+                                            spotColor = NeonCyan,
+                                        ) else Modifier
+                                    )
+                                    .clip(RoundedCornerShape(if (neon) 16.dp else 10.dp))
                                     .alpha(if (canvasUrl != null) 0f else 1f),
                                 model = songCoverUri,
                                 contentScale = ContentScale.Crop,
@@ -677,7 +696,15 @@ fun PlayerScreen(navController: NavController) {
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(20.dp)
-                                        .clip(RoundedCornerShape(10.dp))
+                                        .then(
+                                            if (neon && canvasUrl == null) Modifier.shadow(
+                                                elevation = 28.dp,
+                                                shape = RoundedCornerShape(16.dp),
+                                                ambientColor = NeonPink,
+                                                spotColor = NeonCyan,
+                                            ) else Modifier
+                                        )
+                                        .clip(RoundedCornerShape(if (neon) 16.dp else 10.dp))
                                         .alpha(if (canvasUrl != null) 0f else 1f),
                                     model = queueSongs.getOrNull(page)?.coverUri ?: songCoverUri,
                                     contentScale = ContentScale.Crop,
@@ -724,6 +751,16 @@ fun PlayerScreen(navController: NavController) {
                             onShowSavedIn = { showSavedIn = true },
                             isExplicit = queueSongs.firstOrNull { it.id == songId }?.explicit == true,
                         )
+
+                        if (neon) {
+                            NeonWaveform(
+                                isPlaying = songPlayingState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp)
+                                    .height(40.dp),
+                            )
+                        }
 
                         // Smooth scrubbing: while dragging, the thumb follows the finger
                         // locally (no seek per delta — that fired a web seek on every pixel
@@ -830,6 +867,7 @@ fun PlayerScreen(navController: NavController) {
                     onExpand = { showLyrics = true },
                 )
             }
+        }
         }
 
         if (showLyrics) {
@@ -1179,7 +1217,7 @@ fun PlayerInfo(
                     painterResource(id = R.drawable.ic_add)
                 },
                 tint = if (isLiked.value) {
-                    Color(AppPalette.toArgb())
+                    if (LocalNeonPlayer.current) NeonPink else Color(AppPalette.toArgb())
                 } else {
                     Color.White
                 },
@@ -1189,6 +1227,48 @@ fun PlayerInfo(
     }
 
 
+}
+
+/**
+ * Neon-style animated sound wave. It is a stylised animation driven by the play
+ * state (it calms down when paused), not a real audio spectrum: that would need
+ * the microphone/record-audio permission.
+ */
+@Composable
+private fun NeonWaveform(isPlaying: Boolean, modifier: Modifier = Modifier) {
+    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "neonWave")
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * Math.PI).toFloat(),
+        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+            tween(durationMillis = 1600, easing = androidx.compose.animation.core.LinearEasing)
+        ),
+        label = "neonPhase",
+    )
+    val energy by animateFloatAsState(
+        targetValue = if (isPlaying) 1f else 0.15f,
+        animationSpec = tween(durationMillis = 400),
+        label = "neonEnergy",
+    )
+    androidx.compose.foundation.Canvas(modifier) {
+        val bars = 32
+        val slot = size.width / bars
+        val barWidth = slot * 0.45f
+        val brush = Brush.verticalGradient(listOf(NeonPink, NeonCyan))
+        for (i in 0 until bars) {
+            val t = i / (bars - 1).toFloat()
+            val wave = (kotlin.math.sin(phase + i * 0.55f) * 0.5f + 0.5f) * 0.65f +
+                (kotlin.math.sin(2 * phase + i * 1.3f) * 0.5f + 0.5f) * 0.35f
+            val envelope = 0.35f + 0.65f * kotlin.math.sin(Math.PI * t).toFloat()
+            val h = size.height * (0.12f + 0.88f * wave * envelope * energy)
+            drawRoundRect(
+                brush = brush,
+                topLeft = Offset(slot * i + (slot - barWidth) / 2, (size.height - h) / 2),
+                size = androidx.compose.ui.geometry.Size(barWidth, h),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(barWidth / 2),
+            )
+        }
+    }
 }
 
 @Composable
@@ -1202,6 +1282,7 @@ fun CustomSlider(
     colors: Any? = null, // kept for API compat; unused
 ) {
     var isDragging by remember { mutableStateOf(false) }
+    val activeColor = if (LocalNeonPlayer.current) NeonCyan else Color.White
 
     // Track height grows slightly while dragging (Spotify micro-animation)
     val trackHeight by animateDpAsState(
@@ -1277,7 +1358,7 @@ fun CustomSlider(
             )
             // Active (played) track
             drawLine(
-                color = Color.White,
+                color = activeColor,
                 start = Offset(0f, trackY),
                 end = Offset(thumbX, trackY),
                 strokeWidth = trackHeightPx,
@@ -1286,7 +1367,7 @@ fun CustomSlider(
             // Thumb dot — only visible while dragging
             if (thumbAlpha > 0f) {
                 drawCircle(
-                    color = Color.White.copy(alpha = thumbAlpha),
+                    color = activeColor.copy(alpha = thumbAlpha),
                     radius = thumbRadiusPx,
                     center = Offset(thumbX, trackY)
                 )
@@ -1385,7 +1466,7 @@ fun PlayerFull(
                 // constrains height — .size() alone let it get squished into an ellipse.
                 .requiredSize(64.dp)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(if (LocalNeonPlayer.current) NeonCyan else Color.White)
                 .clickable {
                     if (songPlayingState) {
                         SongPlayer.pause()

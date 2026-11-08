@@ -85,6 +85,8 @@ import com.music.spotui.data.preferences.setCrossfadeMs
 import com.music.spotui.data.preferences.getDownloadQuality
 import com.music.spotui.data.preferences.isVideoFallbackEnabled
 import com.music.spotui.data.preferences.isAutoPlayEnabled
+import com.music.spotui.data.preferences.isNeonPlayerEnabled
+import com.music.spotui.data.preferences.setNeonPlayerEnabled
 import com.music.spotui.data.preferences.getWifiQuality
 import com.music.spotui.data.preferences.setCellularQuality
 import com.music.spotui.data.preferences.setDownloadQuality
@@ -118,6 +120,7 @@ fun SettingsScreen(navController: NavController) {
     var crossfadeMs by remember { mutableStateOf(getCrossfadeMs(context).toFloat()) }
     var videoFallback by remember { mutableStateOf(isVideoFallbackEnabled(context)) }
     var autoPlay by remember { mutableStateOf(isAutoPlayEnabled(context)) }
+    var neonPlayer by remember { mutableStateOf(isNeonPlayerEnabled(context)) }
     var batteryOptExempt by remember { mutableStateOf(BatteryOptimizationHelper.isIgnoringBatteryOptimization(context)) }
     var updateRepoUrl by remember { mutableStateOf(getUpdateRepoUrl(context)) }
     var isDefaultLinkHandler by remember { mutableStateOf(DefaultLinkHelper.isAppDefaultLinkHandler(context)) }
@@ -548,6 +551,14 @@ fun SettingsScreen(navController: NavController) {
             ) {
                 autoPlay = it
                 setAutoPlayEnabled(context, it)
+            }
+            SettingsSwitchRow(
+                title = "Stile Neon del player",
+                subtitle = "Schermata scura, copertina luminosa e onda sonora animata",
+                checked = neonPlayer,
+            ) {
+                neonPlayer = it
+                setNeonPlayerEnabled(context, it)
             }
 
             Spacer(Modifier.height(12.dp))

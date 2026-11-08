@@ -29,6 +29,7 @@ private const val KEY_CROSSFADE_MS = "crossfade_duration_ms"
 private const val KEY_CROSSFADE_DJ = "crossfade_dj_mode"
 private const val KEY_WEB_PLAYBACK = "web_playback_enabled"
 private const val KEY_VIDEO_FALLBACK = "video_fallback_enabled"
+private const val KEY_NEON_PLAYER = "neon_player_style"
 private const val KEY_LIBRARY_GRID = "library_grid_view"
 private const val KEY_AUTO_PLAY = "auto_play_startup"
 private const val KEY_IGNORE_BATTERY_OPT = "ignore_battery_optimization"
@@ -100,6 +101,10 @@ fun isAutoPlayEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_AUTO_PLAY, 
 fun setAutoPlayEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean(KEY_AUTO_PLAY, v).apply()
 
 fun isVideoFallbackEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_VIDEO_FALLBACK, true)
+
+/** "Neon" now-playing style: dark screen, glowing artwork, animated wave, cyan/pink accents. */
+fun isNeonPlayerEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_NEON_PLAYER, true)
+fun setNeonPlayerEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean(KEY_NEON_PLAYER, v).apply()
 fun setVideoFallbackEnabled(c: Context, v: Boolean) =
     prefs(c).edit().putBoolean(KEY_VIDEO_FALLBACK, v).apply()
 
