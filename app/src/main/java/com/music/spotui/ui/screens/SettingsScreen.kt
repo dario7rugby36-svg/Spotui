@@ -825,18 +825,18 @@ fun SettingsScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Mantenuto con ♥ da ",
+                    text = "Fatto con ♥ da ",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
                 )
                 Text(
-                    text = "Hazhan Salih",
+                    text = "Dario 😎",
                     color = Color.White,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
-                        uriHandler.openUri("https://github.com/H4zh4n/Spotui/")
+                        uriHandler.openUri("https://github.com/dario7rugby36-svg/Spotui")
                     }
                 )
             }

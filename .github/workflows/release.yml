@@ -4,9 +4,8 @@ name: Release APK
 # in-app update checker (which reads this repo's latest release) can offer it.
 # A release is created only when versionName in app/build.gradle.kts changes:
 # bump it (and versionCode) to ship a new version.
+# Started by hand only (Actions -> Release APK -> Run workflow), never on push.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
