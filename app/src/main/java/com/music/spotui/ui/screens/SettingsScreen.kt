@@ -563,11 +563,16 @@ fun SettingsScreen(navController: NavController) {
             }
             SettingsSwitchRow(
                 title = "Isola musicale",
-                subtitle = "Pillola in alto a destra con copertina e onda mentre ascolti con l'app in background. Tocca per aprire, tieni premuto per i comandi",
+                subtitle = if (com.music.spotui.ui.island.NowPlayingChip.supported(context))
+                    "Mostra il brano in ascolto accanto all'orologio, nella barra di stato, quando l'app è in background"
+                else "Pillola in alto a destra con copertina e onda mentre ascolti con l'app in background. Tocca per aprire, tieni premuto per i comandi",
                 checked = musicIsland,
             ) { on ->
                 com.music.spotui.ui.island.MusicIsland.setEnabled(context, on)
-                if (on && !com.music.spotui.ui.island.MusicIsland.canDraw(context)) {
+                // The status-bar chip (Android 16+) needs no overlay permission.
+                if (on && !com.music.spotui.ui.island.NowPlayingChip.supported(context) &&
+                    !com.music.spotui.ui.island.MusicIsland.canDraw(context)
+                ) {
                     // Android asks once for "Mostra sopra altre app".
                     runCatching {
                         context.startActivity(

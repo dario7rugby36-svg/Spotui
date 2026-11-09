@@ -67,11 +67,19 @@ object MusicIsland {
 
     fun canDraw(context: Context): Boolean = Settings.canDrawOverlays(context)
 
+    private var lastRequest: Triple<Boolean, String, Boolean>? = null
+    private var watchingRotation = false
+
     /** Shows/updates the pill, or removes it when [show] is false. Main thread only. */
     fun render(context: Context, show: Boolean, coverUri: String, playing: Boolean) {
         val app = context.applicationContext
-        if (!show || !canDraw(app)) {
-            hide(app)
+        lastRequest = Triple(show, coverUri, playing)
+        watchRotation(app)
+        // Landscape = full-screen video or games: stay out of the way.
+        val landscape = app.resources.configuration.orientation ==
+            android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        if (!show || landscape || !canDraw(app)) {
+            detach(app)
             return
         }
         if (root == null) attach(app)
@@ -88,7 +96,29 @@ object MusicIsland {
         playPause?.setImageResource(if (playing) R.drawable.ic_playing else R.drawable.play_svgrepo_com)
     }
 
+    /** Re-applies the last request when the screen rotates (hide in landscape, back in portrait). */
+    private fun watchRotation(app: Context) {
+        if (watchingRotation) return
+        watchingRotation = true
+        app.registerComponentCallbacks(object : android.content.ComponentCallbacks {
+            override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+                val (show, cover, playing) = lastRequest ?: return
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    render(app, show, cover, playing)
+                }
+            }
+            @Deprecated("Deprecated in Java")
+            override fun onLowMemory() = Unit
+        })
+    }
+
+    /** Removes the pill and forgets it, so a later rotation doesn't bring it back. */
     fun hide(context: Context) {
+        lastRequest = null
+        detach(context)
+    }
+
+    private fun detach(context: Context) {
         val view = root ?: return
         runCatching {
             (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager)

@@ -267,8 +267,9 @@ class PlaybackService : MediaLibraryService() {
                 }
         }
 
-        // "Isola musicale": the floating pill while music plays with the app in the
-        // background. After a pause it stays 30 s (so it can be resumed from it).
+        // "Isola musicale" while music plays with the app in the background: on
+        // Android 16+ with Live Updates a status-bar chip next to the clock (covers
+        // nothing), otherwise the floating pill. After a pause it stays 30 s.
         serviceScope.launch {
             snapshotFlow {
                 listOf(
@@ -277,6 +278,8 @@ class PlaybackService : MediaLibraryService() {
                     currentSongState.playingState.value,
                     currentSongState.coverUri.value,
                     currentSongState.songId.value != 0,
+                    currentSongState.title.value,
+                    currentSongState.singer.value,
                 )
             }
                 .distinctUntilChanged()
@@ -286,16 +289,33 @@ class PlaybackService : MediaLibraryService() {
                     val playing = s[2] as Boolean
                     val cover = s[3] as String
                     val hasSong = s[4] as Boolean
+                    val title = s[5] as String
+                    val artist = s[6] as String
+                    val ctx = this@PlaybackService
                     val island = com.music.spotui.ui.island.MusicIsland
+                    val chip = com.music.spotui.ui.island.NowPlayingChip
                     val wanted = enabled && !foreground && hasSong
-                    when {
-                        wanted && playing -> island.render(this@PlaybackService, true, cover, true)
-                        wanted && island.isShowing -> {
-                            island.render(this@PlaybackService, true, cover, false)
-                            kotlinx.coroutines.delay(30_000L)
-                            island.hide(this@PlaybackService)
+                    if (chip.supported(ctx)) {
+                        island.hide(ctx)
+                        when {
+                            wanted && playing -> chip.update(ctx, true, title, artist)
+                            wanted -> {
+                                kotlinx.coroutines.delay(30_000L)
+                                chip.update(ctx, false, title, artist)
+                            }
+                            else -> chip.update(ctx, false, title, artist)
                         }
-                        else -> island.hide(this@PlaybackService)
+                        return@collectLatest
+                    }
+                    chip.update(ctx, false, title, artist)
+                    when {
+                        wanted && playing -> island.render(ctx, true, cover, true)
+                        wanted && island.isShowing -> {
+                            island.render(ctx, true, cover, false)
+                            kotlinx.coroutines.delay(30_000L)
+                            island.hide(ctx)
+                        }
+                        else -> island.hide(ctx)
                     }
                 }
         }
@@ -1009,6 +1029,7 @@ class PlaybackService : MediaLibraryService() {
 
     override fun onDestroy() {
         com.music.spotui.ui.island.MusicIsland.hide(this)
+        com.music.spotui.ui.island.NowPlayingChip.update(this, false, "", "")
         serviceScope.cancel()
         runCatching { unregisterReceiver(mediaControlReceiver) }
         SongPlayer.exoPlayer?.removeListener(playerListener)

@@ -34,8 +34,8 @@ private val RELEASE_NOTES = listOf(
     ReleaseNotes(
         "1.5.9",
         listOf(
-            "🏝️ Nuova \"Isola musicale\": una pillola in alto a destra con copertina e onda mentre ascolti in background",
-            "👆 Tocca la pillola per aprire l'app, tienila premuta per play/pausa e brano successivo",
+            "🏝️ Nuova \"Isola musicale\": il brano in ascolto accanto all'orologio, nella barra di stato (Android 16)",
+            "💊 Sui telefoni più vecchi: una pillola in alto a destra con copertina e onda (tocca per aprire, tieni premuto per i comandi)",
             "⚙️ Si attiva in Impostazioni → Riproduzione → \"Isola musicale\"",
         ),
     ),
