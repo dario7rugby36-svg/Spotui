@@ -32,6 +32,13 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.5.8",
+        listOf(
+            "🛠️ Risolto il crash all'apertura di \"Brani che ti piacciono\"",
+            "🛠️ Le playlist con lo stesso brano ripetuto non mandano più in crash l'app",
+        ),
+    ),
+    ReleaseNotes(
         "1.5.7",
         listOf(
             "❤️ \"Mi piace\" direttamente dalla notifica e da Android Auto",

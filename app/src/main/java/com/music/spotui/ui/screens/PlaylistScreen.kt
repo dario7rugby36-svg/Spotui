@@ -667,7 +667,8 @@ fun PlaylistScreen(navController: NavController, playlistId: String, playlistNam
                     }
                 }
 
-                itemsIndexed(filteredSongs, key = { _, song -> song.id }) { index, song ->
+                // A playlist can hold the same track twice, so the key also carries the position.
+                itemsIndexed(filteredSongs, key = { i, song -> "${song.id}#$i" }) { index, song ->
                     val currentColor = if (song.id == playlistViewModel.currentSongId.value)
                         Color(AppPalette.toArgb()) else Color.White
 

@@ -97,7 +97,8 @@ fun LikedSongsScreen(navController: NavController) {
     val songsResp by likedSongsViewModel.songs.collectAsState()
     val context = LocalContext.current
 
-    val songs = (songsResp as? Response.Success)?.data.orEmpty()
+    // distinctBy: the list below is keyed by song id, and a duplicate id crashes it.
+    val songs = (songsResp as? Response.Success)?.data.orEmpty().distinctBy { it.id }
 
     LaunchedEffect(songs) {
         if (songs.isNotEmpty()) {

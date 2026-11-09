@@ -911,7 +911,7 @@ class Api @Inject constructor(
         }
         Spotify.likedSongs(limit = 50).fold(
             onSuccess = { first ->
-                val models = first.items.map { it.track.toSongModel() }.toMutableList()
+                val models = first.items.map { it.track.toSongModel() }.distinctBy { it.id }.toMutableList()
                 // Seed the local like registry so hearts/menus show these as liked
                 // and unliking them can be mirrored back to Spotify.
                 models.forEach { com.music.spotui.data.preferences.addLikedSongId(context, it.id.toString()) }
@@ -921,7 +921,11 @@ class Api @Inject constructor(
                 while (offset < first.total && first.items.isNotEmpty()) {
                     val page = Spotify.likedSongs(limit = 50, offset = offset).getOrNull() ?: break
                     if (page.items.isEmpty()) break
-                    val pageModels = page.items.map { it.track.toSongModel() }
+                    // If the library changed while paging (a like/unlike shifts the
+                    // offsets), a track can come back twice: keep one copy, since the
+                    // list uses the id as a unique key and duplicates crash it.
+                    val known = models.mapTo(HashSet()) { it.id }
+                    val pageModels = page.items.map { it.track.toSongModel() }.filter { known.add(it.id) }
                     pageModels.forEach { com.music.spotui.data.preferences.addLikedSongId(context, it.id.toString()) }
                     models += pageModels
                     offset += page.items.size
