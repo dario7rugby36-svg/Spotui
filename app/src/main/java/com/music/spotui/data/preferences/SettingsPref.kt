@@ -31,6 +31,7 @@ private const val KEY_WEB_PLAYBACK = "web_playback_enabled"
 private const val KEY_VIDEO_FALLBACK = "video_fallback_enabled"
 private const val KEY_NEON_PLAYER = "neon_player_style"
 private const val KEY_LYRICS_OFFSET_MS = "lyrics_offset_ms"
+private const val KEY_MUSIC_ISLAND = "music_island_enabled"
 private const val KEY_LIBRARY_GRID = "library_grid_view"
 private const val KEY_AUTO_PLAY = "auto_play_startup"
 private const val KEY_IGNORE_BATTERY_OPT = "ignore_battery_optimization"
@@ -110,6 +111,10 @@ fun setNeonPlayerEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean(KE
 /** Lyrics timing correction in ms: positive shows lyrics later (e.g. Bluetooth delay). */
 fun getLyricsOffsetMs(c: Context): Long = prefs(c).getLong(KEY_LYRICS_OFFSET_MS, 0L)
 fun setLyricsOffsetMs(c: Context, v: Long) = prefs(c).edit().putLong(KEY_LYRICS_OFFSET_MS, v).apply()
+
+/** "Isola musicale": floating pill while music plays in the background (off by default). */
+fun isMusicIslandEnabled(c: Context): Boolean = prefs(c).getBoolean(KEY_MUSIC_ISLAND, false)
+fun setMusicIslandEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean(KEY_MUSIC_ISLAND, v).apply()
 fun setVideoFallbackEnabled(c: Context, v: Boolean) =
     prefs(c).edit().putBoolean(KEY_VIDEO_FALLBACK, v).apply()
 

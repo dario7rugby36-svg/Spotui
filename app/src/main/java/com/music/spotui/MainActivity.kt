@@ -99,6 +99,17 @@ class MainActivity : ComponentActivity() {
         com.music.spotui.util.DeepLinkHandler.handleIntent(intent)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // The floating "isola musicale" only shows while the app is in the background.
+        com.music.spotui.ui.island.AppVisibility.inForeground.value = true
+    }
+
+    override fun onStop() {
+        com.music.spotui.ui.island.AppVisibility.inForeground.value = false
+        super.onStop()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         controllerFuture?.let { MediaController.releaseFuture(it) }

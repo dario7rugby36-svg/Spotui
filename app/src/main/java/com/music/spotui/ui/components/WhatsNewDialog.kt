@@ -32,6 +32,14 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.5.9",
+        listOf(
+            "🏝️ Nuova \"Isola musicale\": una pillola in alto a destra con copertina e onda mentre ascolti in background",
+            "👆 Tocca la pillola per aprire l'app, tienila premuta per play/pausa e brano successivo",
+            "⚙️ Si attiva in Impostazioni → Riproduzione → \"Isola musicale\"",
+        ),
+    ),
+    ReleaseNotes(
         "1.5.8",
         listOf(
             "🛠️ Risolto il crash all'apertura di \"Brani che ti piacciono\"",

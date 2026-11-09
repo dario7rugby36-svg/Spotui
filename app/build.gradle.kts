@@ -14,8 +14,8 @@ android {
         applicationId = "com.music.spotui"
         minSdk = 26
         targetSdk = 37
-        versionCode = 202611087
-        versionName = "1.5.8"
+        versionCode = 202611088
+        versionName = "1.5.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

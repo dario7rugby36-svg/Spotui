@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -263,6 +264,39 @@ class PlaybackService : MediaLibraryService() {
                 .distinctUntilChanged()
                 .collect { (mode, _, _) ->
                     mediaSession?.setCustomLayout(buildCustomLayout(mode))
+                }
+        }
+
+        // "Isola musicale": the floating pill while music plays with the app in the
+        // background. After a pause it stays 30 s (so it can be resumed from it).
+        serviceScope.launch {
+            snapshotFlow {
+                listOf(
+                    com.music.spotui.ui.island.MusicIsland.enabled.value,
+                    com.music.spotui.ui.island.AppVisibility.inForeground.value,
+                    currentSongState.playingState.value,
+                    currentSongState.coverUri.value,
+                    currentSongState.songId.value != 0,
+                )
+            }
+                .distinctUntilChanged()
+                .collectLatest { s ->
+                    val enabled = s[0] as Boolean
+                    val foreground = s[1] as Boolean
+                    val playing = s[2] as Boolean
+                    val cover = s[3] as String
+                    val hasSong = s[4] as Boolean
+                    val island = com.music.spotui.ui.island.MusicIsland
+                    val wanted = enabled && !foreground && hasSong
+                    when {
+                        wanted && playing -> island.render(this@PlaybackService, true, cover, true)
+                        wanted && island.isShowing -> {
+                            island.render(this@PlaybackService, true, cover, false)
+                            kotlinx.coroutines.delay(30_000L)
+                            island.hide(this@PlaybackService)
+                        }
+                        else -> island.hide(this@PlaybackService)
+                    }
                 }
         }
 
@@ -974,6 +1008,7 @@ class PlaybackService : MediaLibraryService() {
     }
 
     override fun onDestroy() {
+        com.music.spotui.ui.island.MusicIsland.hide(this)
         serviceScope.cancel()
         runCatching { unregisterReceiver(mediaControlReceiver) }
         SongPlayer.exoPlayer?.removeListener(playerListener)

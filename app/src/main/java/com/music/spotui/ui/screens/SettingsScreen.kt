@@ -121,6 +121,7 @@ fun SettingsScreen(navController: NavController) {
     var videoFallback by remember { mutableStateOf(isVideoFallbackEnabled(context)) }
     var autoPlay by remember { mutableStateOf(isAutoPlayEnabled(context)) }
     var neonPlayer by remember { mutableStateOf(isNeonPlayerEnabled(context)) }
+    val musicIsland by com.music.spotui.ui.island.MusicIsland.enabled
     var batteryOptExempt by remember { mutableStateOf(BatteryOptimizationHelper.isIgnoringBatteryOptimization(context)) }
     var updateRepoUrl by remember { mutableStateOf(getUpdateRepoUrl(context)) }
     var isDefaultLinkHandler by remember { mutableStateOf(DefaultLinkHelper.isAppDefaultLinkHandler(context)) }
@@ -559,6 +560,29 @@ fun SettingsScreen(navController: NavController) {
             ) {
                 neonPlayer = it
                 setNeonPlayerEnabled(context, it)
+            }
+            SettingsSwitchRow(
+                title = "Isola musicale",
+                subtitle = "Pillola in alto a destra con copertina e onda mentre ascolti con l'app in background. Tocca per aprire, tieni premuto per i comandi",
+                checked = musicIsland,
+            ) { on ->
+                com.music.spotui.ui.island.MusicIsland.setEnabled(context, on)
+                if (on && !com.music.spotui.ui.island.MusicIsland.canDraw(context)) {
+                    // Android asks once for "Mostra sopra altre app".
+                    runCatching {
+                        context.startActivity(
+                            android.content.Intent(
+                                android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                android.net.Uri.parse("package:${context.packageName}"),
+                            ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
+                    android.widget.Toast.makeText(
+                        context,
+                        "Attiva \"Mostra sopra altre app\" per SplashBeat",
+                        android.widget.Toast.LENGTH_LONG,
+                    ).show()
+                }
             }
 
             Spacer(Modifier.height(12.dp))
