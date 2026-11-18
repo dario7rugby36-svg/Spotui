@@ -379,8 +379,14 @@ object SongPlayer {
         runCatching {
             val cache = mediaCache(context)
             val spotifyId = trackIdRegistry[song] ?: spotifyTrackIdForPlayback(song)
-            val key = com.music.spotui.audio.LosslessCacheKeyFactory.buildCacheKey(spotifyId, song)
-            cache.removeResource(key)
+            val prefix = com.music.spotui.audio.LosslessCacheKeyFactory.trackPrefix(spotifyId)
+            if (prefix != null) {
+                // Every cached copy of the track (any source/format, old keys too).
+                cache.keys.filter { it == prefix || it.startsWith("$prefix:") }
+                    .forEach { cache.removeResource(it) }
+            } else {
+                cache.removeResource(com.music.spotui.audio.LosslessCacheKeyFactory.buildCacheKey(null, song))
+            }
         }
     }
 

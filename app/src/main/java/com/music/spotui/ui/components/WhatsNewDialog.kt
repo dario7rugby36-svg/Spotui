@@ -32,6 +32,12 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.6.1",
+        listOf(
+            "⚡ I brani partono subito: niente più blocco iniziale seguito da una nuova ricerca",
+        ),
+    ),
+    ReleaseNotes(
         "1.6.0",
         listOf(
             "🛠️ Risolti i brani bloccati in caricamento a 0:00",
