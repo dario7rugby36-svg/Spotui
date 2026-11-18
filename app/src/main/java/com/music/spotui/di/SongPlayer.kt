@@ -589,11 +589,50 @@ object SongPlayer {
                     updateResolveStatus(false)
                 }
                 startPositionWatch()
+                armStallWatchdog(song, appContext, resolvedMediaId)
             } catch (e: Exception) {
                 releaseWakeLock("spotui:playSong")
                 Log.e(TAG, "playSong failed for query: $song", e)
                 boundState?.updateResolveError(e.message ?: "Riproduzione non riuscita")
                 updateResolveStatus(false)
+            }
+        }
+    }
+
+    // ── Stall watchdog ──
+    // A cached or freshly checked link can still hang: YouTube answers the probe but
+    // never sends the audio, so the player buffers at 0:00 with no error. After
+    // STALL_TIMEOUT_MS without progress, drop every cached link for the track and
+    // resolve a fresh one. Once per track, so a link that stalls again can't loop.
+    private const val STALL_TIMEOUT_MS = 10_000L
+    private val stallRetried = java.util.Collections.newSetFromMap(
+        java.util.concurrent.ConcurrentHashMap<String, Boolean>()
+    )
+    private var stallJob: kotlinx.coroutines.Job? = null
+
+    private fun armStallWatchdog(song: String, appContext: Context, mediaId: String?) {
+        stallJob?.cancel()
+        stallJob = scope.launch {
+            delay(STALL_TIMEOUT_MS)
+            if (currentRequest != song) return@launch
+            val stalled = withContext(Dispatchers.Main) {
+                val p = player ?: return@withContext false
+                p.playWhenReady && !p.isPlaying && p.currentPosition < 500L &&
+                    (p.playbackState == ExoPlayer.STATE_BUFFERING || p.playbackState == ExoPlayer.STATE_IDLE)
+            }
+            if (!stalled) {
+                stallRetried.remove(song)
+                return@launch
+            }
+            if (!stallRetried.add(song)) {
+                logResolution("⚠ Still stuck at 0:00 with a fresh link — YouTube is not sending audio for this track.")
+                return@launch
+            }
+            logResolution("⚠ Stuck at 0:00 for ${STALL_TIMEOUT_MS / 1000}s — dropping the cached link and asking YouTube for a fresh one.")
+            Log.w(TAG, "stream stalled at 0:00, re-resolving: $song")
+            invalidateResolvedStream(song)
+            withContext(Dispatchers.Main) {
+                if (currentRequest == song) playSong(song, appContext, mediaId)
             }
         }
     }

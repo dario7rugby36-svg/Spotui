@@ -59,6 +59,13 @@ object YTPlayerUtils {
         .retryOnConnectionFailure(true)
         .build()
 
+    // Stream probes must answer quickly: a link that can't serve one byte in a few
+    // seconds is stalled, and waiting 20 s per client only delays the fallback.
+    private val probeClient = httpClient.newBuilder()
+        .readTimeout(6, TimeUnit.SECONDS)
+        .callTimeout(8, TimeUnit.SECONDS)
+        .build()
+
     private val poTokenGenerator = PoTokenGenerator()
 
     private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
@@ -545,15 +552,20 @@ object YTPlayerUtils {
                 requestBuilder.addHeader("Cookie", cookie)
             }
 
-            val response = httpClient.newCall(requestBuilder.build()).execute()
+            val response = probeClient.newCall(requestBuilder.build()).execute()
             response.close()
             val code = response.code
             val accepted = (response.isSuccessful || code == 206) && code != 403 && code != 404 && code != 410
             Timber.tag(logTag).d("Stream URL validation: code=$code accepted=$accepted")
             return accepted
+        } catch (e: java.io.InterruptedIOException) {
+            // Timed out: YouTube accepted the connection but sent nothing. Such a link
+            // leaves the player buffering at 0:00 forever, so try the next client.
+            Timber.tag(logTag).w("Stream URL probe timed out; rejecting the stalled link")
+            return false
         } catch (e: java.io.IOException) {
-            // Network timeout / reset while probing. The stream URL itself may still
-            // be fine — let ExoPlayer attempt GET rather than burning a fallback client.
+            // Network reset while probing. The stream URL itself may still be fine:
+            // let ExoPlayer attempt GET rather than burning a fallback client.
             Timber.tag(logTag).w(e, "Stream URL probe failed (IO); accepting optimistically")
             return true
         } catch (e: Exception) {

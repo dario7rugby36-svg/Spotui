@@ -32,6 +32,13 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.6.0",
+        listOf(
+            "🛠️ Risolti i brani bloccati in caricamento a 0:00",
+            "🔄 Se un brano non parte entro 10 secondi, SplashBeat chiede da solo un nuovo link a YouTube",
+        ),
+    ),
+    ReleaseNotes(
         "1.5.9",
         listOf(
             "🏝️ Nuova \"Isola musicale\": il brano in ascolto accanto all'orologio, nella barra di stato (Android 16)",
