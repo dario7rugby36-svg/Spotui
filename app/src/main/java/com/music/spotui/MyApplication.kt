@@ -27,6 +27,7 @@ class MyApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         instance = this
+        purgeOldStreamLinksOnce()
         // Surface Spotify REST/GQL logs to logcat for diagnosis.
         com.metrolist.spotify.Spotify.logger = { level, msg ->
             android.util.Log.d("SpotifyREST", "[$level] $msg")
@@ -62,5 +63,22 @@ class MyApplication : Application(){
         appScope.launch {
             runCatching { com.metrolist.innertube.NewPipeExtractor.init() }
         }
+    }
+
+    /**
+     * Stream links and audio intros saved by older versions can't be trusted (mixed
+     * formats, links fetched with the wrong client agent): they left tracks stuck at
+     * 0:00. Drop them once after the update, before the player opens the cache.
+     */
+    private fun purgeOldStreamLinksOnce() {
+        val prefs = getSharedPreferences("stream_cache_migration", MODE_PRIVATE)
+        val done = 2
+        if (prefs.getInt("purged", 0) >= done) return
+        runCatching {
+            com.music.spotui.data.preferences.clearAllCachedStreams(this)
+            com.music.spotui.data.preferences.clearAllResolvedVideos(this)
+            java.io.File(cacheDir, "media").deleteRecursively()
+        }
+        prefs.edit().putInt("purged", done).apply()
     }
 }

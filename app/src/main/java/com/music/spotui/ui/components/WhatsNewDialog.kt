@@ -32,6 +32,13 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.6.2",
+        listOf(
+            "⚡ Avvio dei brani più rapido: un link di YouTube che non risponde viene sostituito dopo 4 secondi invece di 10",
+            "🧹 I vecchi link salvati vengono eliminati automaticamente dopo l'aggiornamento",
+        ),
+    ),
+    ReleaseNotes(
         "1.6.1",
         listOf(
             "⚡ I brani partono subito: niente più blocco iniziale seguito da una nuova ricerca",

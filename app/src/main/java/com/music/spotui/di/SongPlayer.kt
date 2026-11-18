@@ -616,17 +616,33 @@ object SongPlayer {
     )
     private var stallJob: kotlinx.coroutines.Job? = null
 
+    /** No audio data at all after this long means the link is dead: don't wait the full timeout. */
+    private const val DEAD_LINK_CHECK_MS = 4_000L
+
+    /** (stuck at 0:00 while it should play, no data received at all) */
+    private suspend fun stallState(): Pair<Boolean, Boolean> = withContext(Dispatchers.Main) {
+        val p = player ?: return@withContext false to false
+        val stuck = p.playWhenReady && !p.isPlaying && p.currentPosition < 500L &&
+            (p.playbackState == ExoPlayer.STATE_BUFFERING || p.playbackState == ExoPlayer.STATE_IDLE)
+        stuck to (p.bufferedPosition <= 0L && p.totalBufferedDuration <= 0L)
+    }
+
     private fun armStallWatchdog(song: String, appContext: Context, mediaId: String?) {
         stallJob?.cancel()
         stallJob = scope.launch {
-            delay(STALL_TIMEOUT_MS)
+            // Early check: not a single byte after a few seconds = dead link, retry now.
+            // Data trickling in (weak connection) gets the full timeout instead.
+            delay(DEAD_LINK_CHECK_MS)
             if (currentRequest != song) return@launch
-            val stalled = withContext(Dispatchers.Main) {
-                val p = player ?: return@withContext false
-                p.playWhenReady && !p.isPlaying && p.currentPosition < 500L &&
-                    (p.playbackState == ExoPlayer.STATE_BUFFERING || p.playbackState == ExoPlayer.STATE_IDLE)
+            var (stuck, noData) = stallState()
+            var waitedMs = DEAD_LINK_CHECK_MS
+            if (stuck && !noData) {
+                delay(STALL_TIMEOUT_MS - DEAD_LINK_CHECK_MS)
+                if (currentRequest != song) return@launch
+                stuck = stallState().first
+                waitedMs = STALL_TIMEOUT_MS
             }
-            if (!stalled) {
+            if (!stuck) {
                 stallRetried.remove(song)
                 return@launch
             }
@@ -634,7 +650,7 @@ object SongPlayer {
                 logResolution("⚠ Still stuck at 0:00 with a fresh link — YouTube is not sending audio for this track.")
                 return@launch
             }
-            logResolution("⚠ Stuck at 0:00 for ${STALL_TIMEOUT_MS / 1000}s — dropping the cached link and asking YouTube for a fresh one.")
+            logResolution("⚠ Stuck at 0:00 for ${waitedMs / 1000}s — dropping the cached link and asking YouTube for a fresh one.")
             Log.w(TAG, "stream stalled at 0:00, re-resolving: $song")
             invalidateResolvedStream(song)
             withContext(Dispatchers.Main) {
