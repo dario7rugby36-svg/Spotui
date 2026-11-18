@@ -32,6 +32,12 @@ private data class ReleaseNotes(val version: String, val items: List<String>)
 
 private val RELEASE_NOTES = listOf(
     ReleaseNotes(
+        "1.6.3",
+        listOf(
+            "📈 Classifiche ufficiali e aggiornate ogni giorno: Top 50 Italia e Global, Viral 50, Hot Hits Italia",
+        ),
+    ),
+    ReleaseNotes(
         "1.6.2",
         listOf(
             "⚡ Avvio dei brani più rapido: un link di YouTube che non risponde viene sostituito dopo 4 secondi invece di 10",

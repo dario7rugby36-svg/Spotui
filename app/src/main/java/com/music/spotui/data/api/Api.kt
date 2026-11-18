@@ -1,5 +1,6 @@
 package com.music.spotui.data.api
 
+import kotlinx.coroutines.async
 import android.content.Context
 import android.util.Log
 import com.metrolist.spotify.Spotify
@@ -413,6 +414,42 @@ class Api @Inject constructor(
      * presenting them as a grid the user can open. Returns LibraryEntry rows so
      * the Category screen can reuse the existing playlist row/tile rendering.
      */
+    /** The "Classifiche" tile's query in Search → Sfoglia tutto. */
+    val CHARTS_CATEGORY_QUERY = "Top charts"
+
+    // Chart playlists Spotify itself publishes; each is matched by name and owner.
+    private val OFFICIAL_CHART_NAMES = listOf(
+        "Top 50 - Italia",
+        "Top 50 - Global",
+        "Viral 50 - Italia",
+        "Viral 50 - Global",
+        "Hot Hits Italia",
+    )
+
+    /** Finds each official chart by search, keeping only the playlist owned by Spotify. */
+    private suspend fun officialCharts(): List<com.music.spotui.data.entity.LibraryEntry> =
+        kotlinx.coroutines.coroutineScope {
+            OFFICIAL_CHART_NAMES.map { name ->
+                async {
+                    val norm = { t: String -> t.lowercase().filter { it.isLetterOrDigit() } }
+                    val items = Spotify.search(name, types = listOf("playlist"), limit = 10)
+                        .getOrNull()?.playlists?.items.orEmpty()
+                        .filter { it.owner?.displayName.equals("Spotify", ignoreCase = true) }
+                    val p = items.firstOrNull { norm(it.name) == norm(name) }
+                        ?: items.firstOrNull { norm(it.name).startsWith(norm(name)) }
+                        ?: return@async null
+                    com.music.spotui.data.entity.LibraryEntry(
+                        spotifyId = p.id,
+                        name = p.name,
+                        subtitle = "Classifica ufficiale • aggiornata da Spotify",
+                        coverUri = p.images.firstOrNull()?.url ?: "",
+                        isPlaylist = true,
+                    )
+                }
+            }.mapNotNull { runCatching { it.await() }.getOrNull() }
+                .distinctBy { cleanId(it.spotifyId) }
+        }
+
     suspend fun getCategoryPlaylists(genre: String): Flow<Response<List<com.music.spotui.data.entity.LibraryEntry>>> = flow {
         emit(Response.Loading())
         if (genre.isBlank()) {
@@ -420,6 +457,14 @@ class Api @Inject constructor(
         }
         if (!SpotifyTokenProvider.ensureToken(context)) {
             emit(Response.Error("Spotify non autenticato — imposta il cookie sp_dc")); return@flow
+        }
+        // "Classifiche": the official Spotify charts (updated daily by Spotify), not
+        // a generic playlist search that returned random, often stale, user lists.
+        if (genre == CHARTS_CATEGORY_QUERY) {
+            val charts = officialCharts()
+            if (charts.isNotEmpty()) {
+                emit(Response.Success(charts)); return@flow
+            }
         }
         Spotify.search(genre, types = listOf("playlist"), limit = 24).fold(
             onSuccess = { res ->
