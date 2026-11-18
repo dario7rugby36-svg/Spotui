@@ -243,6 +243,7 @@ class Api @Inject constructor(
             imageUrl = imageUrl ?: "",
             subtitle = (madeForUsername ?: ownerName)?.let { "Playlist • $it" } ?: "Playlist",
             id = id,
+            madeForYou = madeForUsername != null,
         )
     }
 
@@ -416,6 +417,75 @@ class Api @Inject constructor(
      */
     /** The "Classifiche" tile's query in Search → Sfoglia tutto. */
     val CHARTS_CATEGORY_QUERY = "Top charts"
+    /** "Nuove uscite" tile query. */
+    val NEW_RELEASES_CATEGORY_QUERY = "New releases"
+    /** "Creati per te" tile query. */
+    val MADE_FOR_YOU_CATEGORY_QUERY = "Discover weekly"
+
+    // Weekly new-music playlists Spotify publishes (updated every Friday).
+    private val OFFICIAL_NEW_MUSIC_NAMES = listOf(
+        "New Music Friday Italia",
+        "New Music Friday",
+        "Novità Rap Italia",
+        "Novità Pop Italia",
+    )
+
+    // Spotify's personal playlists, recognised by name when the feed doesn't flag them.
+    private val PERSONAL_PLAYLIST_NAME = Regex(
+        """(?i)\b(daily mix|discover weekly|release radar|on repeat|repeat rewind|time capsule|daylist|il tuo mix|mix del giorno)\b""",
+    )
+
+    /** The user's own Spotify mixes: personalized playlists from the home feed and library. */
+    private suspend fun madeForYouPlaylists(): List<com.music.spotui.data.entity.LibraryEntry> {
+        var feed = HomeCache.home
+        if (feed == null) {
+            runCatching {
+                getHomeFeed().collect { if (it is Response.Success) feed = it.data }
+            }
+        }
+        val fromHome = feed?.sections.orEmpty()
+            .flatMap { it.items }
+            .filterIsInstance<com.music.spotui.data.entity.HomeItem.Playlist>()
+            .filter { it.id.isNotBlank() && (it.madeForYou || PERSONAL_PLAYLIST_NAME.containsMatchIn(it.name)) }
+            .map {
+                com.music.spotui.data.entity.LibraryEntry(
+                    spotifyId = it.id,
+                    name = it.name,
+                    subtitle = "Creato per te",
+                    coverUri = it.imageUrl,
+                    isPlaylist = true,
+                )
+            }
+        val fromLibrary = HomeCache.library.orEmpty()
+            .filter { it.isPlaylist && PERSONAL_PLAYLIST_NAME.containsMatchIn(it.name) }
+            .map { it.copy(subtitle = "Creato per te") }
+        return (fromHome + fromLibrary).distinctBy { cleanId(it.spotifyId).ifBlank { it.name.lowercase() } }
+    }
+
+    /**
+     * A genre's playlists: Spotify's own first (Italian ones before the rest), then
+     * the other results, instead of whatever the plain search returned first.
+     */
+    private suspend fun genrePlaylists(genre: String): List<com.music.spotui.data.entity.LibraryEntry> =
+        kotlinx.coroutines.coroutineScope {
+            val plain = async { Spotify.search(genre, types = listOf("playlist"), limit = 24).getOrNull() }
+            val italian = async { Spotify.search("$genre Italia", types = listOf("playlist"), limit = 12).getOrNull() }
+            fun byOwner(items: List<com.metrolist.spotify.models.SpotifyPlaylist>?) =
+                items.orEmpty().partition { it.owner?.displayName.equals("Spotify", ignoreCase = true) }
+            val (itSpotify, itOthers) = byOwner(italian.await()?.playlists?.items)
+            val (spotify, others) = byOwner(plain.await()?.playlists?.items)
+            (itSpotify + spotify + others + itOthers).map { p ->
+                val official = p.owner?.displayName.equals("Spotify", ignoreCase = true)
+                com.music.spotui.data.entity.LibraryEntry(
+                    spotifyId = p.id,
+                    name = p.name,
+                    subtitle = if (official) "Playlist ufficiale Spotify"
+                    else "Playlist" + (p.owner?.displayName?.let { " • $it" } ?: ""),
+                    coverUri = p.images.firstOrNull()?.url ?: "",
+                    isPlaylist = true,
+                )
+            }.distinctBy { cleanId(it.spotifyId).ifBlank { it.name.trim().lowercase() } }
+        }
 
     // Chart playlists Spotify itself publishes; each is matched by name and owner.
     private val OFFICIAL_CHART_NAMES = listOf(
@@ -426,10 +496,13 @@ class Api @Inject constructor(
         "Hot Hits Italia",
     )
 
-    /** Finds each official chart by search, keeping only the playlist owned by Spotify. */
-    private suspend fun officialCharts(): List<com.music.spotui.data.entity.LibraryEntry> =
+    /** Finds each named playlist by search, keeping only the one owned by Spotify. */
+    private suspend fun officialPlaylists(
+        names: List<String>,
+        subtitle: String,
+    ): List<com.music.spotui.data.entity.LibraryEntry> =
         kotlinx.coroutines.coroutineScope {
-            OFFICIAL_CHART_NAMES.map { name ->
+            names.map { name ->
                 async {
                     val norm = { t: String -> t.lowercase().filter { it.isLetterOrDigit() } }
                     val items = Spotify.search(name, types = listOf("playlist"), limit = 10)
@@ -441,7 +514,7 @@ class Api @Inject constructor(
                     com.music.spotui.data.entity.LibraryEntry(
                         spotifyId = p.id,
                         name = p.name,
-                        subtitle = "Classifica ufficiale • aggiornata da Spotify",
+                        subtitle = subtitle,
                         coverUri = p.images.firstOrNull()?.url ?: "",
                         isPlaylist = true,
                     )
@@ -460,11 +533,18 @@ class Api @Inject constructor(
         }
         // "Classifiche": the official Spotify charts (updated daily by Spotify), not
         // a generic playlist search that returned random, often stale, user lists.
-        if (genre == CHARTS_CATEGORY_QUERY) {
-            val charts = officialCharts()
-            if (charts.isNotEmpty()) {
-                emit(Response.Success(charts)); return@flow
-            }
+        val curated = when (genre) {
+            CHARTS_CATEGORY_QUERY ->
+                officialPlaylists(OFFICIAL_CHART_NAMES, "Classifica ufficiale • aggiornata da Spotify")
+            NEW_RELEASES_CATEGORY_QUERY ->
+                // Your Release Radar first, then Spotify's weekly new-music lists.
+                madeForYouPlaylists().filter { it.name.contains("radar", ignoreCase = true) } +
+                    officialPlaylists(OFFICIAL_NEW_MUSIC_NAMES, "Novità della settimana • aggiornata ogni venerdì")
+            MADE_FOR_YOU_CATEGORY_QUERY -> madeForYouPlaylists()
+            else -> runCatching { genrePlaylists(genre) }.getOrDefault(emptyList())
+        }
+        if (curated.isNotEmpty()) {
+            emit(Response.Success(curated)); return@flow
         }
         Spotify.search(genre, types = listOf("playlist"), limit = 24).fold(
             onSuccess = { res ->

@@ -37,5 +37,7 @@ sealed class HomeItem {
         override val imageUrl: String,
         val subtitle: String,
         val id: String = "",
+        /** Personalized for the user by Spotify (Daily Mix, Discover Weekly, …). */
+        val madeForYou: Boolean = false,
     ) : HomeItem()
 }

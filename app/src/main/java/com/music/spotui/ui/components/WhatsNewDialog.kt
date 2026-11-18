@@ -35,6 +35,9 @@ private val RELEASE_NOTES = listOf(
         "1.6.3",
         listOf(
             "📈 Classifiche ufficiali e aggiornate ogni giorno: Top 50 Italia e Global, Viral 50, Hot Hits Italia",
+            "🆕 Nuove uscite: il tuo Release Radar e New Music Friday, aggiornate ogni venerdì",
+            "🎧 Creati per te: i tuoi Daily Mix, Discover Weekly e gli altri mix personali",
+            "🎸 Generi: prima le playlist ufficiali di Spotify, con quelle italiane in cima",
         ),
     ),
     ReleaseNotes(
