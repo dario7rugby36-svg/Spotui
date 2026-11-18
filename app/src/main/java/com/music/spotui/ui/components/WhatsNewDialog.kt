@@ -35,6 +35,7 @@ private val RELEASE_NOTES = listOf(
         "1.6.1",
         listOf(
             "⚡ I brani partono subito: niente più blocco iniziale seguito da una nuova ricerca",
+            "🎧 Risolti i brani di YouTube che restavano bloccati a 0:00 anche dopo una nuova ricerca",
         ),
     ),
     ReleaseNotes(

@@ -738,9 +738,11 @@ object SongPlayer {
         }
 
     private fun cacheDataSourceFactory(context: Context): androidx.media3.datasource.cache.CacheDataSource.Factory {
+        // Default User-Agent as a request property, not setUserAgent(): that one is
+        // applied last and would override the per-stream agent set in the DataSpec.
         val http = androidx.media3.datasource.DefaultHttpDataSource.Factory()
-            .setUserAgent(
-                "com.google.ios.youtube/21.03.1 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)",
+            .setDefaultRequestProperties(
+                mapOf("User-Agent" to "com.google.ios.youtube/21.03.1 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)"),
             )
             .setAllowCrossProtocolRedirects(true)
         val upstream = androidx.media3.datasource.DefaultDataSource.Factory(context, http)
@@ -751,10 +753,38 @@ object SongPlayer {
             .setCacheKeyFactory(com.music.spotui.audio.LosslessCacheKeyFactory)
     }
 
+    // Every YouTube client the resolver can get a link from. A googlevideo link names
+    // its client and version (c= / cver=); YouTube can refuse to stream to a request
+    // whose User-Agent belongs to a different client, which left playback at 0:00.
+    private val youtubeClients by lazy {
+        with(com.metrolist.innertube.models.YouTubeClient) {
+            listOf(
+                WEB, WEB_REMIX, WEB_CREATOR, TVHTML5, TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                IOS, IPADOS, VISIONOS, MOBILE, ANDROID_NO_SDK, ANDROID_CREATOR,
+                ANDROID_VR_NO_AUTH, ANDROID_VR_1_61_48, ANDROID_VR_1_43_32,
+            )
+        }
+    }
+
+    /** The User-Agent of the client a googlevideo link was issued to; null otherwise. */
+    private fun youtubeUserAgentFor(url: String): String? {
+        if (!url.contains("googlevideo.com")) return null
+        val uri = android.net.Uri.parse(url)
+        val client = uri.getQueryParameter("c") ?: return null
+        val version = uri.getQueryParameter("cver")
+        return (youtubeClients.firstOrNull { it.clientName == client && it.clientVersion == version }
+            ?: youtubeClients.firstOrNull { it.clientName == client })
+            ?.userAgent?.takeIf { it.isNotBlank() }
+    }
+
     private fun createResilientDataSourceFactory(context: Context): androidx.media3.datasource.DataSource.Factory {
         val cacheFactory = cacheDataSourceFactory(context)
 
-        val resolvingFactory = androidx.media3.datasource.ResolvingDataSource.Factory(cacheFactory) { dataSpec ->
+        val resolvingFactory = androidx.media3.datasource.ResolvingDataSource.Factory(cacheFactory) { original ->
+            // Fetch each YouTube link as the client that requested it.
+            val dataSpec = youtubeUserAgentFor(original.uri.toString())
+                ?.let { original.withAdditionalHeaders(mapOf("User-Agent" to it)) }
+                ?: original
             if (!dataSpec.key.isNullOrBlank()) {
                 return@Factory dataSpec
             }
@@ -805,6 +835,7 @@ object SongPlayer {
                 .setUri(android.net.Uri.parse(url))
                 .setKey(stableKey)
                 .setLength(PRELOAD_BYTES)
+                .apply { youtubeUserAgentFor(url)?.let { setHttpRequestHeaders(mapOf("User-Agent" to it)) } }
                 .build()
             androidx.media3.datasource.cache.CacheWriter(ds, spec, null, null).cache()
         }.onFailure { Log.d(TAG, "intro preload skipped: ${it.message}") }
